@@ -1,0 +1,10 @@
+/* Admin panel styles */
+body {
+    background: #f0f2f5;
+}
+
+.admin-panel {
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 8px;
+}

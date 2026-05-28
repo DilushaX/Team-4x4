@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team4x4 | Contact</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="contact-page">
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-mark">TEAM 4X4</span>
+        </div>
+
+        <nav class="site-nav">
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html" class="active">Contact</a>
+            <a href="cart.html">Cart</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="login.html" class="button-secondary">Login</a>
+            <a href="signup.html" class="button-primary">Sign Up</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="contact-hero">
+            <div class="contact-hero-copy">
+                <span class="eyebrow">Initiate Protocol</span>
+                <h1>Connect with our elite technicians.</h1>
+                <p>Schedule diagnostics, workshop operations, or general inquiries with precision and confidence.</p>
+            </div>
+        </section>
+
+        <section class="contact-grid">
+            <aside class="contact-card contact-details">
+                <div class="contact-card-title">
+                    <h3>Headquarters</h3>
+                </div>
+                <div class="contact-info">
+                    <p class="contact-label">Address</p>
+                    <p>No. 42, Industrial Zone Road<br>Colombo 00200<br>Sri Lanka</p>
+                </div>
+                <div class="contact-info">
+                    <p class="contact-label">Communications</p>
+                    <p>+94 70 393 9459</p>
+                    <p>info@team4x4.com</p>
+                </div>
+                <div class="contact-info">
+                    <p class="contact-label">Operational Hours</p>
+                    <p>Mon - Fri: 0800 - 1800 hrs</p>
+                    <p>Sat: 0900 - 1400 hrs</p>
+                    <p>Sun: Offline</p>
+                </div>
+                <div class="contact-actions">
+                    <a href="https://wa.me/94703939459" class="button-primary">WhatsApp Support</a>
+                    <a href="contact.html" class="button-secondary">Share</a>
+                </div>
+            </aside>
+
+            <article class="contact-card contact-form-card">
+                <div class="contact-card-title">
+                    <h3>Schedule Service</h3>
+                </div>
+                <form action="backend/contact.php" method="post" class="contact-form">
+                    <div class="form-row">
+                        <label>
+                            <span>Full Name</span>
+                            <input type="text" name="name" placeholder="Full Name" required />
+                        </label>
+                        <label>
+                            <span>Email Address</span>
+                            <input type="email" name="email" placeholder="Email Address" required />
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label>
+                            <span>Vehicle Specification</span>
+                            <input type="text" name="vehicle" placeholder="Make, Model, Year" />
+                        </label>
+                        <label>
+                            <span>Service Required</span>
+                            <select name="service">
+                                <option selected>Select Protocol...</option>
+                                <option>Diagnostics</option>
+                                <option>Custom Build</option>
+                                <option>Restoration</option>
+                            </select>
+                        </label>
+                    </div>
+                    <label>
+                        <span>Operational Details</span>
+                        <textarea name="message" rows="5" placeholder="Describe the symptoms or required modifications..."></textarea>
+                    </label>
+                    <button type="submit" class="auth-button">Transmit Request</button>
+                </form>
+            </article>
+        </section>
+
+        <section class="contact-map">
+            <div class="map-pin">Target Acquired<br><strong>Team 4x4 HQ, Colombo</strong></div>
+        </section>
+    </main>
+
+    <footer class="site-footer contact-footer">
+        <div class="footer-brand">
+            <p class="footer-title">TEAM 4x4</p>
+            <p>© 2024 Team 4x4. Engineered Excellence.</p>
+        </div>
+        <div class="footer-column">
+            <h3>Legal</h3>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="footer-column">
+            <h3>Support</h3>
+            <a href="contact.html">Inquire</a>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

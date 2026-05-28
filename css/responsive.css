@@ -1,0 +1,11 @@
+/* Team4x4 responsive styles */
+@media (max-width: 768px) {
+    header, main {
+        padding: 1rem;
+    }
+
+    header nav a {
+        display: block;
+        margin: 0.5rem 0;
+    }
+}

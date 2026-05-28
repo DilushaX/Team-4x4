@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team4x4 | Request Access</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page auth-signup">
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-mark">TEAM 4X4</span>
+        </div>
+
+        <nav class="site-nav">
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="contact.html">Contact</a>
+            <a href="cart.html">Cart</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="login.html" class="button-secondary">Login</a>
+            <a href="signup.html" class="button-primary">Sign Up</a>
+        </div>
+    </header>
+
+    <main class="auth-main">
+        <a href="index.html" class="auth-back">← Back Home</a>
+        <section class="auth-card">
+            <div class="auth-card-head">
+                <span class="auth-chip">REQUEST ACCESS</span>
+                <h1>Request Access</h1>
+                <p class="auth-subtitle">Initialize your technical profile within the Team 4x4 ecosystem.</p>
+            </div>
+
+            <form class="auth-form" action="backend/signup.php" method="post">
+                <label class="auth-field">
+                    <span>Full Name</span>
+                    <input type="text" name="name" placeholder="John Doe" required />
+                </label>
+
+                <label class="auth-field">
+                    <span>Email Address</span>
+                    <input type="email" name="email" placeholder="operator@team4x4.com" required />
+                </label>
+
+                <label class="auth-field">
+                    <span>Phone Number</span>
+                    <input type="tel" name="phone" placeholder="+1 (555) 000-0000" />
+                </label>
+
+                <label class="auth-field">
+                    <span>Vehicle Model <small>(Optional)</small></span>
+                    <input type="text" name="vehicle" placeholder="Defender 110 / Bronco Raptor" />
+                </label>
+
+                <label class="auth-field">
+                    <span>Create Security Key</span>
+                    <input type="password" name="password" placeholder="••••••••••••" required />
+                </label>
+
+                <p class="auth-note">Minimum 12 characters including tactical characters.</p>
+
+                <button class="auth-button" type="submit">Create Account →</button>
+            </form>
+        </section>
+
+        <section class="auth-footer auth-footer-compact">
+            <div class="auth-metric">
+                <strong>99.9%</strong>
+                <small>Uptime</small>
+            </div>
+            <div class="auth-metric">
+                <strong>AES-256</strong>
+                <small>Encryption</small>
+            </div>
+            <div class="auth-metric">
+                <strong>24/7</strong>
+                <small>Support</small>
+            </div>
+            <div class="auth-metric">
+                <strong>Global</strong>
+                <small>Nodes</small>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

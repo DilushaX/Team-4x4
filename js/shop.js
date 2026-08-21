@@ -1,6 +1,7 @@
 // Team4x4 shop page script
 
-// Preserve existing 'View Part' behavior
+const VIEW_STORAGE_KEY = 'team4x4ShopView';
+
 function initViewProductButtons() {
     const viewProductButtons = document.querySelectorAll('.view-product');
     if (!viewProductButtons.length) return;
@@ -17,17 +18,41 @@ function initViewProductButtons() {
                 condition: button.dataset.productCondition || 'New',
             };
             localStorage.setItem('selectedShopProduct', JSON.stringify(product));
-            window.location.href = 'product.html';
+            const productPage = button.dataset.productPage || (`product.php?id=` + product.id);
+            window.location.href = productPage;
         });
     });
 }
 
-// Filtering and search logic
+function initViewToggle() {
+    const productGrid = document.getElementById('productGrid') || document.querySelector('.product-grid');
+    const toggleButtons = Array.from(document.querySelectorAll('.view-toggle-btn'));
+    if (!productGrid || !toggleButtons.length) return;
+
+    const applyView = (view) => {
+        const isList = view === 'list';
+        productGrid.classList.toggle('product-grid--list', isList);
+        toggleButtons.forEach((btn) => {
+            btn.classList.toggle('is-active', btn.dataset.view === view);
+        });
+        sessionStorage.setItem(VIEW_STORAGE_KEY, view);
+    };
+
+    const savedView = sessionStorage.getItem(VIEW_STORAGE_KEY) || 'grid';
+    applyView(savedView);
+
+    toggleButtons.forEach((btn) => {
+        btn.addEventListener('click', () => applyView(btn.dataset.view || 'grid'));
+    });
+}
+
 function initFiltersAndSearch() {
     const filterCheckboxes = Array.from(document.querySelectorAll('.filter-checkbox'));
     const applyBtn = document.querySelector('.apply-filters');
     const clearBtn = document.querySelector('.clear-filters');
     const filterToggle = document.querySelector('.filter-toggle');
+    const shopFilters = document.querySelector('.shop-filters');
+    const filterBackdrop = document.querySelector('.filter-backdrop');
     const searchInput = document.getElementById('search-input');
     const productCards = Array.from(document.querySelectorAll('.product-card'));
     const emptyState = document.querySelector('.empty-state');
@@ -75,7 +100,7 @@ function initFiltersAndSearch() {
         const total = productCards.length;
         let visible = 0;
 
-        productCards.forEach((card, idx) => {
+        productCards.forEach((card) => {
             const category = (card.dataset.category || '').toLowerCase();
             const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(category);
             const searchMatch = matchesSearch(card, searchTerm);
@@ -83,10 +108,8 @@ function initFiltersAndSearch() {
 
             if (shouldShow) {
                 visible += 1;
-                card.style.display = 'block';
-                // remove filter animations
+                card.style.display = '';
                 card.classList.remove('filter-hidden', 'filter-enter');
-                // add entrance animation
                 window.requestAnimationFrame(() => {
                     card.classList.add('filter-enter-active');
                 });
@@ -96,55 +119,72 @@ function initFiltersAndSearch() {
             }
         });
 
-        // update counter & empty state
         updateCounter(visible, total);
         showEmptyState(visible === 0);
     }
 
     function clearFiltersAndSearch() {
-        // uncheck all filters
-        filterCheckboxes.forEach(cb => cb.checked = false);
-        // clear search
+        filterCheckboxes.forEach(cb => { cb.checked = false; });
         if (searchInput) searchInput.value = '';
-        // show all products
         productCards.forEach(card => {
-            card.style.display = 'block';
+            card.style.display = '';
             card.classList.remove('filter-hidden', 'filter-enter', 'filter-enter-active');
         });
         updateCounter(productCards.length, productCards.length);
         showEmptyState(false);
     }
 
-    // Wire buttons
+    function closeFilterDrawer() {
+        if (!filterToggle || !shopFilters) return;
+        filterToggle.setAttribute('aria-expanded', 'false');
+        shopFilters.classList.remove('open');
+        if (filterBackdrop) {
+            filterBackdrop.classList.remove('is-visible');
+            filterBackdrop.hidden = true;
+        }
+    }
+
+    function openFilterDrawer() {
+        if (!filterToggle || !shopFilters) return;
+        filterToggle.setAttribute('aria-expanded', 'true');
+        shopFilters.classList.add('open');
+        if (filterBackdrop) {
+            filterBackdrop.hidden = false;
+            filterBackdrop.classList.add('is-visible');
+        }
+    }
+
     if (applyBtn) applyBtn.addEventListener('click', (e) => {
         e.preventDefault();
         applyFiltersAndSearch();
+        closeFilterDrawer();
     });
+
     if (clearBtn) clearBtn.addEventListener('click', (e) => {
         e.preventDefault();
         clearFiltersAndSearch();
     });
 
-    // live search on input
-    if (searchInput) searchInput.addEventListener('input', () => {
-        applyFiltersAndSearch();
-    });
+    if (searchInput) searchInput.addEventListener('input', applyFiltersAndSearch);
 
-    // mobile drawer toggle
-    if (filterToggle) {
+    if (filterToggle && shopFilters) {
         filterToggle.addEventListener('click', () => {
             const expanded = filterToggle.getAttribute('aria-expanded') === 'true';
-            filterToggle.setAttribute('aria-expanded', String(!expanded));
-            document.querySelector('.shop-filters').classList.toggle('open');
+            if (expanded) closeFilterDrawer();
+            else openFilterDrawer();
         });
     }
 
-    // initialize state
+    if (filterBackdrop) {
+        filterBackdrop.addEventListener('click', closeFilterDrawer);
+    }
+
     updateCounter(productCards.length, productCards.length);
     showEmptyState(false);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initViewProductButtons();
+    initViewToggle();
     initFiltersAndSearch();
 });

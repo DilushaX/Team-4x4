@@ -65,6 +65,7 @@ const getCheckoutItems = () => {
     try {
         const stored = JSON.parse(localStorage.getItem(checkoutCartKey));
         if (Array.isArray(stored) && stored.length) return stored;
+        if (stored && typeof stored === 'object') return [stored];
     } catch {}
     try {
         const cartStored = JSON.parse(localStorage.getItem(cartKey));
@@ -303,6 +304,12 @@ const handleConfirmOrder = () => {
         return;
     }
 
+    if (!items.length) {
+        window.alert('Your cart is empty. Add parts before checkout.');
+        window.location.href = 'cart.php';
+        return;
+    }
+
     const customer = {
         fullName: elements.fullName?.value.trim(),
         phoneNumber: elements.phoneNumber?.value.trim(),
@@ -315,64 +322,82 @@ const handleConfirmOrder = () => {
         postalCode: elements.postalCode?.value.trim(),
     };
 
-    if (!items.length) {
-        window.alert('Your cart is empty. Add parts before checkout.');
-        window.location.href = 'cart.html';
-        return;
-    }
+    const confirmBtns = [elements.confirmOrderButton, elements.sidebarConfirmOrderButton].filter(Boolean);
+    confirmBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.textContent = 'Saving Order…';
+    });
 
-    // Populate printable invoice block
-    fillInvoice(customer);
+    const checkoutData = {
+        fullName: customer.fullName,
+        phoneNumber: customer.phoneNumber,
+        vehicleModel: customer.vehicleModel,
+        notes: customer.notes,
+        pickupDate: customer.pickupDate,
+        email: customer.email,
+        address: customer.address,
+        district: customer.district,
+        postalCode: customer.postalCode,
+        fulfillmentType: currentFulfillment,
+        deliveryFee: getDeliveryCharge(),
+        paymentMethod: getPaymentMethod(),
+        items: items
+    };
 
-    // Format WhatsApp Order Message structure
-    const subtotal = calculateSubtotal();
-    const deliveryFee = getDeliveryCharge();
-    const grandTotal = subtotal + deliveryFee;
-    const paymentMethod = getPaymentMethod();
+    fetch('backend/checkout.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(checkoutData)
+    })
+    .then(res => res.json())
+    .then(res => {
+        confirmBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.textContent = 'Confirm Order & Save';
+        });
 
-    let itemsMessage = items
-        .map(item => `📦 *${item.title || item.name}*\n   Qty: ${item.quantity} | ${currency(item.price * item.quantity)}`)
-        .join('\n\n');
+        if (res.status === 'success') {
+            fillInvoice(customer);
+            if (elements.invoiceNumber && res.order_number) {
+                elements.invoiceNumber.textContent = res.order_number;
+            }
 
-    let customerDetailsMsg = '';
-    if (currentFulfillment === 'pickup') {
-        customerDetailsMsg = `👤 *Customer Name:* ${customer.fullName}\n📞 *Phone:* ${customer.phoneNumber}\n🚗 *Vehicle:* ${customer.vehicleModel}\n🏪 *Fulfillment:* Garage Pickup\n📅 *Pickup Date:* ${customer.pickupDate}`;
-    } else {
-        customerDetailsMsg = `👤 *Customer Name:* ${customer.fullName}\n📞 *Phone:* ${customer.phoneNumber}\n📧 *Email:* ${customer.email}\n🚗 *Vehicle:* ${customer.vehicleModel}\n🚚 *Fulfillment:* Islandwide Delivery\n📍 *Address:* ${customer.address}\n🗺️ *District:* ${customer.district}\n📮 *Postal Code:* ${customer.postalCode}`;
-    }
+            // Clear local storage cart
+            localStorage.removeItem(cartKey);
+            localStorage.removeItem(checkoutCartKey);
 
-    if (customer.notes) {
-        customerDetailsMsg += `\n📝 *Notes:* ${customer.notes}`;
-    }
+            // Open WhatsApp link
+            const waUrl = res.whatsapp_url;
+            if (waUrl) {
+                const waAnchor = document.createElement('a');
+                waAnchor.href = waUrl;
+                waAnchor.target = '_blank';
+                waAnchor.rel = 'noreferrer';
+                document.body.appendChild(waAnchor);
+                waAnchor.click();
+                document.body.removeChild(waAnchor);
+            }
 
-    const deliveryFeeLabel = currentFulfillment === 'delivery' ? currency(deliveryFee) : 'Free (Garage Pickup)';
+            const msgEl = document.getElementById('checkoutMessage');
+            if (msgEl) {
+                msgEl.style.color = '#4ade80';
+                msgEl.textContent = `✅ Order ${res.order_number || ('#' + res.order_id)} saved to MySQL database successfully! WhatsApp chat opened.`;
+            }
 
-    const message = `🛠️ *TEAM 4X4 ORDER CONFIRMATION* 🛠️\n\n` +
-        `*CUSTOMER DETAILS:*\n${customerDetailsMsg}\n\n` +
-        `------------------------------------------\n` +
-        `*ORDER ITEMS:*\n${itemsMessage}\n\n` +
-        `------------------------------------------\n` +
-        `💵 *Product Subtotal:* ${currency(subtotal)}\n` +
-        `🚚 *Delivery Fee:* ${deliveryFeeLabel}\n` +
-        `💰 *Final Grand Total:* ${currency(grandTotal)}\n` +
-        `💳 *Payment Method:* ${paymentMethod}\n` +
-        `------------------------------------------\n\n` +
-        `Thank you for choosing Team 4x4! 🏎️💨`;
-
-    // Redirect user to WhatsApp
-    const waUrl = `https://wa.me/94703939459?text=${encodeURIComponent(message)}`;
-    
-    // Create quick trigger anchor
-    const waAnchor = document.createElement('a');
-    waAnchor.href = waUrl;
-    waAnchor.target = '_blank';
-    waAnchor.rel = 'noreferrer';
-    document.body.appendChild(waAnchor);
-    waAnchor.click();
-    document.body.removeChild(waAnchor);
-
-    // Scroll to the invoice preview
-    window.scrollTo({ top: elements.invoicePanel.offsetTop - 100, behavior: 'smooth' });
+            if (elements.invoicePanel) {
+                window.scrollTo({ top: elements.invoicePanel.offsetTop - 100, behavior: 'smooth' });
+            }
+        } else {
+            alert('⚠️ Unable to save order: ' + (res.message || 'Server error'));
+        }
+    })
+    .catch(err => {
+        confirmBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.textContent = 'Confirm Order & Save';
+        });
+        alert('⚠️ Network error while registering order to database.');
+    });
 };
 
 const handleDownloadInvoice = () => {
@@ -389,7 +414,7 @@ const initialize = () => {
 
     if (items.length === 0) {
         setTimeout(() => {
-            window.location.href = 'cart.html';
+            window.location.href = 'cart.php';
         }, 2000);
         return;
     }

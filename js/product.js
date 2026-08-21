@@ -1,9 +1,10 @@
 const storageKey = 'team4x4Cart';
 const selectedKey = 'selectedShopProduct';
-const checkoutKey = 'selectedCheckoutProduct';
-const discountRate = 0.12;
+const checkoutKey = 'selectedCheckoutCart';
+const discountRate = 0;
 
 const elements = {
+
     productImage: document.getElementById('productImage'),
     galleryMainImage: document.getElementById('galleryMainImage'),
     productName: document.getElementById('productName'),
@@ -53,9 +54,40 @@ const getProductFromStorage = () => {
 
 const formatCurrency = (value) => `LKR ${value.toLocaleString('en-US')}`;
 
+const getWhatsAppUrl = (message) => {
+    if (typeof window.team4x4BuildWhatsAppUrl === 'function') {
+        return window.team4x4BuildWhatsAppUrl(message);
+    }
+    return `https://wa.me/94703939459?text=${encodeURIComponent(message)}`;
+};
+
+const buildWhatsAppOrderMessage = (name, price, quantity) => {
+    const total = Number(price) * Number(quantity);
+    return `Hello Team 4x4,\n\nI would like to order the following item:\n\nProduct: ${name}\n\nPrice: LKR ${Number(price).toLocaleString('en-US')}\n\nQuantity: ${quantity}\n\nTotal: LKR ${total.toLocaleString('en-US')}\n\nPlease contact me regarding availability and delivery.\n\nThank you.`;
+};
+
 const parseList = (value) => {
     if (!value) return [];
     return value.split('|').map((item) => item.trim()).filter(Boolean);
+};
+
+const DEMO_PRODUCT = {
+    id: 'demo-bull-bar',
+    name: 'Tactical Bull Bar V2',
+    overview: 'Heavy-duty exterior bull bar engineered for unmatched protection and aggressive stance on extreme terrain.',
+    description: 'Heavy-duty exterior bull bar with integrated mounting points and rugged front protection designed for extreme terrain applications. Compatible with full lighting and winch setups.',
+    fullDescription: 'The Tactical Bull Bar V2 represents the pinnacle of Team 4x4 fabrication. Precision-welded from high-grade steel, it provides a commanding presence while protecting your investment on every adventure.',
+    category: 'Exterior',
+    condition: 'New',
+    availability: 'In Stock',
+    compatibility: 'Defender 90 / 110 / 130',
+    sku: 'T4X4-BBV2',
+    brand: 'Team 4x4',
+    installation: 'Bolt-on fitment with integrated light mount. Professional installation by certified technicians recommended.',
+    image: 'assets/images/fabrication.jpg',
+    price: 125000,
+    gallery: ['assets/images/fabrication.jpg', 'assets/images/recovery.jpg', 'assets/images/restoration.png'],
+    features: ['Premium steel construction', 'Integrated winch/light compatibility', 'Powder-coated matte finish', 'Trail-ready durability', 'Corrosion-resistant coating'],
 };
 
 const loadProduct = () => {
@@ -82,8 +114,8 @@ const loadProduct = () => {
     }
     const stored = getProductFromStorage();
     if (!stored) {
-        window.location.href = 'shop.php';
-        return null;
+        // Use demo product instead of redirecting — allows direct page access
+        return DEMO_PRODUCT;
     }
 
     return {
@@ -127,12 +159,10 @@ const renderGallery = (gallery) => {
 };
 
 const calculateTotal = (price, qty) => {
-    const subtotal = price * qty;
-    const discount = Math.round(subtotal * discountRate);
-    const total = subtotal - discount;
+    const total = price * qty;
     return {
-        subtotal,
-        discount,
+        subtotal: total,
+        discount: 0,
         total,
     };
 };
@@ -159,13 +189,14 @@ const renderProduct = (product) => {
         elements.galleryMainImage.alt = product.name;
     }
 
-    const { subtotal, discount, total } = calculateTotal(product.price, Number(elements.quantityInput?.value || 1));
-    setItemText(elements.productOriginalPrice, formatCurrency(product.price));
-    setItemText(elements.productDiscountPrice, formatCurrency(product.price - Math.round(product.price * discountRate)));
+    const { total } = calculateTotal(product.price, Number(elements.quantityInput?.value || 1));
+    setItemText(elements.productDiscountPrice, formatCurrency(product.price));
     setItemText(elements.productTotal, formatCurrency(total));
 
+
     if (elements.whatsappLink) {
-        elements.whatsappLink.href = `https://wa.me/94703939459?text=${encodeURIComponent(`Hello Team 4x4, I’m interested in the ${product.name}.`)}`;
+        const message = buildWhatsAppOrderMessage(product.name, product.price, Number(elements.quantityInput?.value || 1));
+        elements.whatsappLink.href = getWhatsAppUrl(message);
     }
 
     const features = product.features.length ? product.features : ['Precision engineering', 'Premium matte finish', 'Trail-ready durability', 'Luxury garage fitment'];
@@ -176,10 +207,18 @@ const renderProduct = (product) => {
     renderGallery(product.gallery);
 };
 
+const updateWhatsAppLink = (product) => {
+    if (!elements.whatsappLink) return;
+    const qty = Number(elements.quantityInput.value) || 1;
+    const message = buildWhatsAppOrderMessage(product.name, product.price, qty);
+    elements.whatsappLink.href = getWhatsAppUrl(message);
+};
+
 const updateTotalForQuantity = (product) => {
     const qty = Number(elements.quantityInput.value) || 1;
     const { total } = calculateTotal(product.price, qty);
     setItemText(elements.productTotal, formatCurrency(total));
+    updateWhatsAppLink(product);
 };
 
 const addProductToCart = (product, quantity) => {
@@ -211,67 +250,78 @@ const addProductToCart = (product, quantity) => {
 };
 
 const saveCheckoutProduct = (product, quantity) => {
-    const checkoutItem = { ...product, quantity };
-    localStorage.setItem(checkoutKey, JSON.stringify(checkoutItem));
+    const checkoutItem = {
+        id: product.id,
+        name: product.name,
+        title: product.name,
+        image: product.image,
+        price: product.price,
+        quantity,
+        total: (product.price || 0) * quantity,
+    };
+    localStorage.setItem(checkoutKey, JSON.stringify([checkoutItem]));
 };
 
 const product = loadProduct();
-if (!product) {
-    throw new Error('No product found in storage. Redirecting to shop.');
+// loadProduct always returns a product (demo fallback if no localStorage/PHP context)
+if (product) {
+    renderProduct(product);
+
+    if (elements.productGallery) {
+        elements.productGallery.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-src]');
+            if (!button) return;
+            const src = button.dataset.src;
+            if (elements.galleryMainImage) {
+                elements.galleryMainImage.src = src;
+                elements.galleryMainImage.alt = product.name;
+            }
+            elements.productGallery.querySelectorAll('.product-thumb').forEach((thumb) => thumb.classList.remove('active'));
+            button.classList.add('active');
+        });
+    }
+
+    if (elements.quantityMinus) {
+        elements.quantityMinus.addEventListener('click', () => {
+            const currentQty = Math.max(1, Number(elements.quantityInput.value) || 1);
+            elements.quantityInput.value = Math.max(1, currentQty - 1);
+            updateTotalForQuantity(product);
+        });
+    }
+
+    if (elements.quantityPlus) {
+        elements.quantityPlus.addEventListener('click', () => {
+            const currentQty = Math.max(1, Number(elements.quantityInput.value) || 1);
+            elements.quantityInput.value = currentQty + 1;
+            updateTotalForQuantity(product);
+        });
+    }
+
+    if (elements.addToCartButton) {
+        elements.addToCartButton.addEventListener('click', () => {
+            const qty = Math.max(1, Number(elements.quantityInput.value) || 1);
+            addProductToCart(product, qty);
+            saveCheckoutProduct(product, qty);
+            elements.addToCartButton.textContent = 'Added to Cart';
+            elements.addToCartButton.classList.add('button-success');
+            setTimeout(() => {
+                elements.addToCartButton.textContent = 'Add to Cart';
+                elements.addToCartButton.classList.remove('button-success');
+            }, 1400);
+        });
+    }
+
+    if (elements.buyNowButton) {
+        elements.buyNowButton.addEventListener('click', () => {
+            const qty = Math.max(1, Number(elements.quantityInput.value) || 1);
+            const message = buildWhatsAppOrderMessage(product.name, product.price, qty);
+            if (typeof window.team4x4OpenWhatsApp === 'function') {
+                window.team4x4OpenWhatsApp(message);
+            } else {
+                window.location.href = getWhatsAppUrl(message);
+            }
+        });
+    }
 }
 
-renderProduct(product);
-
-if (elements.productGallery) {
-    elements.productGallery.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-src]');
-        if (!button) return;
-        const src = button.dataset.src;
-        if (elements.galleryMainImage) {
-            elements.galleryMainImage.src = src;
-            elements.galleryMainImage.alt = product.name;
-        }
-        elements.productGallery.querySelectorAll('.product-thumb').forEach((thumb) => thumb.classList.remove('active'));
-        button.classList.add('active');
-    });
-}
-
-if (elements.quantityMinus) {
-    elements.quantityMinus.addEventListener('click', () => {
-        const currentQty = Math.max(1, Number(elements.quantityInput.value) || 1);
-        elements.quantityInput.value = Math.max(1, currentQty - 1);
-        updateTotalForQuantity(product);
-    });
-}
-
-if (elements.quantityPlus) {
-    elements.quantityPlus.addEventListener('click', () => {
-        const currentQty = Math.max(1, Number(elements.quantityInput.value) || 1);
-        elements.quantityInput.value = currentQty + 1;
-        updateTotalForQuantity(product);
-    });
-}
-
-if (elements.addToCartButton) {
-    elements.addToCartButton.addEventListener('click', () => {
-        const qty = Math.max(1, Number(elements.quantityInput.value) || 1);
-        addProductToCart(product, qty);
-        saveCheckoutProduct(product, qty);
-        elements.addToCartButton.textContent = 'Added to Cart';
-        elements.addToCartButton.classList.add('button-success');
-        setTimeout(() => {
-            elements.addToCartButton.textContent = 'Add to Cart';
-            elements.addToCartButton.classList.remove('button-success');
-        }, 1400);
-    });
-}
-
-if (elements.buyNowButton) {
-    elements.buyNowButton.addEventListener('click', () => {
-        const qty = Math.max(1, Number(elements.quantityInput.value) || 1);
-        addProductToCart(product, qty);
-        saveCheckoutProduct(product, qty);
-        window.location.href = 'checkout.php';
-    });
-}
 

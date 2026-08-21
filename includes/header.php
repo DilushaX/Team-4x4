@@ -18,6 +18,7 @@ function isPageActive($pageName) {
     <title>Team 4x4 | <?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : "Engineered Excellence"; ?></title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body class="<?php echo isset($bodyClass) ? htmlspecialchars($bodyClass) : ""; ?>">
@@ -26,30 +27,35 @@ function isPageActive($pageName) {
             <span style="color: #ffce2e; margin-right: 0.6rem; font-size: 1.3rem; display: inline-flex; align-items: center;">🚙</span>
             <span class="brand-mark">TEAM 4X4</span>
         </div>
-        <nav class="site-nav">
-            <a href="index.php" <?php echo isPageActive('index.php'); ?>>Home</a>
-            <a href="shop.php" <?php echo isPageActive('shop.php'); ?>>Shop</a>
-            <a href="gallery.php" <?php echo isPageActive('gallery.php'); ?>>Gallery</a>
-            <a href="contact.php" <?php echo isPageActive('contact.php'); ?>>Contact</a>
-            <a href="cart.php" <?php echo isPageActive('cart.php'); ?>>Cart</a>
-        </nav>
-        <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
-            <span class="search-icon" style="color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 1.15rem; display: inline-flex; align-items: center; margin-right: 0.25rem;">🔍</span>
-            
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <!-- Logged In Sessions -->
-                <?php if ($_SESSION['role'] === 'admin'): ?>
-                    <a href="admin/dashboard.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Admin Portal</a>
+        <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+            <span class="nav-toggle-bar"></span>
+        </button>
+        <div class="nav-overlay" hidden></div>
+        <div class="header-menu" id="mobileNav" aria-hidden="true">
+            <button class="nav-close" type="button" aria-label="Close menu">&times;</button>
+            <nav class="site-nav">
+                <a href="index.php" <?php echo isPageActive('index.php'); ?>>Home</a>
+                <a href="shop.php" <?php echo isPageActive('shop.php'); ?>>Shop</a>
+                <a href="gallery.php" <?php echo isPageActive('gallery.php'); ?>>Gallery</a>
+                <a href="contact.php" <?php echo isPageActive('contact.php'); ?>>Contact</a>
+                <a href="cart.php" <?php echo isPageActive('cart.php'); ?>>Cart</a>
+            </nav>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
+                <span class="search-icon" style="color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 1.15rem; display: inline-flex; align-items: center; margin-right: 0.25rem;">🔍</span>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if ($_SESSION['role'] === 'admin'): ?>
+                        <a href="admin/dashboard.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Admin Portal</a>
+                    <?php else: ?>
+                        <span style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em;">HI, <?php echo htmlspecialchars(strtoupper(explode(' ', $_SESSION['user_name'])[0])); ?></span>
+                    <?php endif; ?>
+                    <a href="logout.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Log Out</a>
                 <?php else: ?>
-                    <span style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em;">HI, <?php echo htmlspecialchars(strtoupper(explode(' ', $_SESSION['user_name'])[0])); ?></span>
+                    <a href="login.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Login</a>
+                    <a href="signup.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Sign Up</a>
                 <?php endif; ?>
-                <a href="logout.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Log Out</a>
-            <?php else: ?>
-                <!-- Guest Sessions -->
-                <a href="login.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Login</a>
-                <a href="signup.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Sign Up</a>
-            <?php endif; ?>
-            
-            <a href="contact.php" class="button-outline" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px;">Inquire</a>
+                <a href="contact.php" class="button-outline" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px;">Inquire</a>
+            </div>
         </div>
     </header>

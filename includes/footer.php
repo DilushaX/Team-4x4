@@ -9,9 +9,9 @@
         </div>
         <div class="footer-column">
             <h3>Navigation</h3>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Shipping Info</a>
+            <a href="privacy.php">Privacy Policy</a>
+            <a href="terms.php">Terms of Service</a>
+            <a href="shipping.php">Shipping Info</a>
             <a href="contact.php">Contact Us</a>
         </div>
         <div class="footer-column footer-contact">

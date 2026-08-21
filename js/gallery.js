@@ -1,6 +1,28 @@
 // Team4x4 gallery page script
+const galleryGrid = document.getElementById('galleryGrid');
+const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
 const galleryContainer = document.getElementById('uploadedGallery');
 const galleryMessage = document.getElementById('uploadedGalleryMessage');
+
+function filterGallery(filter) {
+    if (!galleryGrid) return;
+    const cards = Array.from(galleryGrid.querySelectorAll('.gallery-card'));
+    cards.forEach((card) => {
+        const category = card.dataset.category || '';
+        const show = filter === 'all' || category === filter;
+        card.style.display = show ? '' : 'none';
+    });
+}
+
+if (filterButtons.length && galleryGrid) {
+    filterButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach((btn) => btn.classList.remove('active'));
+            button.classList.add('active');
+            filterGallery(button.dataset.filter || 'all');
+        });
+    });
+}
 
 if (galleryContainer && galleryMessage) {
     fetch('backend/get-gallery.php')

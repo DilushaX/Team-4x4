@@ -2,12 +2,72 @@
 $pageTitle = "Shop";
 require_once 'includes/header.php';
 
-// Fetch all products from MySQL database
+// Server-side Pagination parameters
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$limit = 12;
+$offset = ($page - 1) * $limit;
+
+// Search & Filter parameters
+$searchQuery = isset($_GET['q']) ? trim($_GET['q']) : '';
+$selectedCatId = isset($_GET['cat']) ? intval($_GET['cat']) : 0;
+$sortBy = isset($_GET['sort']) ? trim($_GET['sort']) : 'newest';
+
+$whereClauses = [];
+$params = [];
+
+if (!empty($searchQuery)) {
+    $whereClauses[] = "(title LIKE ? OR sku LIKE ? OR compatibility LIKE ? OR description LIKE ?)";
+    $searchTerm = '%' . $searchQuery . '%';
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+    $params[] = $searchTerm;
+}
+
+if ($selectedCatId > 0) {
+    $whereClauses[] = "category_id = ?";
+    $params[] = $selectedCatId;
+}
+
+$whereSql = !empty($whereClauses) ? "WHERE " . implode(" AND ", $whereClauses) : "";
+
+// Determine sort order
+$orderBySql = "ORDER BY id DESC";
+if ($sortBy === 'price_asc') {
+    $orderBySql = "ORDER BY price ASC";
+} elseif ($sortBy === 'price_desc') {
+    $orderBySql = "ORDER BY price DESC";
+} elseif ($sortBy === 'name_asc') {
+    $orderBySql = "ORDER BY title ASC";
+}
+
+// Count total matching items
 try {
-    $stmt = $pdo->query("SELECT * FROM products ORDER BY id DESC");
+    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM products $whereSql");
+    $countStmt->execute($params);
+    $totalProducts = intval($countStmt->fetchColumn());
+} catch (PDOException $e) {
+    $totalProducts = 0;
+}
+
+$totalPages = max(1, ceil($totalProducts / $limit));
+
+// Fetch paginated products
+try {
+    $productSql = "SELECT * FROM products $whereSql $orderBySql LIMIT $limit OFFSET $offset";
+    $stmt = $pdo->prepare($productSql);
+    $stmt->execute($params);
     $products = $stmt->fetchAll();
 } catch (PDOException $e) {
     $products = [];
+}
+
+// Fetch active categories from MySQL database
+try {
+    $catStmt = $pdo->query("SELECT * FROM categories WHERE status = 1 ORDER BY sort_order ASC, name ASC");
+    $categories = $catStmt->fetchAll();
+} catch (PDOException $e) {
+    $categories = [];
 }
 ?>
 
@@ -18,22 +78,28 @@ try {
                 <span class="eyebrow">Parts Library</span>
                 <h1>Parts Library</h1>
             </div>
-            <p class="shop-hero-meta"><span id="product-count">Showing <?php echo count($products); ?> items</span></p>
+            <p class="shop-hero-meta"><span id="product-count">Showing <?php echo count($products); ?> of <?php echo $totalProducts; ?> parts</span></p>
         </div>
     </section>
 
     <div class="shop-layout">
+        <div class="filter-backdrop" hidden></div>
         <button class="button-secondary filter-toggle" aria-expanded="false">Filters</button>
         <aside class="shop-filters">
             <div class="filter-card">
                 <h3>Category</h3>
                 <div class="filter-group">
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="performance" /> Performance</label>
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="exterior" /> Exterior</label>
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="interior" /> Interior</label>
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="lighting" /> Lighting</label>
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="recovery" /> Recovery</label>
-                    <label class="filter-label"><input class="filter-checkbox" type="checkbox" data-category="intake" /> Intake</label>
+                    <?php if (!empty($categories)): ?>
+                        <?php foreach ($categories as $cat): 
+                            $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $cat['name']));
+                            $isChecked = ($selectedCatId == $cat['id']) ? 'checked' : '';
+                        ?>
+                            <label class="filter-label">
+                                <input class="filter-checkbox" type="checkbox" data-category="<?php echo htmlspecialchars($slug); ?>" data-cat-id="<?php echo $cat['id']; ?>" <?php echo $isChecked; ?> /> 
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                            </label>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="filter-actions">
@@ -48,59 +114,55 @@ try {
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
-                <input type="text" id="search-input" class="search-bar-input" placeholder="Search parts by name, category, or compatibility...">
+                <input type="text" id="search-input" class="search-bar-input" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search parts by name, category, or compatibility...">
+            </div>
+
+            <div class="shop-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="view-toggle" role="group" aria-label="Product view">
+                    <button type="button" class="view-toggle-btn is-active" data-view="grid">Grid</button>
+                    <button type="button" class="view-toggle-btn" data-view="list">List</button>
+                </div>
+                <div class="sort-selector" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <label for="shop-sort" style="color: rgba(255,255,255,0.7); font-size: 0.85rem;">Sort By:</label>
+                    <select id="shop-sort" class="sort-dropdown" style="background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 6px;" onchange="location = this.value;">
+                        <option value="shop.php?page=1&sort=newest<?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" <?php echo $sortBy==='newest'?'selected':''; ?>>Newest Arrivals</option>
+                        <option value="shop.php?page=1&sort=price_asc<?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" <?php echo $sortBy==='price_asc'?'selected':''; ?>>Price: Low to High</option>
+                        <option value="shop.php?page=1&sort=price_desc<?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" <?php echo $sortBy==='price_desc'?'selected':''; ?>>Price: High to Low</option>
+                        <option value="shop.php?page=1&sort=name_asc<?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" <?php echo $sortBy==='name_asc'?'selected':''; ?>>Name: A-Z</option>
+                    </select>
+                </div>
             </div>
 
             <section class="product-grid" id="productGrid">
-                <div class="empty-state hidden">No matching parts found.</div>
+                <div class="empty-state <?php echo empty($products) ? '' : 'hidden'; ?>">No matching parts found in catalog.</div>
                 
-                <?php if (empty($products)): ?>
-                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
-                        <p>No products available in the shop catalog at this time.</p>
-                    </div>
-                <?php else: ?>
+                <?php if (!empty($products)): ?>
                     <?php foreach ($products as $p): 
-                        $categoryClass = strtolower($p['category']);
-                        // Determine stock status text
+                        $categoryClass = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $p['category']));
                         $availability = $p['stock'] > 0 ? ($p['stock'] <= 3 ? "Limited Stock" : "In Stock") : "Out of Stock";
                         
                         // Query additional product images
-                        $imgStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ?");
-                        $imgStmt->execute([$p['id']]);
-                        $galleryImages = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
-                        // Add main image to gallery list
-                        array_unshift($galleryImages, $p['image_path']);
-                        $galleryStr = implode(',', $galleryImages);
+                        try {
+                            $imgStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ?");
+                            $imgStmt->execute([$p['id']]);
+                            $galleryImages = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
+                            array_unshift($galleryImages, $p['image_path']);
+                            $galleryStr = implode(',', $galleryImages);
+                        } catch (PDOException $e) {
+                            $galleryStr = $p['image_path'];
+                        }
                     ?>
                         <article class="product-card" data-category="<?php echo htmlspecialchars($categoryClass); ?>">
                             <div class="product-card-media">
                                 <span class="product-tag"><?php echo htmlspecialchars($p['category']); ?></span>
-                                <div class="product-image-icon">🚙</div>
-                                <img src="<?php echo htmlspecialchars($p['image_path']); ?>" alt="<?php echo htmlspecialchars($p['title']); ?>" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border-radius:1.75rem 1.75rem 0 0;" onerror="this.style.display='none';" />
+                                <img src="<?php echo htmlspecialchars($p['image_path']); ?>" alt="<?php echo htmlspecialchars($p['title']); ?>" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border-radius:1.75rem 1.75rem 0 0;" onerror="this.src='assets/images/fabrication.jpg';" />
                             </div>
                             <div class="product-card-body">
                                 <h2><?php echo htmlspecialchars($p['title']); ?></h2>
-                                <div class="product-chip">Universal Fit</div>
-                                <div class="product-chip">Defender 90/110/130</div>
+                                <div class="product-chip"><?php echo htmlspecialchars($p['compatibility'] ?: 'Universal Fit'); ?></div>
                                 <p class="product-price">LKR <?php echo number_format($p['price'], 2); ?></p>
                                 <div class="product-actions">
-                                    <button class="button-primary view-product"
-                                        data-product-id="<?php echo htmlspecialchars($p['id']); ?>"
-                                        data-product-name="<?php echo htmlspecialchars($p['title']); ?>"
-                                        data-product-price="<?php echo htmlspecialchars($p['price']); ?>"
-                                        data-product-image="<?php echo htmlspecialchars($p['image_path']); ?>"
-                                        data-product-description="<?php echo htmlspecialchars($p['description']); ?>"
-                                        data-product-category="<?php echo htmlspecialchars($p['category']); ?>"
-                                        data-product-condition="New"
-                                        data-product-sku="T4X4-SKU<?php echo $p['id']; ?>"
-                                        data-product-brand="Team 4x4"
-                                        data-product-availability="<?php echo $p['stock'] > 0 ? 'In Stock' : 'Out of Stock'; ?>"
-                                        data-product-compatibility="Defender 90 / 110 / 130 / Universal"
-                                        data-product-installation="Bolt-on fitment; professional installation by certified technicians recommended."
-                                        data-product-overview="<?php echo htmlspecialchars(substr($p['description'], 0, 80)); ?>..."
-                                        data-product-features="Premium raw materials|Maximum trail durability|Corrosion-resistant matte finish"
-                                        data-product-gallery="<?php echo htmlspecialchars($galleryStr); ?>"
-                                    >View Part</button>
+                                    <a class="button-primary view-product" href="product.php?id=<?php echo $p['id']; ?>" style="text-align: center; text-decoration: none;">View Part</a>
                                     <a class="button-secondary" href="contact.php">Inquire</a>
                                 </div>
                             </div>
@@ -108,10 +170,26 @@ try {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </section>
+
+            <!-- Pagination Controls -->
+            <?php if ($totalPages > 1): ?>
+                <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 3rem;">
+                    <?php if ($page > 1): ?>
+                        <a href="shop.php?page=<?php echo ($page - 1); ?>&sort=<?php echo $sortBy; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" class="button-secondary" style="padding: 0.5rem 1rem;">&laquo; Prev</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="shop.php?page=<?php echo $i; ?>&sort=<?php echo $sortBy; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" class="<?php echo ($i === $page) ? 'button-primary' : 'button-secondary'; ?>" style="padding: 0.5rem 1rem;"><?php echo $i; ?></a>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $totalPages): ?>
+                        <a href="shop.php?page=<?php echo ($page + 1); ?>&sort=<?php echo $sortBy; ?><?php echo $searchQuery ? '&q='.urlencode($searchQuery) : ''; ?>" class="button-secondary" style="padding: 0.5rem 1rem;">Next &raquo;</a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </main>
 
-<?php
-require_once 'includes/footer.php';
-?>
+<?php require_once 'includes/footer.php'; ?>
+<script src="js/shop.js"></script>

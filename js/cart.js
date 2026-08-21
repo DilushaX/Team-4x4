@@ -33,6 +33,28 @@ const calculateSummary = () => {
     if (totalEl) totalEl.textContent = formatLKR(total);
 };
 
+const buildCartWhatsAppMessage = (items) => {
+    const itemDetails = items.map((item) => {
+        return `Product: ${item.title}\nPrice: LKR ${item.price.toLocaleString('en-US')}\nQuantity: ${item.quantity}\nTotal: LKR ${(item.price * item.quantity).toLocaleString('en-US')}`;
+    }).join('\n\n');
+
+    return `Hello Team 4x4,\n\nI would like to order the following item(s):\n\n${itemDetails}\n\nPlease contact me regarding availability and delivery.\n\nThank you.`;
+};
+
+const openWhatsAppForCart = () => {
+    if (!cartItems.length) {
+        window.alert('Your cart is empty. Add parts before using Buy Now.');
+        return;
+    }
+
+    const message = buildCartWhatsAppMessage(cartItems);
+    if (typeof window.team4x4OpenWhatsApp === 'function') {
+        window.team4x4OpenWhatsApp(message);
+    } else {
+        window.location.href = `https://wa.me/94703939459?text=${encodeURIComponent(message)}`;
+    }
+};
+
 const renderCartItems = () => {
     if (!cartItemsEl) return;
 
@@ -159,7 +181,7 @@ const wireOrderModal = () => {
     if (cancel) cancel.addEventListener('click', closeOrderOptionsModal);
 };
 
-const handleBuyNow = () => openOrderOptionsModal();
+const handleBuyNow = () => openWhatsAppForCart();
 
 renderCartItems();
 

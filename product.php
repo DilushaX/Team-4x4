@@ -1,29 +1,55 @@
 <?php
 require_once 'includes/db.php';
+require_once 'includes/auth_helper.php';
+
+$waNumber = getWhatsAppNumber($pdo);
+$siteSettings = getSiteSettings($pdo);
+$phoneDisplay = $siteSettings['contact_phone'] ?? $siteSettings['phone'] ?? ('+' . $waNumber);
+if (!empty($phoneDisplay) && $phoneDisplay[0] !== '+') {
+    $phoneDisplay = '+' . preg_replace('/\D/', '', $phoneDisplay);
+}
 
 $product = null;
 $galleryImages = [];
 $featuresList = ["Premium raw materials", "Maximum trail durability", "Corrosion-resistant matte finish", "Engineered for harsh environments"];
 
-// Check if dynamic ID is requested
+// Check if dynamic ID or slug is requested, else fetch default first product from DB
 if (isset($_GET['id'])) {
     $prodId = intval($_GET['id']);
     try {
         $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
         $stmt->execute([$prodId]);
         $product = $stmt->fetch();
-        
-        if ($product) {
-            // Load supplementary images
-            $imgStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ?");
-            $imgStmt->execute([$product['id']]);
-            $galleryImages = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            // Unshift main image to gallery list
-            array_unshift($galleryImages, $product['image_path']);
-        }
     } catch (PDOException $e) {
         $product = null;
+    }
+} elseif (isset($_GET['slug'])) {
+    $slug = trim($_GET['slug']);
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE slug = ?");
+        $stmt->execute([$slug]);
+        $product = $stmt->fetch();
+    } catch (PDOException $e) {
+        $product = null;
+    }
+} else {
+    try {
+        $stmt = $pdo->query("SELECT * FROM products ORDER BY id ASC LIMIT 1");
+        $product = $stmt->fetch();
+    } catch (PDOException $e) {
+        $product = null;
+    }
+}
+
+if ($product) {
+    // Load supplementary images
+    try {
+        $imgStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ?");
+        $imgStmt->execute([$product['id']]);
+        $galleryImages = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
+        array_unshift($galleryImages, $product['image_path']);
+    } catch (PDOException $e) {
+        $galleryImages = [$product['image_path']];
     }
 }
 
@@ -32,9 +58,8 @@ require_once 'includes/header.php';
 ?>
 
 <?php if ($product): 
-    // Format pricing
+    // Format pricing (Single source of truth)
     $priceVal = floatval($product['price']);
-    $originalPriceVal = $priceVal * 1.15; // Simulated 15% discount structure
     $availability = $product['stock'] > 0 ? "In Stock" : "Out of Stock";
     
     // Generate feature list array from database description or fallback
@@ -48,7 +73,7 @@ require_once 'includes/header.php';
                 <h1 id="productName"><?php echo htmlspecialchars($product['title']); ?></h1>
                 <p id="productOverview"><?php echo substr($desc, 0, 160); ?>...</p>
                 <div class="product-hero-tags">
-                    <span class="product-chip" id="productCategory"><?php echo htmlspecialchars($product['category']); ?></span>
+                    <span class="product-chip" id="productCategory"><?php echo htmlspecialchars($product['category'] ?: 'General'); ?></span>
                     <span class="product-chip" id="productAvailability" style="color: <?php echo $product['stock'] > 0 ? '#55ff55' : '#ff5555'; ?>; border-color: <?php echo $product['stock'] > 0 ? 'rgba(85,255,85,0.3)' : 'rgba(255,85,85,0.3)'; ?>;">
                         <?php echo $availability; ?>
                     </span>
@@ -58,11 +83,10 @@ require_once 'includes/header.php';
                         <span class="eyebrow">Price</span>
                         <div class="product-price-row">
                             <span class="product-price" id="productDiscountPrice">LKR <?php echo number_format($priceVal, 2); ?></span>
-                            <span class="product-original-price" id="productOriginalPrice">LKR <?php echo number_format($originalPriceVal, 2); ?></span>
                         </div>
                     </div>
                     <div class="product-hero-meta">
-                        <span><strong>SKU</strong> <span id="productSKU">T4X4-SKU<?php echo $product['id']; ?></span></span>
+                        <span><strong>SKU</strong> <span id="productSKU"><?php echo htmlspecialchars($product['sku'] ?: ('T4X4-SKU' . $product['id'])); ?></span></span>
                         <span><strong>Brand</strong> <span id="productBrand">Team 4x4</span></span>
                     </div>
                 </div>
@@ -129,10 +153,10 @@ require_once 'includes/header.php';
                         
                         <?php 
                         $whatsappMsg = rawurlencode("Hi Team 4x4! I am interested in inquiring about the " . $product['title'] . " (SKU: T4X4-SKU" . $product['id'] . ") priced at LKR " . number_format($priceVal, 2) . ". Please provide more details on availability and fitment.");
-                        $whatsappUrl = "https://api.whatsapp.com/send?phone=94703939459&text=" . $whatsappMsg;
+                        $whatsappUrl = "https://api.whatsapp.com/send?phone=" . $waNumber . "&text=" . $whatsappMsg;
                         ?>
                         <a class="button-secondary whatsapp-button" id="whatsappLink" href="<?php echo $whatsappUrl; ?>" target="_blank" rel="noreferrer">WhatsApp Inquiry</a>
-                        <a class="button-secondary" href="tel:+94703939459">Call Team 4x4</a>
+                        <a class="button-secondary" href="tel:<?php echo htmlspecialchars($phoneDisplay); ?>">Call Team 4x4</a>
                     </div>
                 </div>
             </aside>
@@ -249,7 +273,7 @@ require_once 'includes/header.php';
                         <button class="button-primary" id="addToCartButton">Add to Cart</button>
                         <button class="button-secondary" id="buyNowButton">Buy Now</button>
                         <a class="button-secondary whatsapp-button" id="whatsappLink" target="_blank" rel="noreferrer">WhatsApp Inquiry</a>
-                        <a class="button-secondary" href="tel:+94703939459">Call Team 4x4</a>
+                        <a class="button-secondary" href="tel:<?php echo htmlspecialchars($phoneDisplay); ?>">Call Team 4x4</a>
                     </div>
                 </div>
             </aside>
@@ -268,6 +292,7 @@ require_once 'includes/header.php';
     </main>
 <?php endif; ?>
 
+<script src="js/config.js"></script>
 <script src="js/product.js"></script>
 <?php
 require_once 'includes/footer.php';

@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect .html requests to .php counterpart
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([^\.]+)\.html$ $1.php [L,QSA,R=301]
+
+    # Map extensionless URLs to PHP files
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L,QSA]
+</IfModule>

@@ -24,10 +24,14 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function ServicePage({ params }: { params: Params }) {
   const { slug } = await params;
+  const targetSlug = slug === "intake" ? "cushion-works" : slug;
 
-  let service = await prisma.service.findUnique({ where: { slug } }).catch(() => null);
+  let service = await prisma.service.findUnique({ where: { slug: targetSlug } }).catch(() => null);
   if (!service) {
-    const mock = getActiveServices().find((s) => s.slug === slug);
+    service = await prisma.service.findUnique({ where: { slug } }).catch(() => null);
+  }
+  if (!service) {
+    const mock = getActiveServices().find((s) => s.slug === targetSlug || s.slug === slug);
     if (mock) {
       service = mock as unknown as typeof service;
     }

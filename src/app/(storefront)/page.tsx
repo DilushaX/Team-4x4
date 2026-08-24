@@ -13,11 +13,11 @@ const fallbackServices: {
   slug: string;
 }[] = [
   { title: "Defender Restoration", subtitle: "Restoration", description: "Frame-off rebuilds, corrosion control and drivetrain restoration.", hero_banner: "assets/images/restoration.png", features: "Full-strip restoration|Corrosion control|Heritage fitment", slug: "restoration" },
-  { title: "Suspension Upgrades", subtitle: "Suspension", description: "Off-road geometry tuning and long-travel suspension upgrades.", hero_banner: "assets/images/suspension.png", features: "Long-travel setup|Payload tuning|Terrain control", slug: "suspension" },
+  { title: "Suspension Upgrades", subtitle: "Suspension", description: "Off-road geometry tuning and long-travel suspension upgrades.", hero_banner: "assets/images/green-suspension.jpg", features: "Long-travel setup|Payload tuning|Terrain control", slug: "suspension" },
   { title: "Fabrication", subtitle: "Fabrication", description: "Custom bumpers, sliders, armor and protection systems.", hero_banner: "assets/images/fabrication.jpg", features: "Bespoke armor|Custom mounts|Heavy-duty protection", slug: "fabrication" },
   { title: "Recovery Systems", subtitle: "Recovery", description: "Winches, recovery gear and integrated accessory setups.", hero_banner: "assets/images/recovery.jpg", features: "Winch kits|Recovery gear|Secure mounting", slug: "recovery" },
   { title: "Lighting Upgrades", subtitle: "Lighting", description: "High-output LED packages for night driving and trail expeditions.", hero_banner: "assets/images/lighting.jpg", features: "LED lighting|Wiring kits|Off-road visibility", slug: "lighting" },
-  { title: "Performance & Intake", subtitle: "Performance", description: "Air intake, filtration and performance upgrades.", hero_banner: "assets/images/intake.png", features: "Air intake|Efficiency gains|Power delivery", slug: "intake" },
+  { title: "Cushion Works", subtitle: "Cushion Works", description: "Custom leather upholstery, ergonomic seat cushioning, door cards and roof linings.", hero_banner: "assets/images/cushion.jpg", features: "Custom leather|Ergonomic cushions|Roof liners", slug: "cushion-works" },
 ];
 
 export default async function HomePage() {
@@ -41,6 +41,7 @@ export default async function HomePage() {
   return (
     <>
       <PageHero
+        video="/assets/videos/hero.mp4"
         image="/assets/images/hero-bg.jpeg"
         eyebrow="Defender Engineering / Off-Road Specialists"
         title="BUILT FOR THE DEFENDER. BUILT FOR ADVENTURE."

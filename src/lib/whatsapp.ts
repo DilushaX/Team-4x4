@@ -42,14 +42,14 @@ export async function getSettings(): Promise<Record<string, string>> {
     return settings;
   } catch {
     return {
-      business_name: "Team 4x4",
+      business_name: "4x4 Defender Parts",
       phone: "+94 70 393 9459",
       whatsapp: "+94 70 393 9459",
       whatsapp_number: "+94 70 393 9459",
       email: "info@team4x4.com",
       address: "No. 42, Industrial Zone Road, Colombo 00200, Sri Lanka",
-      facebook: "https://facebook.com/team4x4",
-      instagram: "https://instagram.com/team4x4",
+      facebook: "https://www.facebook.com/share/1G7uc474xT/?mibextid=wwXIfr",
+      instagram: "https://www.instagram.com/upulprajath?igsi=MTQ1M2hweTQwYjJ2OQ==",
     };
   }
 }

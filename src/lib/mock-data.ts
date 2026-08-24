@@ -101,7 +101,7 @@ export const MOCK_SERVICES: ServiceData[] = [
       "Advanced damping systems and geometry correction for extreme terrain dominance. Engineered for payload capacity and high-speed stability.",
     features:
       "Long-Travel Coilover Conversion|Adjustable Panhard Rods|Polyurethane Bushings Kit|Stabilizer Bar Quick Disconnects",
-    hero_banner: "assets/images/suspension.png",
+    hero_banner: "assets/images/green-suspension.jpg",
     pricing: "LKR 180,000 - 320,000",
     duration: "2-4 weeks",
     compatibility:
@@ -203,30 +203,35 @@ export const MOCK_SERVICES: ServiceData[] = [
   },
   {
     id: 6,
-    slug: "intake",
-    title: "Elevated Air Intakes",
-    subtitle: "Intake Service",
+    slug: "cushion-works",
+    title: "Cushion Works & Upholstery",
+    subtitle: "Cushion Works",
     description:
-      "Deep-water fording and dust filtration systems. Ensure your engine breathes clean, cool air regardless of the terrain conditions.",
+      "Bespoke leather seating, ergonomic seat contouring, waterproof marine-grade upholstery, roof lining and custom interior restorations tailored for off-road luxury and durability.",
     features:
-      "Safari snorkel air induction|High-flow washable filters|Sealed intake box plumbing|Water separator valves",
-    hero_banner: "assets/images/intake.png",
-    pricing: "LKR 38,000 - 68,000",
-    duration: "1-2 days",
-    compatibility: "Hilux, Land Cruiser, Defender, Wrangler, D-Max",
+      "Marine-Grade Italian & Synthetic Leather|High-Density Ergonomic Cushion Foam|Custom Diamond & Ribbed Stitching|Complete Door Card & Roof Liner Upholstery",
+    hero_banner: "assets/images/cushion.jpg",
+    pricing: "LKR 85,000 - 240,000",
+    duration: "1-2 weeks",
+    compatibility:
+      "Defender 90/110/130\nToyota Land Cruiser\nClassic & Modern 4x4 Cabins",
     faqs: JSON.stringify([
       {
-        q: "Does a snorkel increase engine performance?",
-        a: "Snorkels provide cooler ram-air from roof height which can improve fuel efficiency and air charge densities in hot climates.",
+        q: "What types of materials are available for cushion works?",
+        a: "We offer genuine automotive leather, waterproof marine-grade vinyl, Alcantara, and heavy-duty canvas designed for tropical conditions.",
       },
       {
-        q: "Is the airbox fully sealed for deep water crossings?",
-        a: "Yes, our installation includes pressure-testing the intake airbox and silicon-sealing all factory joints.",
+        q: "Can you re-foam and reshape worn Defender seats?",
+        a: "Yes, we replace degraded factory foam with high-density orthopaedic foam with lumbar support shaping.",
+      },
+      {
+        q: "Do you also do door trims and headliners?",
+        a: "Yes, we provide complete interior trimming including dashboard wraps, door panels, and roof liners.",
       },
     ]),
-    seo_title: "Team 4x4 | Snorkel Air Intakes & Filtration",
+    seo_title: "4x4 Defender Parts | Custom Cushion Works & Upholstery",
     seo_description:
-      "Water-fording snorkels and sealed engine intakes engineered for extreme environments.",
+      "Premium custom upholstery, seat rebuilding, and interior cushion works for Defender and 4x4 vehicles.",
   },
 ];
 
@@ -378,13 +383,13 @@ export const MOCK_PROJECTS: ProjectData[] = [
 ];
 
 export const MOCK_CATEGORIES: CategoryData[] = [
-  { id: 1, name: "Performance", slug: "performance", description: "High-performance tuning, suspension coilovers, and cooling systems.", image_path: "assets/images/suspension.png", status: 1, sort_order: 1 },
+  { id: 1, name: "Performance", slug: "performance", description: "High-performance tuning, suspension coilovers, and cooling systems.", image_path: "assets/images/green-suspension.jpg", status: 1, sort_order: 1 },
   { id: 2, name: "Exterior", slug: "exterior", description: "Custom bumpers, body armor, and roll cages built to order.", image_path: "assets/images/fabrication.jpg", status: 1, sort_order: 2 },
-  { id: 3, name: "Interior", slug: "interior", description: "Marine-grade leather seating, premium soundproofing, and custom navigations.", image_path: "assets/images/intake.png", status: 1, sort_order: 3 },
+  { id: 3, name: "Interior & Cushion", slug: "interior", description: "Marine-grade leather seating, custom cushion padding, and bespoke upholstery.", image_path: "assets/images/cushion.jpg", status: 1, sort_order: 3 },
   { id: 4, name: "Lighting", slug: "lighting", description: "Military-grade LED bars and off-road illumination units.", image_path: "assets/images/lighting.jpg", status: 1, sort_order: 4 },
   { id: 5, name: "Recovery", slug: "recovery", description: "Winch systems, kinetic ropes, and recovery hardware.", image_path: "assets/images/recovery.jpg", status: 1, sort_order: 5 },
   { id: 6, name: "Intake", slug: "intake", description: "Elevated snorkels and high-flow air filters.", image_path: "assets/images/intake.png", status: 1, sort_order: 6 },
-  { id: 7, name: "Suspension", slug: "suspension", description: "Heavy duty coils, leaf springs, and performance shocks.", image_path: "assets/images/suspension.png", status: 1, sort_order: 7 },
+  { id: 7, name: "Suspension", slug: "suspension", description: "Heavy duty coils, leaf springs, and performance shocks.", image_path: "assets/images/green-suspension.jpg", status: 1, sort_order: 7 },
 ];
 
 export const MOCK_PRODUCTS: ProductData[] = [
@@ -412,22 +417,22 @@ export const MOCK_PRODUCTS: ProductData[] = [
   {
     id: 2,
     title: "BP-51 Bypass Suspension Kit",
-    slug: "bp-51-suspension-kit",
+    slug: "bp-51-bypass-suspension-kit",
     sku: "T4X4-BP51",
-    category: "Suspension",
-    category_id: 7,
+    category: "Performance",
+    category_id: 1,
     description:
-      "Old Man Emu high-performance internal bypass shocks offering peak articulation and rebound damping configuration.",
+      "Revolutionary internal bypass shock absorbers engineered for unmatched on and off-road ride comfort and extreme control.",
     price: 380000,
-    stock: 5,
+    stock: 4,
     is_featured: 1,
-    image_path: "assets/images/suspension.png",
-    features: "Internal bypass shocks|Adjustable compression & rebound|Vehicle-specific valving|Corrosion resistant bodies",
-    compatibility: "Land Cruiser 70/80/100, Defender 110/130",
-    installation_notes: "Requires professional alignment after installation.",
+    image_path: "assets/images/green-suspension.jpg",
+    features: "Internal bypass technology|Anodized 6061 aluminium body|Independent rebound and compression damping|High-pressure nitrogen reservoir",
+    compatibility: "Defender 90/110, LC 70 series, Hilux Revo",
+    installation_notes: "Direct bolt-in replacement for factory suspension; alignment check advised post-install.",
     images: [
-      { id: 3, product_id: 2, image_path: "assets/images/suspension.png" },
-      { id: 4, product_id: 2, image_path: "assets/images/recovery.jpg" },
+      { id: 3, product_id: 2, image_path: "assets/images/green-suspension.jpg" },
+      { id: 4, product_id: 2, image_path: "assets/images/cushion.jpg" },
     ],
   },
   {
@@ -542,26 +547,48 @@ export interface OrderData {
   items: OrderItemData[];
 }
 
-const globalMockOrders = globalThis as unknown as { __MOCK_ORDERS__?: OrderData[] };
+import fs from "fs";
+import path from "path";
+
+const STORE_PATH = path.join(process.cwd(), "data", "store.json");
+
+function loadStoreFromDisk() {
+  try {
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, "utf-8");
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.error("Error reading persistent store:", e);
+  }
+  return null;
+}
+
+const diskStore = loadStoreFromDisk();
+
+const globalMockOrders = globalThis as unknown as {
+  __MOCK_ORDERS__?: OrderData[];
+};
+
 if (!globalMockOrders.__MOCK_ORDERS__) {
-  globalMockOrders.__MOCK_ORDERS__ = [
+  globalMockOrders.__MOCK_ORDERS__ = diskStore?.orders || [
     {
       id: 1,
-      user_id: 2,
+      order_number: "ORD-2026-1001",
       customer_name: "Kasun Silva",
-      phone: "+94 77 123 4567",
       email: "kasun@email.lk",
-      address: "No. 15, Galle Road",
+      phone: "+94 77 123 4567",
+      vehicle_model: "Defender 110 TD5",
+      address: "12/4 Temple Road, Colombo 03",
       district: "Colombo",
       postal_code: "00300",
-      vehicle_model: "Defender 110",
-      notes: "Call before delivery.",
       fulfillment_type: "delivery",
-      delivery_fee: 2500,
-      total_amount: 510000,
-      payment_method: "Cash on Delivery",
-      whatsapp_reference: "ORD-2026-1001",
-      status: "pending",
+      delivery_fee: 1500,
+      total_amount: 506500,
+      payment_method: "bank_transfer",
+      whatsapp_reference: "WA-REF-8831",
+      status: "confirmed",
+      notes: "Please pack with extra foam protection.",
       created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
       items: [
         {
@@ -585,7 +612,79 @@ if (!globalMockOrders.__MOCK_ORDERS__) {
   ];
 }
 
-export const MOCK_ORDERS = globalMockOrders.__MOCK_ORDERS__;
+export const MOCK_ORDERS: OrderData[] = globalMockOrders.__MOCK_ORDERS__ || [];
+
+const globalDataStore = globalThis as unknown as {
+  __MOCK_PRODUCTS__?: ProductData[];
+  __MOCK_CATEGORIES__?: CategoryData[];
+  __MOCK_SERVICES__?: ServiceData[];
+};
+
+if (!globalDataStore.__MOCK_PRODUCTS__) {
+  globalDataStore.__MOCK_PRODUCTS__ = diskStore?.products || [...MOCK_PRODUCTS];
+}
+if (!globalDataStore.__MOCK_CATEGORIES__) {
+  globalDataStore.__MOCK_CATEGORIES__ = diskStore?.categories || [...MOCK_CATEGORIES];
+}
+if (!globalDataStore.__MOCK_SERVICES__) {
+  globalDataStore.__MOCK_SERVICES__ = diskStore?.services || [...MOCK_SERVICES];
+} else {
+  for (const base of MOCK_SERVICES) {
+    const idx = globalDataStore.__MOCK_SERVICES__.findIndex((s) => s.id === base.id || s.slug === base.slug);
+    if (idx > -1) {
+      globalDataStore.__MOCK_SERVICES__[idx] = base;
+    } else {
+      globalDataStore.__MOCK_SERVICES__.push(base);
+    }
+  }
+}
+
+export type GalleryItem = {
+  id: number;
+  title: string;
+  category: string;
+  image_path: string;
+  created_at: string;
+};
+
+export const MOCK_GALLERY: GalleryItem[] = [
+  { id: 1, title: "Defender Custom Cushion & Diamond Upholstery", category: "Interior", image_path: "assets/images/cushion.jpg", created_at: "2026-02-10" },
+  { id: 2, title: "Green Coil Spring & Brembo Caliper Setup", category: "Suspension", image_path: "assets/images/green-suspension.jpg", created_at: "2026-02-12" },
+  { id: 3, title: "Classic Heritage 110 Frame-off Rebuild", category: "Restoration", image_path: "assets/images/restoration.png", created_at: "2026-02-15" },
+  { id: 4, title: "Heavy Duty Front Bullbar & Armor Protection", category: "Fabrication", image_path: "assets/images/fabrication.jpg", created_at: "2026-02-18" },
+  { id: 5, title: "Self-Recovery Winch Rig & D-Ring Mounts", category: "Recovery", image_path: "assets/images/recovery.jpg", created_at: "2026-02-20" },
+  { id: 6, title: "Roof Mounted High-Output LED Arc Array", category: "Lighting", image_path: "assets/images/lighting.jpg", created_at: "2026-02-22" },
+];
+
+const globalGalleryStore = globalThis as unknown as {
+  __MOCK_GALLERY__?: GalleryItem[];
+};
+
+if (!globalGalleryStore.__MOCK_GALLERY__) {
+  globalGalleryStore.__MOCK_GALLERY__ = diskStore?.gallery || [...MOCK_GALLERY];
+}
+
+function persistAll() {
+  try {
+    const dir = path.dirname(STORE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const data = {
+      products: globalDataStore.__MOCK_PRODUCTS__,
+      categories: globalDataStore.__MOCK_CATEGORIES__,
+      services: globalDataStore.__MOCK_SERVICES__,
+      orders: globalMockOrders.__MOCK_ORDERS__,
+      gallery: globalGalleryStore.__MOCK_GALLERY__,
+    };
+    fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Failed to persist store to disk:", e);
+  }
+}
+
+// Initial persist
+persistAll();
 
 export function addMockOrder(order: Omit<OrderData, "id">): OrderData {
   const newId = (globalMockOrders.__MOCK_ORDERS__?.length || 0) + 1;
@@ -595,23 +694,8 @@ export function addMockOrder(order: Omit<OrderData, "id">): OrderData {
     items: order.items.map((it, idx) => ({ ...it, id: idx + 1, order_id: newId })),
   };
   globalMockOrders.__MOCK_ORDERS__?.unshift(newOrder);
+  persistAll();
   return newOrder;
-}
-
-const globalDataStore = globalThis as unknown as {
-  __MOCK_PRODUCTS__?: ProductData[];
-  __MOCK_CATEGORIES__?: CategoryData[];
-  __MOCK_SERVICES__?: ServiceData[];
-};
-
-if (!globalDataStore.__MOCK_PRODUCTS__) {
-  globalDataStore.__MOCK_PRODUCTS__ = [...MOCK_PRODUCTS];
-}
-if (!globalDataStore.__MOCK_CATEGORIES__) {
-  globalDataStore.__MOCK_CATEGORIES__ = [...MOCK_CATEGORIES];
-}
-if (!globalDataStore.__MOCK_SERVICES__) {
-  globalDataStore.__MOCK_SERVICES__ = [...MOCK_SERVICES];
 }
 
 export function getActiveProducts(): ProductData[] {
@@ -624,6 +708,7 @@ export function addMockProduct(p: Omit<ProductData, "id">): ProductData {
   const created: ProductData = { ...p, id: newId };
   products.unshift(created);
   globalDataStore.__MOCK_PRODUCTS__ = products;
+  persistAll();
   return created;
 }
 
@@ -632,6 +717,7 @@ export function updateMockProduct(id: number, p: Partial<ProductData>): ProductD
   const index = products.findIndex((i) => i.id === id);
   if (index > -1) {
     products[index] = { ...products[index], ...p };
+    persistAll();
     return products[index];
   }
   return null;
@@ -641,6 +727,7 @@ export function deleteMockProduct(id: number): boolean {
   const products = globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
   const filtered = products.filter((i) => i.id !== id);
   globalDataStore.__MOCK_PRODUCTS__ = filtered;
+  persistAll();
   return true;
 }
 
@@ -654,6 +741,7 @@ export function addMockCategory(c: Omit<CategoryData, "id">): CategoryData {
   const created: CategoryData = { ...c, id: newId };
   categories.push(created);
   globalDataStore.__MOCK_CATEGORIES__ = categories;
+  persistAll();
   return created;
 }
 
@@ -662,6 +750,7 @@ export function updateMockCategory(id: number, c: Partial<CategoryData>): Catego
   const index = categories.findIndex((i) => i.id === id);
   if (index > -1) {
     categories[index] = { ...categories[index], ...c };
+    persistAll();
     return categories[index];
   }
   return null;
@@ -671,6 +760,7 @@ export function deleteMockCategory(id: number): boolean {
   const categories = globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
   const filtered = categories.filter((i) => i.id !== id);
   globalDataStore.__MOCK_CATEGORIES__ = filtered;
+  persistAll();
   return true;
 }
 
@@ -684,6 +774,7 @@ export function addMockService(s: Omit<ServiceData, "id">): ServiceData {
   const created: ServiceData = { ...s, id: newId };
   services.push(created);
   globalDataStore.__MOCK_SERVICES__ = services;
+  persistAll();
   return created;
 }
 
@@ -692,6 +783,7 @@ export function updateMockService(id: number, s: Partial<ServiceData>): ServiceD
   const index = services.findIndex((i) => i.id === id);
   if (index > -1) {
     services[index] = { ...services[index], ...s };
+    persistAll();
     return services[index];
   }
   return null;
@@ -701,7 +793,36 @@ export function deleteMockService(id: number): boolean {
   const services = globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
   const filtered = services.filter((i) => i.id !== id);
   globalDataStore.__MOCK_SERVICES__ = filtered;
+  persistAll();
   return true;
 }
+
+export function getActiveGallery(): GalleryItem[] {
+  return globalGalleryStore.__MOCK_GALLERY__ || MOCK_GALLERY;
+}
+
+export function addMockGalleryItem(item: Omit<GalleryItem, "id" | "created_at">): GalleryItem {
+  const list = globalGalleryStore.__MOCK_GALLERY__ || MOCK_GALLERY;
+  const newId = Math.max(0, ...list.map((g) => g.id)) + 1;
+  const created: GalleryItem = {
+    ...item,
+    id: newId,
+    created_at: new Date().toISOString(),
+  };
+  list.unshift(created);
+  globalGalleryStore.__MOCK_GALLERY__ = list;
+  persistAll();
+  return created;
+}
+
+export function deleteMockGalleryItem(id: number): boolean {
+  const list = globalGalleryStore.__MOCK_GALLERY__ || MOCK_GALLERY;
+  const filtered = list.filter((g) => g.id !== id);
+  globalGalleryStore.__MOCK_GALLERY__ = filtered;
+  persistAll();
+  return true;
+}
+
+
 
 

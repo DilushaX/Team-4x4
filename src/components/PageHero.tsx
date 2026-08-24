@@ -3,6 +3,7 @@ import { normalizeImagePath } from "@/lib/utils";
 
 type PageHeroProps = {
   image: string;
+  video?: string;
   eyebrow?: string;
   title: string;
   meta?: string;
@@ -13,6 +14,7 @@ type PageHeroProps = {
 
 export default function PageHero({
   image,
+  video,
   eyebrow,
   title,
   meta,
@@ -25,17 +27,30 @@ export default function PageHero({
   return (
     <section
       className={`relative flex overflow-hidden ${
-        tall ? "min-h-[85vh] items-center justify-center" : "min-h-[50vh] items-end"
+        tall ? "min-h-[88vh] items-center justify-center" : "min-h-[50vh] items-end"
       }`}
     >
-      <Image
-        src={normalizeImagePath(image)}
-        alt={title}
-        fill
-        priority
-        className="object-cover"
-        sizes="100vw"
-      />
+      {video ? (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={normalizeImagePath(image)}
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src={video} type="video/mp4" />
+        </video>
+      ) : (
+        <Image
+          src={normalizeImagePath(image)}
+          alt={title}
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+      )}
       <div
         className={`absolute inset-0 ${
           tall ? "hero-gradient" : "bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/20"

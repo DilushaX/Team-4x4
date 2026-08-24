@@ -2,50 +2,60 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
 import { saveUploadedFile, getFormString, getFormNumber } from "@/lib/uploads";
-import { slugify } from "@/lib/utils";
-import { MOCK_PROJECTS } from "@/lib/mock-data";
+import {
+  getActiveGallery,
+  addMockGalleryItem,
+  deleteMockGalleryItem,
+} from "@/lib/mock-data";
 
-export async function GET(request: NextRequest) {
-  const { error } = await requireAdmin();
-  if (error) return error;
-
-  const id = request.nextUrl.searchParams.get("id");
+export async function GET() {
   try {
-    if (id) {
-      const project = await prisma.project.findUnique({
-        where: { id: parseInt(id, 10) },
-        include: { images: true },
-      });
-      if (project) return NextResponse.json({ project });
-      const mock = MOCK_PROJECTS.find((p) => p.id === parseInt(id, 10));
-      return NextResponse.json({ project: mock || null });
-    }
+    const dbProjects = await prisma.project.findMany({
+      orderBy: { created_at: "desc" },
+      include: { images: true },
+    });
 
-    const projects = await prisma.project.findMany({
-      orderBy: { project_order: "asc" },
-      include: { _count: { select: { images: true } } },
-    });
-    if (projects && projects.length > 0) {
-      return NextResponse.json({ projects });
+    if (dbProjects && dbProjects.length > 0) {
+      const items: {
+        id: number;
+        title: string;
+        category: string;
+        image_path: string;
+        created_at: string;
+      }[] = [];
+
+      for (const p of dbProjects) {
+        if (p.featured_image) {
+          items.push({
+            id: p.id,
+            title: p.title,
+            category: p.category || "Builds",
+            image_path: p.featured_image,
+            created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
+          });
+        }
+        if (p.images) {
+          for (const img of p.images) {
+            items.push({
+              id: img.id + 1000,
+              title: `${p.title} - View`,
+              category: p.category || "Builds",
+              image_path: img.image_path,
+              created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
+            });
+          }
+        }
+      }
+
+      if (items.length > 0) {
+        return NextResponse.json({ photos: items });
+      }
     }
-    return NextResponse.json({
-      projects: MOCK_PROJECTS.map((p) => ({
-        ...p,
-        _count: { images: p.images.length },
-      })),
-    });
   } catch {
-    if (id) {
-      const mock = MOCK_PROJECTS.find((p) => p.id === parseInt(id, 10));
-      return NextResponse.json({ project: mock || null });
-    }
-    return NextResponse.json({
-      projects: MOCK_PROJECTS.map((p) => ({
-        ...p,
-        _count: { images: p.images.length },
-      })),
-    });
+    /* Fallback below */
   }
+
+  return NextResponse.json({ photos: getActiveGallery() });
 }
 
 export async function POST(request: NextRequest) {
@@ -57,75 +67,60 @@ export async function POST(request: NextRequest) {
     const action = getFormString(formData, "action", "add");
 
     if (action === "delete") {
+      const id = getFormNumber(formData, "id");
       try {
-        await prisma.project.delete({ where: { id: getFormNumber(formData, "id") } });
+        await prisma.project.delete({ where: { id } }).catch(() => null);
       } catch {
         /* DB unavailable */
       }
+      deleteMockGalleryItem(id);
       return NextResponse.json({ status: "success" });
     }
 
-    const title = getFormString(formData, "title");
-    const data = {
-      title,
-      slug: getFormString(formData, "slug") || slugify(title),
-      category: getFormString(formData, "category"),
-      description: getFormString(formData, "description"),
-      modifications: getFormString(formData, "modifications"),
-      installed_parts: getFormString(formData, "installed_parts"),
-      customer_notes: getFormString(formData, "customer_notes"),
-      project_order: getFormNumber(formData, "project_order"),
-    };
+    const title = getFormString(formData, "title") || "Defender Custom Build";
+    const category = getFormString(formData, "category") || "Builds";
 
-    const imageFields = ["featured_image", "before_image", "after_image"] as const;
-    const imagePaths: Record<string, string> = {};
-    for (const field of imageFields) {
-      const file = formData.get(field) as File | null;
-      if (file && file.size > 0) {
-        imagePaths[field] = await saveUploadedFile(file, "gallery");
-      }
+    // Handle single or multiple image uploads
+    const files: File[] = [];
+    const single = formData.get("image") as File | null;
+    if (single && single.size > 0) files.push(single);
+
+    const multi = formData.getAll("images") as File[];
+    for (const f of multi) {
+      if (f && f.size > 0) files.push(f);
     }
 
-    if (action === "edit") {
-      const id = getFormNumber(formData, "id");
+    const createdItems = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const imagePath = await saveUploadedFile(file, "gallery");
+      const itemTitle = files.length > 1 ? `${title} (${i + 1})` : title;
+
       try {
-        await prisma.project.update({
-          where: { id },
-          data: { ...data, ...imagePaths },
+        await prisma.project.create({
+          data: {
+            title: itemTitle,
+            slug: `gallery-${Date.now()}-${i}`,
+            category,
+            featured_image: imagePath,
+            project_order: 1,
+          },
         });
-        const galleryImages = formData.getAll("images") as File[];
-        for (const img of galleryImages) {
-          if (img.size > 0) {
-            const path = await saveUploadedFile(img, "gallery");
-            await prisma.projectImage.create({ data: { project_id: id, image_path: path } });
-          }
-        }
       } catch {
         /* DB unavailable */
       }
-      return NextResponse.json({ status: "success", project_id: id });
-    }
 
-    let createdId: number = Math.floor(100 + Math.random() * 900);
-    try {
-      const project = await prisma.project.create({
-        data: { ...data, ...imagePaths },
+      const created = addMockGalleryItem({
+        title: itemTitle,
+        category,
+        image_path: imagePath,
       });
-      createdId = project.id;
-      const galleryImages = formData.getAll("images") as File[];
-      for (const img of galleryImages) {
-        if (img.size > 0) {
-          const path = await saveUploadedFile(img, "gallery");
-          await prisma.projectImage.create({ data: { project_id: project.id, image_path: path } });
-        }
-      }
-    } catch {
-      /* DB unavailable */
+      createdItems.push(created);
     }
 
-    return NextResponse.json({ status: "success", project_id: createdId });
+    return NextResponse.json({ status: "success", count: createdItems.length });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "Operation failed" }, { status: 500 });
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

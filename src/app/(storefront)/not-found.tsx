@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <>
       <PageHero
-        image="/assets/images/suspension.png"
+        image="/assets/images/green-suspension.jpg"
         eyebrow="Error"
         title="404 — Page Not Found"
         meta="The page you're looking for doesn't exist or has been moved."

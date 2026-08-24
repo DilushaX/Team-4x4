@@ -8,7 +8,7 @@ import { getActiveServices } from "@/lib/mock-data";
 export const metadata = {
   title: "Workshop Services",
   description:
-    "Expert Defender restoration, tactical suspension, custom fabrication, winching systems, high-output lighting, and elevated air intake setups.",
+    "Expert Defender restoration, tactical suspension, custom fabrication, winching systems, high-output lighting, and custom cushion & upholstery works.",
 };
 
 export default async function ServicesIndexPage() {

@@ -52,11 +52,10 @@ export default function GalleryClient({ photos, categories }: Props) {
         <button
           type="button"
           onClick={() => { setActiveCategory("all"); setSelectedPhotoIndex(null); }}
-          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-            activeCategory === "all"
+          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${activeCategory === "all"
               ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20"
               : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-          }`}
+            }`}
         >
           All Photos ({photos.length})
         </button>
@@ -70,11 +69,10 @@ export default function GalleryClient({ photos, categories }: Props) {
               key={cat}
               type="button"
               onClick={() => { setActiveCategory(cat); setSelectedPhotoIndex(null); }}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                isActive
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${isActive
                   ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20"
                   : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-              }`}
+                }`}
             >
               {cat} ({count})
             </button>
@@ -104,7 +102,7 @@ export default function GalleryClient({ photos, categories }: Props) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                
+
                 {/* Badge */}
                 <span className="absolute left-3 top-3 rounded-full bg-zinc-950/80 px-3 py-1 text-xs font-semibold text-green-400 backdrop-blur-md border border-zinc-800">
                   {photo.category}

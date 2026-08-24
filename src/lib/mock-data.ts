@@ -547,45 +547,9 @@ export interface OrderData {
   items: OrderItemData[];
 }
 
-function getNodeFs(): { fs: any; path: any } | null {
-  try {
-    if (typeof process !== "undefined" && process.versions && process.versions.node) {
-      const req = typeof __non_webpack_require__ !== "undefined" ? __non_webpack_require__ : eval("require");
-      const fsMod = req("fs");
-      const pathMod = req("path");
-      return { fs: fsMod, path: pathMod };
-    }
-  } catch {
-    /* Edge runtime or browser */
-  }
-  return null;
-}
+import { getDiskStore, saveDiskStore } from "./disk-store";
 
-function loadStoreFromDisk() {
-  try {
-    const node = getNodeFs();
-    if (!node) return null;
-    const { fs, path } = node;
-    const localPath = path.join(process.cwd(), "data", "store.json");
-    const vercelPath = path.join("/tmp", "team4x4_store.json");
-    const pathsToTry = [process.env.VERCEL ? vercelPath : localPath, localPath, vercelPath];
-
-    for (const p of pathsToTry) {
-      if (fs.existsSync(p)) {
-        const raw = fs.readFileSync(p, "utf-8");
-        const parsed = JSON.parse(raw);
-        if (parsed) return parsed;
-      }
-    }
-  } catch {
-    /* Safe fallback */
-  }
-  return null;
-}
-
-declare const __non_webpack_require__: any;
-
-const diskStore = loadStoreFromDisk();
+const diskStore = getDiskStore();
 
 const globalMockOrders = globalThis as unknown as {
   __MOCK_ORDERS__?: OrderData[];
@@ -733,30 +697,14 @@ if (!globalCustomerStore.__MOCK_CUSTOMERS__) {
 }
 
 function persistAll() {
-  try {
-    const node = getNodeFs();
-    if (!node) return;
-    const { fs, path } = node;
-    const targetPath = process.env.VERCEL
-      ? path.join("/tmp", "team4x4_store.json")
-      : path.join(process.cwd(), "data", "store.json");
-
-    const dir = path.dirname(targetPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    const data = {
-      products: globalDataStore.__MOCK_PRODUCTS__,
-      categories: globalDataStore.__MOCK_CATEGORIES__,
-      services: globalDataStore.__MOCK_SERVICES__,
-      orders: globalMockOrders.__MOCK_ORDERS__,
-      gallery: globalGalleryStore.__MOCK_GALLERY__,
-      customers: globalCustomerStore.__MOCK_CUSTOMERS__,
-    };
-    fs.writeFileSync(targetPath, JSON.stringify(data, null, 2), "utf-8");
-  } catch {
-    /* Silent fail on strict read-only lambdas or edge runtimes */
-  }
+  saveDiskStore({
+    products: globalDataStore.__MOCK_PRODUCTS__,
+    categories: globalDataStore.__MOCK_CATEGORIES__,
+    services: globalDataStore.__MOCK_SERVICES__,
+    orders: globalMockOrders.__MOCK_ORDERS__,
+    gallery: globalGalleryStore.__MOCK_GALLERY__,
+    customers: globalCustomerStore.__MOCK_CUSTOMERS__,
+  });
 }
 
 // Initial persist

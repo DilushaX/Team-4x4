@@ -511,3 +511,90 @@ export const MOCK_PRODUCTS: ProductData[] = [
     ],
   },
 ];
+
+export interface OrderItemData {
+  id: number;
+  order_id: number;
+  product_id: number;
+  product_title: string;
+  quantity: number;
+  price: number;
+}
+
+export interface OrderData {
+  id: number;
+  user_id: number | null;
+  customer_name: string;
+  phone: string;
+  email: string;
+  address: string;
+  district: string;
+  postal_code: string;
+  vehicle_model: string;
+  notes: string;
+  fulfillment_type: string;
+  delivery_fee: number;
+  total_amount: number;
+  payment_method: string;
+  whatsapp_reference: string;
+  status: string;
+  created_at: string;
+  items: OrderItemData[];
+}
+
+const globalMockOrders = globalThis as unknown as { __MOCK_ORDERS__?: OrderData[] };
+if (!globalMockOrders.__MOCK_ORDERS__) {
+  globalMockOrders.__MOCK_ORDERS__ = [
+    {
+      id: 1,
+      user_id: 2,
+      customer_name: "Kasun Silva",
+      phone: "+94 77 123 4567",
+      email: "kasun@email.lk",
+      address: "No. 15, Galle Road",
+      district: "Colombo",
+      postal_code: "00300",
+      vehicle_model: "Defender 110",
+      notes: "Call before delivery.",
+      fulfillment_type: "delivery",
+      delivery_fee: 2500,
+      total_amount: 510000,
+      payment_method: "Cash on Delivery",
+      whatsapp_reference: "ORD-2026-1001",
+      status: "pending",
+      created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+      items: [
+        {
+          id: 1,
+          order_id: 1,
+          product_id: 2,
+          product_title: "BP-51 Bypass Suspension Kit",
+          quantity: 1,
+          price: 380000,
+        },
+        {
+          id: 2,
+          order_id: 1,
+          product_id: 1,
+          product_title: "Tactical Bull Bar V2",
+          quantity: 1,
+          price: 125000,
+        },
+      ],
+    },
+  ];
+}
+
+export const MOCK_ORDERS = globalMockOrders.__MOCK_ORDERS__;
+
+export function addMockOrder(order: Omit<OrderData, "id">): OrderData {
+  const newId = (globalMockOrders.__MOCK_ORDERS__?.length || 0) + 1;
+  const newOrder: OrderData = {
+    ...order,
+    id: newId,
+    items: order.items.map((it, idx) => ({ ...it, id: idx + 1, order_id: newId })),
+  };
+  globalMockOrders.__MOCK_ORDERS__?.unshift(newOrder);
+  return newOrder;
+}
+

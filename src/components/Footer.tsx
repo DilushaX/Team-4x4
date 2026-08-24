@@ -41,9 +41,9 @@ export default function Footer({ categories = [], settings = {} }: FooterProps) 
   const whatsapp = settings.whatsapp || settings.whatsapp_number || "+94 70 393 9459";
   const phone = settings.phone || whatsapp;
   const address = settings.address || "Colombo, Sri Lanka";
-  const businessName = settings.business_name || "Team 4x4";
-  const facebook = settings.facebook || "https://facebook.com/team4x4";
-  const instagram = settings.instagram || "https://instagram.com/team4x4";
+  const businessName = settings.business_name || "4x4 Defender Parts";
+  const facebook = settings.facebook || "https://www.facebook.com/share/1G7uc474xT/?mibextid=wwXIfr";
+  const instagram = settings.instagram || "https://www.instagram.com/upulprajath?igsi=MTQ1M2hweTQwYjJ2OQ==";
 
   return (
     <footer className="mt-auto border-t border-zinc-800 bg-zinc-950">

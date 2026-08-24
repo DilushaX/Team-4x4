@@ -70,7 +70,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
       return (
         <>
           <PageHero
-            image="/assets/images/hero-bg.jpeg"
+            image="/assets/images/suspension.png"
             eyebrow="Parts Catalog"
             title="Defender Parts Shop"
             meta="Premium off-road parts engineered for Land Rover Defender platforms."
@@ -145,7 +145,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
   return (
     <>
       <PageHero
-        image="/assets/images/hero-bg.jpeg"
+        image="/assets/images/suspension.png"
         eyebrow="Parts Catalog"
         title="Defender Parts Shop"
         meta="Premium off-road parts engineered for Land Rover Defender platforms."

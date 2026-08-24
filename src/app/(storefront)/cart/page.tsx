@@ -7,7 +7,7 @@ export default function CartPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/hero-bg.jpeg"
+        image="/assets/images/recovery.jpg"
         eyebrow="Your Order"
         title="Shopping Cart"
         meta="Review items and proceed to checkout."

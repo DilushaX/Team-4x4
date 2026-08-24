@@ -10,7 +10,7 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/hero-bg.jpeg"
+        image="/assets/images/fabrication.jpg"
         eyebrow="Get In Touch"
         title="Contact Us"
         meta="Parts inquiries, service bookings, and project consultations."

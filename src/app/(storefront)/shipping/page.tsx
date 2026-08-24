@@ -7,7 +7,7 @@ export default function ShippingPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/hero-bg.jpeg"
+        image="/assets/images/recovery.jpg"
         eyebrow="Delivery"
         title="Shipping & Delivery"
         meta="Garage pickup and islandwide delivery across Sri Lanka."

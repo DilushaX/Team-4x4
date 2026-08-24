@@ -12,13 +12,13 @@ const fallbackServices: {
   features: string;
   slug: string;
 }[] = [
-  { title: "Defender Restoration", subtitle: "Restoration", description: "Frame-off rebuilds, corrosion control and drivetrain restoration.", hero_banner: "assets/images/restoration.png", features: "Full-strip restoration|Corrosion control|Heritage fitment", slug: "restoration" },
-  { title: "Suspension Upgrades", subtitle: "Suspension", description: "Off-road geometry tuning and long-travel suspension upgrades.", hero_banner: "assets/images/green-suspension.jpg", features: "Long-travel setup|Payload tuning|Terrain control", slug: "suspension" },
-  { title: "Fabrication", subtitle: "Fabrication", description: "Custom bumpers, sliders, armor and protection systems.", hero_banner: "assets/images/fabrication.jpg", features: "Bespoke armor|Custom mounts|Heavy-duty protection", slug: "fabrication" },
-  { title: "Recovery Systems", subtitle: "Recovery", description: "Winches, recovery gear and integrated accessory setups.", hero_banner: "assets/images/recovery.jpg", features: "Winch kits|Recovery gear|Secure mounting", slug: "recovery" },
-  { title: "Lighting Upgrades", subtitle: "Lighting", description: "High-output LED packages for night driving and trail expeditions.", hero_banner: "assets/images/lighting.jpg", features: "LED lighting|Wiring kits|Off-road visibility", slug: "lighting" },
-  { title: "Cushion Works", subtitle: "Cushion Works", description: "Custom leather upholstery, ergonomic seat cushioning, door cards and roof linings.", hero_banner: "assets/images/cushion.jpg", features: "Custom leather|Ergonomic cushions|Roof liners", slug: "cushion-works" },
-];
+    { title: "Defender Restoration", subtitle: "Restoration", description: "Frame-off rebuilds, corrosion control and drivetrain restoration.", hero_banner: "assets/images/restoration.png", features: "Full-strip restoration|Corrosion control|Heritage fitment", slug: "restoration" },
+    { title: "Suspension Upgrades", subtitle: "Suspension", description: "Off-road geometry tuning and long-travel suspension upgrades.", hero_banner: "assets/images/green-suspension.jpg", features: "Long-travel setup|Payload tuning|Terrain control", slug: "suspension" },
+    { title: "Fabrication", subtitle: "Fabrication", description: "Custom bumpers, sliders, armor and protection systems.", hero_banner: "assets/images/fabrication.jpg", features: "Bespoke armor|Custom mounts|Heavy-duty protection", slug: "fabrication" },
+    { title: "Recovery Systems", subtitle: "Recovery", description: "Winches, recovery gear and integrated accessory setups.", hero_banner: "assets/images/recovery.jpg", features: "Winch kits|Recovery gear|Secure mounting", slug: "recovery" },
+    { title: "Lighting Upgrades", subtitle: "Lighting", description: "High-output LED packages for night driving and trail expeditions.", hero_banner: "assets/images/lighting.jpg", features: "LED lighting|Wiring kits|Off-road visibility", slug: "lighting" },
+    { title: "Cushion Works", subtitle: "Cushion Works", description: "Custom leather upholstery, ergonomic seat cushioning, door cards and roof linings.", hero_banner: "assets/images/cushion.jpg", features: "Custom leather|Ergonomic cushions|Roof liners", slug: "cushion-works" },
+  ];
 
 export default async function HomePage() {
   let services: typeof fallbackServices = fallbackServices;
@@ -96,7 +96,7 @@ export default async function HomePage() {
       <section className="border-y border-zinc-800 bg-zinc-900/30 py-16">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-12 px-4 text-center lg:px-6">
           {[
-            { value: "15+", label: "Years Experience" },
+            { value: "5+", label: "Years Experience" },
             { value: "200+", label: "Builds Completed" },
             { value: "500+", label: "Parts In Stock" },
             { value: "100%", label: "Defender Focused" },

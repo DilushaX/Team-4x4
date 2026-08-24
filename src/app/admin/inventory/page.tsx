@@ -17,7 +17,16 @@ export default function AdminInventoryPage() {
   const [adjustQty, setAdjustQty] = useState("");
   const [reason, setReason] = useState("Manual adjustment");
 
-  const load = () => fetch("/api/admin/inventory").then((r) => r.json()).then(setData);
+  const load = async () => {
+    try {
+      const res = await fetch("/api/admin/inventory");
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json && json.summary) setData(json);
+    } catch (e) {
+      console.error("Failed to load inventory:", e);
+    }
+  };
   useEffect(() => { load(); }, []);
 
   const handleAdjust = async (e: React.FormEvent) => {

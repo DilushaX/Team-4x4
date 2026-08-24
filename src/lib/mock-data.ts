@@ -598,3 +598,110 @@ export function addMockOrder(order: Omit<OrderData, "id">): OrderData {
   return newOrder;
 }
 
+const globalDataStore = globalThis as unknown as {
+  __MOCK_PRODUCTS__?: ProductData[];
+  __MOCK_CATEGORIES__?: CategoryData[];
+  __MOCK_SERVICES__?: ServiceData[];
+};
+
+if (!globalDataStore.__MOCK_PRODUCTS__) {
+  globalDataStore.__MOCK_PRODUCTS__ = [...MOCK_PRODUCTS];
+}
+if (!globalDataStore.__MOCK_CATEGORIES__) {
+  globalDataStore.__MOCK_CATEGORIES__ = [...MOCK_CATEGORIES];
+}
+if (!globalDataStore.__MOCK_SERVICES__) {
+  globalDataStore.__MOCK_SERVICES__ = [...MOCK_SERVICES];
+}
+
+export function getActiveProducts(): ProductData[] {
+  return globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
+}
+
+export function addMockProduct(p: Omit<ProductData, "id">): ProductData {
+  const products = globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
+  const newId = Math.max(0, ...products.map((i) => i.id)) + 1;
+  const created: ProductData = { ...p, id: newId };
+  products.unshift(created);
+  globalDataStore.__MOCK_PRODUCTS__ = products;
+  return created;
+}
+
+export function updateMockProduct(id: number, p: Partial<ProductData>): ProductData | null {
+  const products = globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
+  const index = products.findIndex((i) => i.id === id);
+  if (index > -1) {
+    products[index] = { ...products[index], ...p };
+    return products[index];
+  }
+  return null;
+}
+
+export function deleteMockProduct(id: number): boolean {
+  const products = globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
+  const filtered = products.filter((i) => i.id !== id);
+  globalDataStore.__MOCK_PRODUCTS__ = filtered;
+  return true;
+}
+
+export function getActiveCategories(): CategoryData[] {
+  return globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
+}
+
+export function addMockCategory(c: Omit<CategoryData, "id">): CategoryData {
+  const categories = globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
+  const newId = Math.max(0, ...categories.map((i) => i.id)) + 1;
+  const created: CategoryData = { ...c, id: newId };
+  categories.push(created);
+  globalDataStore.__MOCK_CATEGORIES__ = categories;
+  return created;
+}
+
+export function updateMockCategory(id: number, c: Partial<CategoryData>): CategoryData | null {
+  const categories = globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
+  const index = categories.findIndex((i) => i.id === id);
+  if (index > -1) {
+    categories[index] = { ...categories[index], ...c };
+    return categories[index];
+  }
+  return null;
+}
+
+export function deleteMockCategory(id: number): boolean {
+  const categories = globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
+  const filtered = categories.filter((i) => i.id !== id);
+  globalDataStore.__MOCK_CATEGORIES__ = filtered;
+  return true;
+}
+
+export function getActiveServices(): ServiceData[] {
+  return globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
+}
+
+export function addMockService(s: Omit<ServiceData, "id">): ServiceData {
+  const services = globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
+  const newId = Math.max(0, ...services.map((i) => i.id)) + 1;
+  const created: ServiceData = { ...s, id: newId };
+  services.push(created);
+  globalDataStore.__MOCK_SERVICES__ = services;
+  return created;
+}
+
+export function updateMockService(id: number, s: Partial<ServiceData>): ServiceData | null {
+  const services = globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
+  const index = services.findIndex((i) => i.id === id);
+  if (index > -1) {
+    services[index] = { ...services[index], ...s };
+    return services[index];
+  }
+  return null;
+}
+
+export function deleteMockService(id: number): boolean {
+  const services = globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
+  const filtered = services.filter((i) => i.id !== id);
+  globalDataStore.__MOCK_SERVICES__ = filtered;
+  return true;
+}
+
+

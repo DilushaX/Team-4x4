@@ -3,7 +3,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import PageHero, { PageContent } from "@/components/PageHero";
 import { normalizeImagePath, parseFeatures } from "@/lib/utils";
-import { MOCK_SERVICES } from "@/lib/mock-data";
+import { getActiveServices } from "@/lib/mock-data";
 
 export const metadata = {
   title: "Workshop Services",
@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function ServicesIndexPage() {
-  let services = MOCK_SERVICES;
+  let services = getActiveServices();
   try {
     const dbServices = await prisma.service.findMany({ orderBy: { id: "asc" } });
     if (dbServices && dbServices.length > 0) {

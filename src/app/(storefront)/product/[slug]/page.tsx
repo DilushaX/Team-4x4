@@ -5,19 +5,19 @@ import { decimalToNumber, formatMoney } from "@/lib/money";
 import { serializeProduct } from "@/lib/serializers";
 import ProductDetail from "@/components/ProductDetail";
 import PageHero, { PageContent } from "@/components/PageHero";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
+import { getActiveProducts } from "@/lib/mock-data";
 
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return MOCK_PRODUCTS.map((p) => ({ slug: p.slug }));
+  return getActiveProducts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   let product = await prisma.product.findFirst({ where: { slug } }).catch(() => null);
   if (!product) {
-    product = (MOCK_PRODUCTS.find((p) => p.slug === slug) as unknown as typeof product) || null;
+    product = (getActiveProducts().find((p) => p.slug === slug) as unknown as typeof product) || null;
   }
   return { title: product?.title || "Defender Part" };
 }
@@ -36,7 +36,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   }
 
   if (!product) {
-    const mock = MOCK_PRODUCTS.find((p) => p.slug === slug);
+    const mock = getActiveProducts().find((p) => p.slug === slug);
     if (mock) {
       product = mock as unknown as NonNullable<typeof product>;
     }

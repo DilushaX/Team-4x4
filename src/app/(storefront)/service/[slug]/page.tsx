@@ -5,19 +5,19 @@ import { prisma } from "@/lib/prisma";
 import { getSettings, getWhatsAppNumber, buildWhatsAppUrl } from "@/lib/whatsapp";
 import PageHero, { PageContent } from "@/components/PageHero";
 import { normalizeImagePath, parseFeatures, parseLines } from "@/lib/utils";
-import { MOCK_SERVICES } from "@/lib/mock-data";
+import { getActiveServices } from "@/lib/mock-data";
 
 type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  return MOCK_SERVICES.map((s) => ({ slug: s.slug }));
+  return getActiveServices().map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   let service = await prisma.service.findUnique({ where: { slug } }).catch(() => null);
   if (!service) {
-    service = (MOCK_SERVICES.find((s) => s.slug === slug) as unknown as typeof service) || null;
+    service = (getActiveServices().find((s) => s.slug === slug) as unknown as typeof service) || null;
   }
   return { title: service?.seo_title || service?.title || "Service" };
 }
@@ -27,7 +27,7 @@ export default async function ServicePage({ params }: { params: Params }) {
 
   let service = await prisma.service.findUnique({ where: { slug } }).catch(() => null);
   if (!service) {
-    const mock = MOCK_SERVICES.find((s) => s.slug === slug);
+    const mock = getActiveServices().find((s) => s.slug === slug);
     if (mock) {
       service = mock as unknown as typeof service;
     }
@@ -49,7 +49,7 @@ export default async function ServicePage({ params }: { params: Params }) {
     /* invalid JSON */
   }
 
-  const otherServices = MOCK_SERVICES.filter((s) => s.slug !== slug);
+  const otherServices = getActiveServices().filter((s) => s.slug !== slug);
 
   const waMessage = `Hi, I'd like to book the *${service.title}* service.\n\nPlease share availability and next steps.`;
   const waUrl = buildWhatsAppUrl(whatsappNumber, waMessage);

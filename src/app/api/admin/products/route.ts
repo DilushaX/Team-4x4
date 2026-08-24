@@ -4,6 +4,12 @@ import { requireAdmin } from "@/lib/api-auth";
 import { saveUploadedFile, getFormString, getFormNumber } from "@/lib/uploads";
 import { slugify } from "@/lib/utils";
 import { decimalToNumber } from "@/lib/money";
+import {
+  getActiveProducts,
+  addMockProduct,
+  updateMockProduct,
+  deleteMockProduct,
+} from "@/lib/mock-data";
 
 export async function GET(request: NextRequest) {
   const { error } = await requireAdmin();
@@ -16,17 +22,31 @@ export async function GET(request: NextRequest) {
         where: { id: parseInt(id, 10) },
         include: { images: true, category_rel: true },
       });
-      return NextResponse.json({ product: product ? { ...product, price: decimalToNumber(product.price) } : null });
+      if (product) {
+        return NextResponse.json({
+          product: { ...product, price: decimalToNumber(product.price) },
+        });
+      }
+      const mock = getActiveProducts().find((p) => p.id === parseInt(id, 10));
+      return NextResponse.json({ product: mock || null });
     }
+
     const products = await prisma.product.findMany({
       orderBy: { created_at: "desc" },
       include: { images: true },
     });
-    return NextResponse.json({
-      products: products.map((p) => ({ ...p, price: decimalToNumber(p.price) })),
-    });
+    if (products && products.length > 0) {
+      return NextResponse.json({
+        products: products.map((p) => ({ ...p, price: decimalToNumber(p.price) })),
+      });
+    }
+    return NextResponse.json({ products: getActiveProducts() });
   } catch {
-    return NextResponse.json({ error: "Database error" }, { status: 500 });
+    if (id) {
+      const mock = getActiveProducts().find((p) => p.id === parseInt(id, 10));
+      return NextResponse.json({ product: mock || null });
+    }
+    return NextResponse.json({ products: getActiveProducts() });
   }
 }
 
@@ -40,15 +60,29 @@ export async function POST(request: NextRequest) {
 
     if (action === "delete") {
       const id = getFormNumber(formData, "id");
-      await prisma.product.delete({ where: { id } });
+      try {
+        await prisma.product.delete({ where: { id } });
+      } catch {
+        /* DB unavailable */
+      }
+      deleteMockProduct(id);
       return NextResponse.json({ status: "success" });
     }
 
     if (action === "toggle_featured") {
       const id = getFormNumber(formData, "id");
-      const product = await prisma.product.findUnique({ where: { id } });
-      if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      await prisma.product.update({ where: { id }, data: { is_featured: product.is_featured ? 0 : 1 } });
+      try {
+        const product = await prisma.product.findUnique({ where: { id } });
+        if (product) {
+          await prisma.product.update({ where: { id }, data: { is_featured: product.is_featured ? 0 : 1 } });
+        }
+      } catch {
+        /* DB unavailable */
+      }
+      const mock = getActiveProducts().find((p) => p.id === id);
+      if (mock) {
+        updateMockProduct(id, { is_featured: mock.is_featured ? 0 : 1 });
+      }
       return NextResponse.json({ status: "success" });
     }
 
@@ -69,41 +103,83 @@ export async function POST(request: NextRequest) {
       installation_notes: getFormString(formData, "installation_notes"),
     };
 
+    // Primary image (Photo 1)
     const imageFile = formData.get("image") as File | null;
     let imagePath: string | undefined;
     if (imageFile && imageFile.size > 0) {
       imagePath = await saveUploadedFile(imageFile, "products");
     }
 
-    if (action === "edit") {
-      const id = getFormNumber(formData, "id");
-      await prisma.product.update({
-        where: { id },
-        data: { ...data, ...(imagePath ? { image_path: imagePath } : {}) },
-      });
-      const extraImages = formData.getAll("images") as File[];
-      for (const img of extraImages) {
-        if (img.size > 0) {
-          const path = await saveUploadedFile(img, "products");
-          await prisma.productImage.create({ data: { product_id: id, image_path: path } });
-        }
-      }
-      return NextResponse.json({ status: "success", product_id: id });
+    // Secondary images (Photo 2 and multiple images)
+    const extraPaths: string[] = [];
+    const image2File = formData.get("image_2") as File | null;
+    if (image2File && image2File.size > 0) {
+      const path2 = await saveUploadedFile(image2File, "products");
+      extraPaths.push(path2);
     }
-
-    const product = await prisma.product.create({
-      data: { ...data, image_path: imagePath || null },
-    });
 
     const extraImages = formData.getAll("images") as File[];
     for (const img of extraImages) {
-      if (img.size > 0) {
+      if (img && img.size > 0) {
         const path = await saveUploadedFile(img, "products");
-        await prisma.productImage.create({ data: { product_id: product.id, image_path: path } });
+        extraPaths.push(path);
       }
     }
 
-    return NextResponse.json({ status: "success", product_id: product.id });
+    if (action === "edit") {
+      const id = getFormNumber(formData, "id");
+      try {
+        await prisma.product.update({
+          where: { id },
+          data: { ...data, ...(imagePath ? { image_path: imagePath } : {}) },
+        });
+        for (const p of extraPaths) {
+          await prisma.productImage.create({ data: { product_id: id, image_path: p } });
+        }
+      } catch {
+        /* DB unavailable */
+      }
+
+      const existingMock = getActiveProducts().find((p) => p.id === id);
+      const combinedImages = [
+        ...(existingMock?.images || []),
+        ...extraPaths.map((p, idx) => ({ id: (existingMock?.images?.length || 0) + idx + 1, product_id: id, image_path: p })),
+      ];
+
+      updateMockProduct(id, {
+        ...data,
+        category_id: data.category_id || 1,
+        ...(imagePath ? { image_path: imagePath } : {}),
+        images: combinedImages,
+      });
+      return NextResponse.json({ status: "success", product_id: id });
+    }
+
+    let createdId: number | null = null;
+    try {
+      const product = await prisma.product.create({
+        data: { ...data, image_path: imagePath || null },
+      });
+      createdId = product.id;
+      for (const p of extraPaths) {
+        await prisma.productImage.create({ data: { product_id: product.id, image_path: p } });
+      }
+    } catch {
+      /* DB unavailable */
+    }
+
+    const created = addMockProduct({
+      ...data,
+      category_id: data.category_id || 1,
+      image_path: imagePath || "assets/images/suspension.png",
+      images: extraPaths.map((p, idx) => ({
+        id: idx + 1,
+        product_id: createdId || 99,
+        image_path: p,
+      })),
+    });
+
+    return NextResponse.json({ status: "success", product_id: createdId || created.id });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Operation failed" }, { status: 500 });

@@ -3,8 +3,7 @@ import ProductCard from "@/components/ProductCard";
 import ShopFiltersWrapper from "@/components/ShopFiltersWrapper";
 import PageHero, { PageContent } from "@/components/PageHero";
 import Link from "next/link";
-import { MOCK_CATEGORIES, MOCK_PRODUCTS } from "@/lib/mock-data";
-import { serializeProduct } from "@/lib/serializers";
+import { getActiveCategories, getActiveProducts } from "@/lib/mock-data";
 
 type SearchParams = Promise<{ page?: string; q?: string; cat?: string; sort?: string }>;
 
@@ -21,9 +20,11 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
   const category = (params.cat || "").toLowerCase().trim();
   const sort = params.sort || "newest";
 
-  let categories = MOCK_CATEGORIES.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
-  let products = MOCK_PRODUCTS;
-  let total = MOCK_PRODUCTS.length;
+  const activeCategories = getActiveCategories();
+  const activeProducts = getActiveProducts();
+
+  let categories = activeCategories.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
+  let total = activeProducts.length;
 
   try {
     const dbCategories = await prisma.category.findMany({
@@ -114,8 +115,8 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
     /* Fallback below */
   }
 
-  // Filter fallback mock products
-  let filteredMock = [...MOCK_PRODUCTS];
+  // Filter dynamic mock products
+  let filteredMock = [...activeProducts];
   if (search) {
     filteredMock = filteredMock.filter(
       (p) =>
@@ -140,7 +141,6 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
   }
 
   total = filteredMock.length;
-  const totalPages = Math.ceil(total / limit);
 
   return (
     <>

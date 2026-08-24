@@ -550,13 +550,23 @@ export interface OrderData {
 import fs from "fs";
 import path from "path";
 
-const STORE_PATH = path.join(process.cwd(), "data", "store.json");
+const LOCAL_STORE_PATH = path.join(process.cwd(), "data", "store.json");
+const VERCEL_STORE_PATH = path.join("/tmp", "team4x4_store.json");
+
+function getStorePath() {
+  if (process.env.VERCEL) return VERCEL_STORE_PATH;
+  return LOCAL_STORE_PATH;
+}
 
 function loadStoreFromDisk() {
   try {
-    if (fs.existsSync(STORE_PATH)) {
-      const raw = fs.readFileSync(STORE_PATH, "utf-8");
-      return JSON.parse(raw);
+    const pathsToTry = [getStorePath(), LOCAL_STORE_PATH, VERCEL_STORE_PATH];
+    for (const p of pathsToTry) {
+      if (fs.existsSync(p)) {
+        const raw = fs.readFileSync(p, "utf-8");
+        const parsed = JSON.parse(raw);
+        if (parsed) return parsed;
+      }
     }
   } catch (e) {
     console.error("Error reading persistent store:", e);
@@ -713,7 +723,8 @@ if (!globalCustomerStore.__MOCK_CUSTOMERS__) {
 
 function persistAll() {
   try {
-    const dir = path.dirname(STORE_PATH);
+    const targetPath = getStorePath();
+    const dir = path.dirname(targetPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -725,9 +736,9 @@ function persistAll() {
       gallery: globalGalleryStore.__MOCK_GALLERY__,
       customers: globalCustomerStore.__MOCK_CUSTOMERS__,
     };
-    fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+    fs.writeFileSync(targetPath, JSON.stringify(data, null, 2), "utf-8");
   } catch (e) {
-    console.error("Failed to persist store to disk:", e);
+    /* Silent fail on strict read-only lambdas */
   }
 }
 

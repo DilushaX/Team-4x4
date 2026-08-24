@@ -73,6 +73,13 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255) NULL;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_expires DATETIME NULL;
 
 
+-- 6b. Create subscribers table (footer newsletter signup)
+CREATE TABLE IF NOT EXISTS subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 7. Create admin_notifications table
 CREATE TABLE IF NOT EXISTS admin_notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,

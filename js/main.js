@@ -95,8 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Wire up social sharing button
-    document.querySelectorAll('.social-button').forEach(btn => {
-        btn.addEventListener('click', () => {
+    const shareButton = document.getElementById('share-button');
+    if (shareButton) {
+        shareButton.addEventListener('click', () => {
             if (navigator.share) {
                 navigator.share({
                     title: '4x4 Defender Parts — Tactical Engineering & Off-Road Upgrades',
@@ -104,9 +105,72 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                btn.title = 'Link copied!';
+                shareButton.title = 'Link copied!';
             }
         });
-    });
+    }
+
+    initNewsletterForm();
+    initBackToTop();
 });
+
+function initNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    const feedback = document.getElementById('newsletter-feedback');
+    if (!form || !feedback) return;
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const emailInput = document.getElementById('newsletter-email');
+        const email = emailInput.value.trim();
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        feedback.textContent = '';
+        feedback.classList.remove('is-error', 'is-success');
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        fetch('backend/newsletter.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: 'email=' + encodeURIComponent(email)
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                feedback.textContent = data.message;
+                feedback.classList.add(data.status === 'success' ? 'is-success' : 'is-error');
+                if (data.status === 'success') {
+                    form.reset();
+                }
+            })
+            .catch(() => {
+                feedback.textContent = 'Something went wrong. Please try again.';
+                feedback.classList.add('is-error');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe';
+            });
+    });
+}
+
+function initBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+
+    const toggleVisibility = () => {
+        btn.classList.toggle('is-visible', window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    toggleVisibility();
+}
 

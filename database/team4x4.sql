@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS quotation_items;
 DROP TABLE IF EXISTS quotations;
 DROP TABLE IF EXISTS inventory_movements;
 DROP TABLE IF EXISTS admin_notifications;
+DROP TABLE IF EXISTS subscribers;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS service_images;
 DROP TABLE IF EXISTS services;
@@ -200,6 +201,13 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- 12b. Newsletter Subscribers Table
+CREATE TABLE subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 13. Admin Notifications Table
 CREATE TABLE admin_notifications (

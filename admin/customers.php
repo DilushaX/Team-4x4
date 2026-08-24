@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Customer Management
+ * 4x4 Defender Parts Admin — Customer Management
  */
 $pageId = 'customers';
 $pageTitle = 'Customer Management';
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td class="text-gold">LKR ${Number(c.lifetime_value || 0).toLocaleString()}</td>
                 <td class="admin-table-actions">
                     <button type="button" class="btn-view-customer" data-id="${c.id}">👁 Profile</button>
-                    ${c.phone ? `<a href="https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + c.name + ', Team 4x4 workshop reaching out regarding your vehicle build.')}" target="_blank" title="WhatsApp">💬 WA</a>` : ''}
+                    ${c.phone ? `<a href="https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + c.name + ', 4x4 Defender Parts workshop reaching out regarding your vehicle build.')}" target="_blank" title="WhatsApp">💬 WA</a>` : ''}
                 </td>
             </tr>
         `).join('');
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const actionsEl = document.getElementById('customerModalActions');
         actionsEl.innerHTML = `
             <button type="button" class="admin-btn-gold" id="saveCustomerBtn">💾 Save Profile</button>
-            ${c.phone ? `<a href="https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + c.name + ', Team 4x4 reaching out.')}" target="_blank" class="admin-btn-ghost">💬 WhatsApp</a>` : ''}
+            ${c.phone ? `<a href="https://wa.me/${c.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + c.name + ', 4x4 Defender Parts reaching out.')}" target="_blank" class="admin-btn-ghost">💬 WhatsApp</a>` : ''}
             <button type="button" class="admin-btn-ghost" onclick="document.getElementById('customerModal').style.display='none'">Close</button>`;
 
         document.getElementById('saveCustomerBtn').addEventListener('click', () => {

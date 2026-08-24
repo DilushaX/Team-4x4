@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Categories Management API
+ * 4x4 Defender Parts — Categories Management API
  */
 
 require_once __DIR__ . '/db.php';

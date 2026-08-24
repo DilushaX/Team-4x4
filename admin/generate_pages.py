@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Team 4x4 admin management pages."""
+"""Generate 4X4 DEFENDER PARTS admin management pages."""
 
 import os
 
@@ -10,7 +10,7 @@ HEAD = '''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team 4x4 Admin | {title}</title>
+    <title>4X4 DEFENDER PARTS Admin | {title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/admin.css" />

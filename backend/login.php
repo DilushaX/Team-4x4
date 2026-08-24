@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Secure Login Processing API
+ * 4x4 Defender Parts — Secure Login Processing API
  */
 
 require_once __DIR__ . '/db.php';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Contact Messages Management API
+ * 4x4 Defender Parts — Contact Messages Management API
  */
 
 require_once __DIR__ . '/db.php';

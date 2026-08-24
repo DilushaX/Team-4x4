@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Products Management
+ * 4x4 Defender Parts Admin — Products Management
  */
 $pageId = 'products';
 $pageTitle = 'Product Management';
@@ -68,6 +68,7 @@ require_once __DIR__ . '/includes/layout-start.php';
                     </select>
                 </div>
                 <div class="admin-field full" style="grid-column:1/-1;"><label>Compatibility</label><input type="text" id="editCompatibility" name="compatibility" /></div>
+                <div class="admin-field full" style="grid-column:1/-1;"><label>Condition</label><input type="text" id="editCondition" name="condition" placeholder="New / Used / Refurbished" /></div>
                 <div class="admin-field full" style="grid-column:1/-1;"><label>Description</label><textarea id="editDescription" name="description" rows="3"></textarea></div>
                 <div class="admin-field full" style="grid-column:1/-1;"><label>Features (one per line)</label><textarea id="editFeatures" name="features" rows="3"></textarea></div>
             </div>
@@ -245,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('editStock').value = p.stock || 0;
         document.getElementById('editFeatured').value = (p.is_featured || p.featured) ? '1' : '0';
         document.getElementById('editCompatibility').value = p.compatibility || '';
+        document.getElementById('editCondition').value = p.condition || 'New';
         document.getElementById('editDescription').value = p.description || '';
         document.getElementById('editFeatures').value = p.features || '';
         document.getElementById('editModalMsg').textContent = '';

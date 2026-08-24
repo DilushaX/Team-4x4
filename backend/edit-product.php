@@ -39,6 +39,7 @@ try {
     $stock = intval($_POST['stock'] ?? 0);
     $featured = isset($_POST['featured']) && ($_POST['featured'] === '1' || $_POST['featured'] === 'on') ? 1 : 0;
     $compatibility = trim($_POST['compatibility'] ?? '');
+    $condition = trim($_POST['condition'] ?? 'New');
 
     if ($title === '' || $price <= 0) {
         http_response_code(400);
@@ -85,7 +86,8 @@ try {
         'stock' => $stock,
         'is_featured' => $featured,
         'features' => $features,
-        'compatibility' => $compatibility
+        'compatibility' => $compatibility,
+        'condition' => $condition
     ];
     if ($mainImagePath) {
         $fields['image_path'] = $mainImagePath;

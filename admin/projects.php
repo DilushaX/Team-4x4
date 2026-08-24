@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Projects Overview
+ * 4x4 Defender Parts Admin — Projects Overview
  */
 $pageId = 'projects';
 $pageTitle = 'Project Management';

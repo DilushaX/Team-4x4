@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Products Management CRUD API
+ * 4x4 Defender Parts — Products Management CRUD API
  */
 
 require_once __DIR__ . '/db.php';
@@ -61,6 +61,7 @@ try {
             $stock = intval($_POST['stock'] ?? 0);
             $featured = isset($_POST['featured']) && (intval($_POST['featured']) === 1 || $_POST['featured'] === 'on') ? 1 : 0;
             $compatibility = trim($_POST['compatibility'] ?? '');
+            $condition = trim($_POST['condition'] ?? 'New');
             $description = trim($_POST['description'] ?? '');
             $features = trim($_POST['features'] ?? '');
             $installationNotes = trim($_POST['installation_notes'] ?? '');
@@ -98,8 +99,8 @@ try {
             }
 
             if ($action === 'add') {
-                $stmt = $pdo->prepare("INSERT INTO products (title, slug, description, price, stock, is_featured, image_path, sku, category, category_id, features, compatibility, installation_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $slug, $description, $price, $stock, $featured, $mainImagePath, $sku, $catName, $categoryId, $features, $compatibility, $installationNotes]);
+                $stmt = $pdo->prepare("INSERT INTO products (title, slug, description, price, stock, is_featured, image_path, sku, category, category_id, features, compatibility, `condition`, installation_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$title, $slug, $description, $price, $stock, $featured, $mainImagePath, $sku, $catName, $categoryId, $features, $compatibility, $condition, $installationNotes]);
                 $productId = $pdo->lastInsertId();
 
                 // Log initial stock movement
@@ -118,8 +119,8 @@ try {
                 // Check original stock to log difference
                 $origStock = intval($pdo->query("SELECT stock FROM products WHERE id = $productId")->fetchColumn());
                 
-                $sql = "UPDATE products SET title = ?, slug = ?, description = ?, price = ?, stock = ?, is_featured = ?, sku = ?, category = ?, category_id = ?, features = ?, compatibility = ?, installation_notes = ? ";
-                $params = [$title, $slug, $description, $price, $stock, $featured, $sku, $catName, $categoryId, $features, $compatibility, $installationNotes];
+                $sql = "UPDATE products SET title = ?, slug = ?, description = ?, price = ?, stock = ?, is_featured = ?, sku = ?, category = ?, category_id = ?, features = ?, compatibility = ?, `condition` = ?, installation_notes = ? ";
+                $params = [$title, $slug, $description, $price, $stock, $featured, $sku, $catName, $categoryId, $features, $compatibility, $condition, $installationNotes];
 
                 if ($mainImagePath) {
                     $sql .= ", image_path = ? ";

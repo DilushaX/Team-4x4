@@ -1,5 +1,5 @@
 <?php
-// Team4x4 Unified Database Connection
+// 4x4DefenderParts Unified Database Connection
 require_once __DIR__ . '/../includes/db.php';
 ?>
 

@@ -1,5 +1,5 @@
-// Team4x4 main JavaScript
-console.log('Team4x4 main script loaded');
+// 4x4DefenderParts main JavaScript
+console.log('4x4DefenderParts main script loaded');
 
 function initMobileNav() {
     const toggle = document.querySelector('.nav-toggle');
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Team 4x4 — Tactical Engineering & Off-Road Upgrades',
+                    title: '4x4 Defender Parts — Tactical Engineering & Off-Road Upgrades',
                     url: window.location.href
                 }).catch(() => {});
             } else {

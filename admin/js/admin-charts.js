@@ -1,5 +1,5 @@
 /**
- * Team 4x4 Admin — Chart.js dashboards (requires live AdminData from API)
+ * 4x4 Defender Parts Admin — Chart.js dashboards (requires live AdminData from API)
  */
 function initAdminCharts() {
     if (typeof Chart === 'undefined' || !window.AdminData) return;
@@ -8,7 +8,7 @@ function initAdminCharts() {
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)';
     Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
 
-    const gold = '#ffce2e';
+    const gold = '#62c428';
 
     const revenueCanvas = document.getElementById('revenueChart');
     if (revenueCanvas) {

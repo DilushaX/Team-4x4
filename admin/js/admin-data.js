@@ -1,5 +1,5 @@
 /**
- * Team 4x4 Admin — shared navigation (live data loaded per-page from MySQL APIs)
+ * 4x4 Defender Parts Admin — shared navigation (live data loaded per-page from MySQL APIs)
  */
 const AdminNav = [
     { section: 'Overview' },

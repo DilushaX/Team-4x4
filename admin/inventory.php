@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Inventory & Stock Management
+ * 4x4 Defender Parts Admin — Inventory & Stock Management
  */
 $pageId = 'inventory';
 $pageTitle = 'Inventory Management';

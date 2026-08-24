@@ -3,7 +3,7 @@ const subtotalEl = document.getElementById('cartSubtotal');
 const totalEl = document.getElementById('cartTotal');
 const cartBuyNowButton = document.getElementById('cartBuyNowButton');
 
-const storageKey = 'team4x4Cart';
+const storageKey = '4x4defenderpartsCart';
 const checkoutCartKey = 'selectedCheckoutCart';
 
 
@@ -35,10 +35,11 @@ const calculateSummary = () => {
 
 const buildCartWhatsAppMessage = (items) => {
     const itemDetails = items.map((item) => {
-        return `Product: ${item.title}\nPrice: LKR ${item.price.toLocaleString('en-US')}\nQuantity: ${item.quantity}\nTotal: LKR ${(item.price * item.quantity).toLocaleString('en-US')}`;
+        return `Product: ${item.title}\nCategory: ${item.category || 'General'}\nCompatibility: ${item.compatibility || 'Universal'}\nCondition: ${item.condition || 'New'}\nPrice: LKR ${item.price.toLocaleString('en-US')}\nQuantity: ${item.quantity}\nTotal: LKR ${(item.price * item.quantity).toLocaleString('en-US')}`;
     }).join('\n\n');
 
-    return `Hello Team 4x4,\n\nI would like to order the following item(s):\n\n${itemDetails}\n\nPlease contact me regarding availability and delivery.\n\nThank you.`;
+    const subtotal = items.reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity || 1)), 0);
+    return `Hello 4x4 Defender Parts,\n\nI would like to order the following item(s):\n\n${itemDetails}\n\nOrder subtotal: LKR ${subtotal.toLocaleString('en-US')}\n\nPlease contact me regarding availability, fitment, and delivery.\n\nThank you.`;
 };
 
 const openWhatsAppForCart = () => {
@@ -48,8 +49,8 @@ const openWhatsAppForCart = () => {
     }
 
     const message = buildCartWhatsAppMessage(cartItems);
-    if (typeof window.team4x4OpenWhatsApp === 'function') {
-        window.team4x4OpenWhatsApp(message);
+    if (typeof window.4x4defenderpartsOpenWhatsApp === 'function') {
+        window.4x4defenderpartsOpenWhatsApp(message);
     } else {
         window.location.href = `https://wa.me/94703939459?text=${encodeURIComponent(message)}`;
     }
@@ -153,7 +154,7 @@ const proceedFromModal = (method) => {
     // save checkout cart and selected method then go to checkout page
     saveCheckoutCart(cartItems);
     localStorage.setItem('checkoutShipping', JSON.stringify({ method }));
-    window.location.href = 'checkout.html';
+    window.location.href = 'checkout.php';
 };
 
 const wireOrderModal = () => {

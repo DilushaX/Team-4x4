@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Authentication State Check API
+ * 4x4 Defender Parts — Authentication State Check API
  */
 
 require_once __DIR__ . '/db.php';

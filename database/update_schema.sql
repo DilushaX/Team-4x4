@@ -20,6 +20,7 @@ ALTER TABLE products ADD COLUMN IF NOT EXISTS category VARCHAR(100) NULL;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS category_id INT NULL;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS features TEXT NULL;
 ALTER TABLE products ADD COLUMN IF NOT EXISTS compatibility TEXT NULL;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS `condition` VARCHAR(100) NULL DEFAULT 'New';
 ALTER TABLE products ADD COLUMN IF NOT EXISTS installation_notes TEXT NULL;
 
 -- 3. Add constraint to products (if not exists)

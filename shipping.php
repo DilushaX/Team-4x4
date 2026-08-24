@@ -4,12 +4,12 @@ require_once 'includes/header.php';
 ?>
 
 <main class="page-container" style="max-width: 1000px; margin: 4rem auto; padding: 0 1.5rem;">
-    <span class="eyebrow" style="color: #ffce2e; letter-spacing: 0.2em; text-transform: uppercase;">Logistics & Delivery</span>
+    <span class="eyebrow" style="color: #62c428; letter-spacing: 0.2em; text-transform: uppercase;">Logistics & Delivery</span>
     <h1 style="font-size: 2.5rem; margin-top: 0.5rem; margin-bottom: 2rem; color: #fff;">Shipping & Delivery Info</h1>
 
     <div class="glass-card" style="padding: 2.5rem; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); line-height: 1.8;">
         <h2 style="color: #fff; margin-bottom: 1rem; font-size: 1.4rem;">1. Fulfillment Methods</h2>
-        <p style="margin-bottom: 1.5rem;">Team 4x4 provides two primary fulfillment options at checkout:</p>
+        <p style="margin-bottom: 1.5rem;">4x4 Defender Parts provides two primary fulfillment options at checkout:</p>
         <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem;">
             <li><strong>Garage Pickup (Free):</strong> Collect your order directly from our workshop at No. 42, Industrial Zone Road, Colombo.</li>
             <li><strong>Islandwide Courier Delivery:</strong> Heavy-duty packaging and freight dispatch across all 25 Sri Lankan districts.</li>

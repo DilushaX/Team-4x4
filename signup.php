@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Access Request Portal (Signup)
+ * 4x4 Defender Parts — Access Request Portal (Signup)
  */
 
 require_once 'includes/db.php';
@@ -21,7 +21,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team 4x4 | Request Access</title>
+    <title>4x4 Defender Parts | Request Access</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -29,8 +29,8 @@ if (isset($_SESSION['user_id'])) {
 <body class="auth-page auth-signup">
     <header class="site-header">
         <div class="brand" style="display: flex; align-items: center; cursor: pointer;" onclick="window.location.href='index.php';">
-            <span style="color: #ffce2e; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
-            <span class="brand-mark">TEAM 4X4</span>
+            <span style="color: #62c428; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
+            <span class="brand-mark">4X4 DEFENDER PARTS</span>
         </div>
         <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
             <span class="nav-toggle-bar"></span>
@@ -50,7 +50,7 @@ if (isset($_SESSION['user_id'])) {
             <div class="header-actions">
                 <a href="login.php" class="button-secondary">Login</a>
                 <a href="signup.php" class="button-primary active">Sign Up</a>
-                <a href="contact.php" class="button-outline" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px;">Inquire</a>
+                <a href="contact.php" class="button-outline" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px;">Inquire</a>
             </div>
         </div>
     </header>
@@ -61,7 +61,7 @@ if (isset($_SESSION['user_id'])) {
             <div class="auth-card-head">
                 <span class="auth-chip">REQUEST ACCESS</span>
                 <h1>Request Access</h1>
-                <p class="auth-subtitle">Initialize your technical profile within the Team 4x4 ecosystem.</p>
+                <p class="auth-subtitle">Initialize your technical profile within the 4x4 Defender Parts ecosystem.</p>
             </div>
 
             <!-- Error display element -->
@@ -77,7 +77,7 @@ if (isset($_SESSION['user_id'])) {
 
                 <label class="auth-field">
                     <span>Email Address</span>
-                    <input type="email" name="email" id="email" placeholder="operator@team4x4.lk" required />
+                    <input type="email" name="email" id="email" placeholder="operator@4x4defenderparts.lk" required />
                 </label>
 
                 <label class="auth-field">

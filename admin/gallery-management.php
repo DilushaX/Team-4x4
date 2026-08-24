@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Build Gallery Management
+ * 4x4 Defender Parts Admin — Build Gallery Management
  */
 $pageId = 'gallery';
 $pageTitle = 'Build Gallery Management';

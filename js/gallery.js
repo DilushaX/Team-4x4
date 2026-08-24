@@ -1,4 +1,4 @@
-// Team4x4 gallery page script
+// 4x4DefenderParts gallery page script
 const galleryGrid = document.getElementById('galleryGrid');
 const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
 const galleryContainer = document.getElementById('uploadedGallery');

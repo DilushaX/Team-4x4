@@ -46,7 +46,7 @@ require_once 'includes/header.php';
             <div class="fulfillment-card active" data-method="pickup">
                 <span class="card-icon">🏪</span>
                 <h4>Garage Pickup</h4>
-                <p>Customer visits Team 4x4 workshop and collects items directly.</p>
+                <p>Customer visits 4x4 Defender Parts workshop and collects items directly.</p>
             </div>
             <div class="fulfillment-card" data-method="delivery">
                 <span class="card-icon">🚚</span>

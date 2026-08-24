@@ -1,18 +1,18 @@
 window.TEAM4X4_WHATSAPP_NUMBER = '94703939459';
 window.TEAM4X4_WHATSAPP_BASE_URL = `https://wa.me/${window.TEAM4X4_WHATSAPP_NUMBER}`;
 
-window.team4x4BuildWhatsAppUrl = function(message) {
+window.4x4defenderpartsBuildWhatsAppUrl = function(message) {
     return `${window.TEAM4X4_WHATSAPP_BASE_URL}?text=${encodeURIComponent(message)}`;
 };
 
-window.team4x4OpenWhatsApp = function(message) {
-    const url = window.team4x4BuildWhatsAppUrl(message);
+window.4x4defenderpartsOpenWhatsApp = function(message) {
+    const url = window.4x4defenderpartsBuildWhatsAppUrl(message);
     window.location.href = url;
     return url;
 };
 
 /** Load WhatsApp and contact settings from MySQL (single source of truth) */
-(function loadTeam4x4Settings() {
+(function load4x4DefenderPartsSettings() {
     fetch('backend/manage-settings.php')
         .then(res => res.json())
         .then(data => {

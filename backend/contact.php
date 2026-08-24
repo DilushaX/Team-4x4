@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Contact / Inquiry Submission Handler
+ * 4x4 Defender Parts — Contact / Inquiry Submission Handler
  */
 
 require_once __DIR__ . '/db.php';
@@ -49,7 +49,7 @@ try {
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
         echo json_encode(['status' => 'success', 'message' => 'Inquiry received. Our workshop technicians will contact you shortly.', 'id' => $msgId]);
     } else {
-        echo "<script>alert('Thank you for contacting Team 4x4. Your request has been transmitted successfully!'); window.location.href = '../contact.php?sent=1';</script>";
+        echo "<script>alert('Thank you for contacting 4x4 Defender Parts. Your request has been transmitted successfully!'); window.location.href = '../contact.php?sent=1';</script>";
     }
 
 } catch (PDOException $e) {

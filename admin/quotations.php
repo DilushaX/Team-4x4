@@ -95,7 +95,7 @@ async function loadQuotations() {
                 <td>${escapeHtml(q.customer_name)}</td>
                 <td>${escapeHtml(q.vehicle_model || '—')}</td>
                 <td>${escapeHtml(q.phone || '')}<br><small style="color:var(--admin-text-muted);">${escapeHtml(q.email)}</small></td>
-                <td style="color:#ffce2e; font-weight:700;">LKR ${Number(q.total_amount).toLocaleString('en-US')}</td>
+                <td style="color:#62c428; font-weight:700;">LKR ${Number(q.total_amount).toLocaleString('en-US')}</td>
                 <td>
                     <select class="sort-dropdown" style="background:#111; color:#fff; padding:0.2rem 0.5rem;" onchange="updateQuoteStatus(${q.id}, this.value)">
                         <option value="sent" ${q.status==='sent'?'selected':''}>Sent</option>

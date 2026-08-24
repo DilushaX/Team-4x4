@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Invoice View & Generator
+ * 4x4 Defender Parts Admin — Invoice View & Generator
  */
 
 require_once __DIR__ . '/../backend/db.php';
@@ -10,10 +10,10 @@ checkAuth('admin');
 
 // Load company settings for invoice header
 $companySettings = [
-    'name' => 'Team 4x4',
+    'name' => '4x4 Defender Parts',
     'address' => 'Colombo, Sri Lanka',
     'phone' => '+94 70 393 9459',
-    'email' => 'info@team4x4.lk',
+    'email' => 'info@4x4defenderparts.lk',
 ];
 try {
     $settingsStmt = $pdo->query("SELECT `key`, `value` FROM settings");
@@ -63,18 +63,18 @@ if ($order):
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invoice <?php echo htmlspecialchars($ref); ?> | Team 4x4</title>
+    <title>Invoice <?php echo htmlspecialchars($ref); ?> | 4x4 Defender Parts</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         body { font-family: 'Inter', sans-serif; background: #0c0d0e; color: #e5e7eb; margin: 0; padding: 2rem; }
         .invoice-box { max-width: 800px; margin: 0 auto; background: #16181a; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2.5rem; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #ffce2e; padding-bottom: 1.5rem; margin-bottom: 2rem; }
-        .brand { font-size: 1.8rem; font-weight: 800; color: #ffce2e; letter-spacing: 2px; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #62c428; padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .brand { font-size: 1.8rem; font-weight: 800; color: #62c428; letter-spacing: 2px; }
         .inv-title { text-align: right; }
         .inv-title h2 { margin: 0; font-size: 1.5rem; color: #fff; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
         .info-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 8px; }
-        .info-card h4 { margin: 0 0 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #ffce2e; }
+        .info-card h4 { margin: 0 0 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #62c428; }
         .info-card p { margin: 0.25rem 0; font-size: 0.9rem; color: #cbd5e1; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
         th { text-align: left; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -82,10 +82,10 @@ if ($order):
         .text-right { text-align: right; }
         .totals { margin-left: auto; width: 300px; }
         .totals-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; }
-        .totals-row.grand { font-size: 1.2rem; font-weight: 800; color: #ffce2e; border-top: 1px solid #ffce2e; padding-top: 0.75rem; margin-top: 0.5rem; }
+        .totals-row.grand { font-size: 1.2rem; font-weight: 800; color: #62c428; border-top: 1px solid #62c428; padding-top: 0.75rem; margin-top: 0.5rem; }
         .no-print { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-        .btn { padding: 0.65rem 1.25rem; border-radius: 999px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
-        .btn-gold { background: #ffce2e; color: #000; }
+        .btn { padding: 0.65rem 1.25rem; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
+        .btn-gold { background: #62c428; color: #000; }
         .btn-ghost { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
         @media print {
             body { background: #fff; color: #000; padding: 0; }
@@ -116,7 +116,7 @@ if ($order):
         </div>
         <div class="inv-title">
             <h2>INVOICE</h2>
-            <p style="margin:0.25rem 0 0;font-weight:700;color:#ffce2e;"><?php echo htmlspecialchars($ref); ?></p>
+            <p style="margin:0.25rem 0 0;font-weight:700;color:#62c428;"><?php echo htmlspecialchars($ref); ?></p>
             <p style="margin:0.2rem 0 0;font-size:0.82rem;color:#94a3b8;">Date: <?php echo date('d M Y', strtotime($order['created_at'])); ?></p>
         </div>
     </div>

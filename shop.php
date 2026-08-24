@@ -4,7 +4,7 @@ require_once 'includes/header.php';
 
 // Server-side Pagination parameters
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$limit = 12;
+$limit = 24;
 $offset = ($page - 1) * $limit;
 
 // Search & Filter parameters
@@ -134,13 +134,23 @@ try {
             </div>
 
             <section class="product-grid" id="productGrid">
-                <div class="empty-state <?php echo empty($products) ? '' : 'hidden'; ?>">No matching parts found in catalog.</div>
+                <div class="empty-state <?php echo empty($products) ? '' : 'hidden'; ?>">
+                    <div class="empty-state-icon">&#128269;</div>
+                    <h3 class="empty-state-title">No parts match your search</h3>
+                    <p class="empty-state-sub">Try different keywords or remove a filter.</p>
+                    <button class="button-secondary empty-state-clear" id="emptyStateClear">Clear All Filters</button>
+                </div>
                 
                 <?php if (!empty($products)): ?>
                     <?php foreach ($products as $p): 
                         $categoryClass = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $p['category']));
-                        $availability = $p['stock'] > 0 ? ($p['stock'] <= 3 ? "Limited Stock" : "In Stock") : "Out of Stock";
-                        
+                        $stockCount = intval($p['stock'] ?? 0);
+                        if ($stockCount <= 0)        { $availability = 'Out of Stock';  $availClass = 'badge-out'; }
+                        elseif ($stockCount <= 3)    { $availability = 'Limited Stock'; $availClass = 'badge-limited'; }
+                        else                         { $availability = 'In Stock';      $availClass = 'badge-in'; }
+                        $condition = htmlspecialchars($p['condition'] ?? 'New');
+                        $sku       = htmlspecialchars($p['sku'] ?: ('T4X4-' . $p['id']));
+
                         // Query additional product images
                         try {
                             $imgStmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ?");
@@ -152,17 +162,34 @@ try {
                             $galleryStr = $p['image_path'];
                         }
                     ?>
-                        <article class="product-card" data-category="<?php echo htmlspecialchars($categoryClass); ?>">
+                        <article class="product-card" data-category="<?php echo htmlspecialchars($categoryClass); ?>" data-url="product.php?id=<?php echo (int)$p['id']; ?>">
                             <div class="product-card-media">
                                 <span class="product-tag"><?php echo htmlspecialchars($p['category']); ?></span>
                                 <img src="<?php echo htmlspecialchars($p['image_path']); ?>" alt="<?php echo htmlspecialchars($p['title']); ?>" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border-radius:1.75rem 1.75rem 0 0;" onerror="this.src='assets/images/fabrication.jpg';" />
                             </div>
                             <div class="product-card-body">
                                 <h2><?php echo htmlspecialchars($p['title']); ?></h2>
+                                <div class="product-meta-row">
+                                    <span class="product-availability-badge <?php echo $availClass; ?>"><?php echo $availability; ?></span>
+                                    <span class="product-condition-badge"><?php echo $condition; ?></span>
+                                </div>
                                 <div class="product-chip"><?php echo htmlspecialchars($p['compatibility'] ?: 'Universal Fit'); ?></div>
-                                <p class="product-price">LKR <?php echo number_format($p['price'], 2); ?></p>
+                                <div class="product-price-row">
+                                    <p class="product-price">LKR <?php echo number_format($p['price'], 2); ?></p>
+                                    <span class="product-sku">SKU: <?php echo $sku; ?></span>
+                                </div>
                                 <div class="product-actions">
-                                    <a class="button-primary view-product" href="product.php?id=<?php echo $p['id']; ?>" style="text-align: center; text-decoration: none;">View Part</a>
+                                    <a class="button-primary view-product"
+                                       href="product.php?id=<?php echo $p['id']; ?>"
+                                       data-product-id="<?php echo (int)$p['id']; ?>"
+                                       data-product-name="<?php echo htmlspecialchars($p['title'], ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-price="<?php echo htmlspecialchars((string)$p['price'], ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-image="<?php echo htmlspecialchars($p['image_path'], ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-description="<?php echo htmlspecialchars($p['description'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-category="<?php echo htmlspecialchars($p['category'] ?? 'General', ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-compatibility="<?php echo htmlspecialchars($p['compatibility'] ?? 'Defender 90 / 110 / 130 / Universal', ENT_QUOTES, 'UTF-8'); ?>"
+                                       data-product-condition="<?php echo htmlspecialchars($p['condition'] ?? 'New', ENT_QUOTES, 'UTF-8'); ?>"
+                                       style="text-align: center; text-decoration: none;">View Part</a>
                                     <a class="button-secondary" href="contact.php">Inquire</a>
                                 </div>
                             </div>

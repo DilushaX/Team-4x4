@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Checkout & Order Creation API
+ * 4x4 Defender Parts — Checkout & Order Creation API
  * Saves order to MySQL BEFORE redirecting to WhatsApp
  */
 
@@ -169,7 +169,7 @@ try {
         ? "🏪 *Fulfillment:* Garage Pickup" 
         : "🚚 *Fulfillment:* Islandwide Delivery\n📍 *Address:* $address, $district ($postalCode)";
 
-    $waMessage = "🛠️ *TEAM 4X4 ORDER #$orderNumber* 🛠️\n\n" .
+    $waMessage = "🛠️ *4X4 DEFENDER PARTS ORDER #$orderNumber* 🛠️\n\n" .
         "👤 *Customer:* $customerName\n" .
         "📞 *Phone:* $phone\n" .
         "🚗 *Vehicle:* $vehicleModel\n" .
@@ -183,7 +183,7 @@ try {
         "💰 *Grand Total:* LKR " . number_format($grandTotal, 2) . "\n" .
         "💳 *Payment:* $paymentMethod\n" .
         "------------------------------------------\n\n" .
-        "Order registered in Team 4x4 database. Thank you!";
+        "Order registered in 4x4 Defender Parts database. Thank you!";
 
     $whatsappUrl = "https://wa.me/" . getWhatsAppNumber($pdo) . "?text=" . urlencode($waMessage);
 

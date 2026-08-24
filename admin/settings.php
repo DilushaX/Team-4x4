@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — System Settings
+ * 4x4 Defender Parts Admin — System Settings
  */
 $pageId = 'settings';
 $pageTitle = 'Settings';
@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/layout-start.php';
         
         <div class="admin-field">
             <label>Company Name</label>
-            <input type="text" name="company_name" id="setCompany" placeholder="Team 4x4" />
+            <input type="text" name="company_name" id="setCompany" placeholder="4x4 Defender Parts" />
         </div>
         <div class="admin-field">
             <label>WhatsApp Number (with country code)</label>
@@ -30,7 +30,7 @@ require_once __DIR__ . '/includes/layout-start.php';
         </div>
         <div class="admin-field">
             <label>Contact Email</label>
-            <input type="email" name="contact_email" id="setEmail" placeholder="info@team4x4.lk" />
+            <input type="email" name="contact_email" id="setEmail" placeholder="info@4x4defenderparts.lk" />
         </div>
         <div class="admin-field">
             <label>Islandwide Delivery Fee (LKR)</label>
@@ -69,10 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
             const s = data.settings || {};
-            document.getElementById('setCompany').value = s.company_name || s.company || 'Team 4x4';
+            document.getElementById('setCompany').value = s.company_name || s.company || '4x4 Defender Parts';
             document.getElementById('setWhatsapp').value = s.whatsapp_number || s.whatsapp || '+94703939459';
             document.getElementById('setPhone').value = s.contact_phone || s.phone || '+94703939459';
-            document.getElementById('setEmail').value = s.contact_email || s.email || 'info@team4x4.lk';
+            document.getElementById('setEmail').value = s.contact_email || s.email || 'info@4x4defenderparts.lk';
             document.getElementById('setDelivery').value = s.delivery_charge || s.deliveryCharge || 2500;
             document.getElementById('setAddress').value = s.workshop_address || s.address || 'No. 45 Garage Lane, Colombo, Sri Lanka';
         });

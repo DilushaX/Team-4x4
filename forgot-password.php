@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Forgot Password
+ * 4x4 Defender Parts — Forgot Password
  */
 
 require_once 'includes/db.php';
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team 4x4 | Forgot Security Key</title>
+    <title>4x4 Defender Parts | Forgot Security Key</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="auth-page auth-login">
     <header class="site-header">
         <div class="brand" style="display: flex; align-items: center; cursor: pointer;" onclick="window.location.href='index.php';">
-            <span style="color: #ffce2e; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
-            <span class="brand-mark">TEAM 4X4</span>
+            <span style="color: #62c428; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
+            <span class="brand-mark">4X4 DEFENDER PARTS</span>
         </div>
     </header>
 
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (strpos($message, '[Click here') !== false) {
                         preg_match('/\[(.*?)\]\((.*?)\)/', $message, $matches);
                         $cleanMsg = str_replace($matches[0], '', $message);
-                        echo htmlspecialchars($cleanMsg) . ' <a href="' . htmlspecialchars($matches[2]) . '" style="color:#ffce2e;text-decoration:underline;font-weight:700;">' . htmlspecialchars($matches[1]) . '</a>';
+                        echo htmlspecialchars($cleanMsg) . ' <a href="' . htmlspecialchars($matches[2]) . '" style="color:#62c428;text-decoration:underline;font-weight:700;">' . htmlspecialchars($matches[1]) . '</a>';
                     } else {
                         echo htmlspecialchars($message);
                     }
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <label class="auth-field">
                     <span>Email Address</span>
-                    <input type="email" name="email" placeholder="operator@team4x4.lk" required />
+                    <input type="email" name="email" placeholder="operator@4x4defenderparts.lk" required />
                 </label>
 
                 <button class="auth-button" type="submit">Request Reset Link →</button>

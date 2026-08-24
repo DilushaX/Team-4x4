@@ -1,5 +1,5 @@
 /**
- * Team 4x4 Admin — layout shell injector
+ * 4x4 Defender Parts Admin — layout shell injector
  */
 (function () {
     const page = document.body.dataset.adminPage || 'dashboard';
@@ -30,7 +30,7 @@
             <div class="admin-sidebar-brand">
                 <div class="brand-icon">🚙</div>
                 <div class="brand-text">
-                    <p class="brand-title">TEAM 4X4</p>
+                    <p class="brand-title">4X4 DEFENDER PARTS</p>
                     <p class="brand-sub">Admin Command</p>
                 </div>
             </div>
@@ -158,7 +158,7 @@
                     } else {
                         dropdown.innerHTML = results.map(r => `
                             <a href="${r.url}" style="display:block;padding:0.75rem 1rem;text-decoration:none;color:inherit;border-bottom:1px solid rgba(255,255,255,0.06);">
-                                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold,#ffce2e);">${r.type}</div>
+                                <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold,#62c428);">${r.type}</div>
                                 <div style="font-weight:600;font-size:0.88rem;">${escapeHtml(r.label)}</div>
                                 <div style="font-size:0.78rem;color:var(--text-muted);">${escapeHtml(r.meta || '')}</div>
                             </a>

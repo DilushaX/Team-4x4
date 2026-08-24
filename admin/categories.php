@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Category Management
+ * 4x4 Defender Parts Admin — Category Management
  */
 $pageId = 'categories';
 $pageTitle = 'Category Management';

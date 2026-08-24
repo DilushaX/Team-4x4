@@ -39,7 +39,7 @@ if ($service):
     }
 
     // Dynamic WhatsApp pre-filled message for booking
-    $bookMsg = "Hello Team 4x4,\n\nI'm interested in your " . $serviceTitle . " service.\n\nPlease provide more information about availability, pricing and booking.\n\nThank you.";
+    $bookMsg = "Hello 4x4 Defender Parts,\n\nI'm interested in your " . $serviceTitle . " service.\n\nPlease provide more information about availability, pricing and booking.\n\nThank you.";
     $bookWaUrl = "https://wa.me/" . $waNumber . "?text=" . rawurlencode($bookMsg);
 ?>
     <main>
@@ -71,7 +71,7 @@ if ($service):
                     <?php endif; ?>
                     <div class="booking-actions">
                         <a href="<?php echo htmlspecialchars($bookWaUrl); ?>" target="_blank" rel="noreferrer" class="button-primary whatsapp-button">Book This Service</a>
-                        <a href="tel:<?php echo htmlspecialchars($phoneNumber); ?>" class="button-secondary">Call Team 4x4</a>
+                        <a href="tel:<?php echo htmlspecialchars($phoneNumber); ?>" class="button-secondary">Call 4x4 Defender Parts</a>
                     </div>
                 </div>
             </div>

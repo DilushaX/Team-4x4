@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Services Content Management
+ * 4x4 Defender Parts Admin — Services Content Management
  */
 $pageId = 'services';
 $pageTitle = 'Services Management';

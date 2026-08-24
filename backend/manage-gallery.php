@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Gallery Projects Management API
+ * 4x4 Defender Parts — Gallery Projects Management API
  */
 
 require_once __DIR__ . '/db.php';

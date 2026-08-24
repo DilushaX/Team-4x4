@@ -1,11 +1,11 @@
-/* Team 4x4 Premium Admin Dashboard */
+/* 4x4 Defender Parts Premium Admin Dashboard */
 :root {
-    --gold: #ffce2e;
-    --gold-dim: rgba(255, 206, 46, 0.15);
-    --gold-glow: rgba(255, 206, 46, 0.35);
+    --gold: #62c428;
+    --gold-dim: rgba(98, 196, 40, 0.15);
+    --gold-glow: rgba(98, 196, 40, 0.35);
     --silver: #c8cdd6;
     --silver-border: rgba(200, 205, 214, 0.18);
-    --carbon: #050509;
+    --carbon: #050505;
     --carbon-2: #0a0b10;
     --carbon-3: #111318;
     --glass: rgba(16, 18, 25, 0.72);
@@ -159,8 +159,8 @@
 .admin-nav-link.active {
     color: var(--gold);
     background: var(--gold-dim);
-    border-color: rgba(255, 206, 46, 0.22);
-    box-shadow: 0 8px 28px rgba(255, 206, 46, 0.08);
+    border-color: rgba(98, 196, 40, 0.22);
+    box-shadow: 0 8px 28px rgba(98, 196, 40, 0.08);
 }
 
 .admin-nav-link .nav-icon {
@@ -176,8 +176,8 @@
 }
 
 .admin-nav-link.active .nav-icon {
-    background: rgba(255, 206, 46, 0.12);
-    border-color: rgba(255, 206, 46, 0.25);
+    background: rgba(98, 196, 40, 0.12);
+    border-color: rgba(98, 196, 40, 0.25);
 }
 
 .admin-sidebar.collapsed .admin-nav-link span.label { opacity: 0; width: 0; overflow: hidden; }
@@ -239,7 +239,7 @@
 
 .admin-topbar-toggle:hover {
     color: var(--gold);
-    border-color: rgba(255, 206, 46, 0.3);
+    border-color: rgba(98, 196, 40, 0.3);
 }
 
 .admin-search {
@@ -251,7 +251,7 @@
 .admin-search input {
     width: 100%;
     padding: 0.7rem 1rem 0.7rem 2.75rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,0.04);
     color: var(--text);
@@ -261,8 +261,8 @@
 }
 
 .admin-search input:focus {
-    border-color: rgba(255, 206, 46, 0.35);
-    box-shadow: 0 0 0 3px rgba(255, 206, 46, 0.08);
+    border-color: rgba(98, 196, 40, 0.35);
+    box-shadow: 0 0 0 3px rgba(98, 196, 40, 0.08);
 }
 
 .admin-search .search-icon {
@@ -287,7 +287,7 @@
     color: var(--text-muted);
     letter-spacing: 0.04em;
     padding: 0.5rem 0.85rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,0.03);
     white-space: nowrap;
@@ -313,7 +313,7 @@
 
 .admin-icon-btn:hover {
     color: var(--gold);
-    border-color: rgba(255, 206, 46, 0.25);
+    border-color: rgba(98, 196, 40, 0.25);
 }
 
 .admin-icon-btn .badge {
@@ -332,9 +332,9 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.65rem 1.15rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: none;
-    background: linear-gradient(135deg, #ffce2e 0%, #e6b800 100%);
+    background: linear-gradient(135deg, #62c428 0%, #e6b800 100%);
     color: #111;
     font-weight: 700;
     font-size: 0.8rem;
@@ -342,13 +342,13 @@
     text-transform: uppercase;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.25s ease;
-    box-shadow: 0 8px 24px rgba(255, 206, 46, 0.2);
+    box-shadow: 0 8px 24px rgba(98, 196, 40, 0.2);
     white-space: nowrap;
 }
 
 .admin-btn-gold:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(255, 206, 46, 0.3);
+    box-shadow: 0 12px 32px rgba(98, 196, 40, 0.3);
 }
 
 .admin-btn-ghost {
@@ -356,7 +356,7 @@
     align-items: center;
     gap: 0.4rem;
     padding: 0.55rem 1rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,0.04);
     color: var(--text);
@@ -376,7 +376,7 @@
     align-items: center;
     gap: 0.65rem;
     padding: 0.35rem 0.65rem 0.35rem 0.35rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,0.03);
     cursor: pointer;
@@ -516,7 +516,7 @@
 }
 
 .admin-stat-card:hover {
-    border-color: rgba(255, 206, 46, 0.2);
+    border-color: rgba(98, 196, 40, 0.2);
     transform: translateY(-4px);
     box-shadow: 0 16px 40px rgba(0,0,0,0.3);
 }
@@ -532,7 +532,7 @@
     font-size: 1.2rem;
     margin-bottom: 0.85rem;
     background: var(--gold-dim);
-    border: 1px solid rgba(255, 206, 46, 0.2);
+    border: 1px solid rgba(98, 196, 40, 0.2);
 }
 
 .admin-stat-card .stat-value {
@@ -622,20 +622,20 @@
 }
 
 .admin-table tbody tr:hover {
-    background: rgba(255, 206, 46, 0.04);
+    background: rgba(98, 196, 40, 0.04);
 }
 
 .admin-badge {
     display: inline-flex;
     padding: 0.3rem 0.65rem;
-    border-radius: 999px;
+    border-radius: 4px;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
 
-.admin-badge-gold { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(255,206,46,0.25); }
+.admin-badge-gold { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(98, 196, 40,0.25); }
 .admin-badge-green { background: rgba(74,222,128,0.12); color: #4ade80; }
 .admin-badge-blue { background: rgba(96,165,250,0.12); color: #60a5fa; }
 .admin-badge-red { background: rgba(248,113,113,0.12); color: #f87171; }
@@ -663,7 +663,7 @@
 .admin-table-actions button:hover,
 .admin-table-actions a:hover {
     color: var(--gold);
-    border-color: rgba(255,206,46,0.3);
+    border-color: rgba(98, 196, 40,0.3);
 }
 
 /* Tabs */
@@ -678,7 +678,7 @@
 
 .admin-tab {
     padding: 0.55rem 1rem;
-    border-radius: 999px;
+    border-radius: 4px;
     border: 1px solid transparent;
     background: transparent;
     color: var(--text-muted);
@@ -693,7 +693,7 @@
 .admin-tab.active {
     color: var(--gold);
     background: var(--gold-dim);
-    border-color: rgba(255,206,46,0.2);
+    border-color: rgba(98, 196, 40,0.2);
 }
 
 .admin-tab-panel { display: none; animation: adminFadeIn 0.35s ease; }
@@ -738,7 +738,7 @@
 .admin-field input:focus,
 .admin-field select:focus,
 .admin-field textarea:focus {
-    border-color: rgba(255, 206, 46, 0.4);
+    border-color: rgba(98, 196, 40, 0.4);
 }
 
 .admin-field textarea { min-height: 120px; resize: vertical; }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Secure Authentication & Session Helper
+ * 4x4 Defender Parts — Secure Authentication & Session Helper
  */
 
 if (session_status() === PHP_SESSION_NONE) {

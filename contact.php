@@ -10,7 +10,7 @@ require_once 'includes/header.php';
 <main>
     <section class="contact-hero">
         <div class="contact-hero-copy">
-            <span class="eyebrow">Initiate Protocol</span>
+            <span class="eyebrow">4X4 DEFENDER PARTS</span>
             <h1>Connect with our elite technicians.</h1>
             <p>Schedule diagnostics, workshop operations, or custom build inquiries with precision and confidence.</p>
         </div>
@@ -34,7 +34,7 @@ require_once 'includes/header.php';
             <div class="contact-info">
                 <p class="contact-label">Communications</p>
                 <p>+94 70 393 9459</p>
-                <p>info@team4x4.lk</p>
+                <p>info@4x4defenderparts.lk</p>
             </div>
             <div class="contact-info">
                 <p class="contact-label">Operational Hours</p>
@@ -93,13 +93,13 @@ require_once 'includes/header.php';
                     <span>Operational Details *</span>
                     <textarea name="message" rows="5" placeholder="Describe the symptoms, requirements, or part numbers…" required></textarea>
                 </label>
-                <button type="submit" class="auth-button">Transmit Request</button>
+                <button type="submit" class="auth-button">INQUIRE ABOUT YOUR DEFENDER</button>
             </form>
         </article>
     </section>
 
     <section class="contact-map">
-        <div class="map-pin">Target Acquired<br><strong>Team 4x4 HQ, Colombo</strong></div>
+        <div class="map-pin">Workshop Location<br><strong>4x4 Defender Parts HQ, Colombo</strong></div>
     </section>
 </main>
 

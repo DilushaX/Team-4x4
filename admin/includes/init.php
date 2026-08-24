@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Page bootstrap (PHP/MySQL secure)
+ * 4x4 Defender Parts Admin — Page bootstrap (PHP/MySQL secure)
  * Usage: require_once 'includes/init.php'; at top of each admin/*.php page
  */
 

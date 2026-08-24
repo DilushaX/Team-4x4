@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Reports Generation API
+ * 4x4 Defender Parts — Reports Generation API
  */
 
 require_once __DIR__ . '/db.php';

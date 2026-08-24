@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Contact Messages & Inquiries
+ * 4x4 Defender Parts Admin — Contact Messages & Inquiries
  */
 $pageId = 'messages';
 $pageTitle = 'Messages & Inquiries';
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td><span style="font-size:0.8rem;color:var(--text-muted);">${(m.created_at || '').substring(0,10)}</span></td>
                 <td><span class="admin-badge ${m.status === 'unread' ? 'admin-badge-red' : 'admin-badge-silver'}">${escapeHtml(m.status)}</span></td>
                 <td class="admin-table-actions">
-                    ${m.phone ? `<a href="https://wa.me/${m.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + m.name + ', Team 4x4 workshop responding to your inquiry.')}" target="_blank" class="admin-btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.75rem;">💬 WA Reply</a>` : ''}
+                    ${m.phone ? `<a href="https://wa.me/${m.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + m.name + ', 4x4 Defender Parts workshop responding to your inquiry.')}" target="_blank" class="admin-btn-ghost" style="padding:0.3rem 0.6rem;font-size:0.75rem;">💬 WA Reply</a>` : ''}
                     ${m.status === 'unread' ? `<button type="button" class="btn-read-msg" data-id="${m.id}">✓ Read</button>` : ''}
                     <button type="button" class="btn-del-msg" data-id="${m.id}" style="color:#f87171;border-color:rgba(248,113,113,0.3);">🗑 Delete</button>
                 </td>

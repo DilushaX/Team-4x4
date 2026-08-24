@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Reset Password
+ * 4x4 Defender Parts — Reset Password
  */
 
 require_once 'includes/db.php';
@@ -75,7 +75,7 @@ if ($isValid && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team 4x4 | Reset Security Key</title>
+    <title>4x4 Defender Parts | Reset Security Key</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -83,8 +83,8 @@ if ($isValid && $_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="auth-page auth-login">
     <header class="site-header">
         <div class="brand" style="display: flex; align-items: center; cursor: pointer;" onclick="window.location.href='index.php';">
-            <span style="color: #ffce2e; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
-            <span class="brand-mark">TEAM 4X4</span>
+            <span style="color: #62c428; margin-right: 0.6rem; font-size: 1.3rem;">🚙</span>
+            <span class="brand-mark">4X4 DEFENDER PARTS</span>
         </div>
     </header>
 

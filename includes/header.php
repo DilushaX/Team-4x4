@@ -1,5 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
+    $sessionPath = '/Applications/XAMPP/xamppfiles/temp';
+    if (is_dir($sessionPath) && is_writable($sessionPath)) {
+        session_save_path($sessionPath);
+    }
     session_start();
 }
 require_once __DIR__ . '/db.php';
@@ -15,7 +19,8 @@ function isPageActive($pageName) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Team 4x4 | <?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : "Engineered Excellence"; ?></title>
+    <meta name="description" content="4X4 DEFENDER PARTS offers premium Defender parts, restoration, fabrication, lighting and off-road upgrades designed for performance and adventure." />
+    <title>4X4 DEFENDER PARTS | <?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : "Engineered Excellence"; ?></title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/animations.css" />
     <link rel="stylesheet" href="css/responsive.css" />
@@ -23,9 +28,9 @@ function isPageActive($pageName) {
 </head>
 <body class="<?php echo isset($bodyClass) ? htmlspecialchars($bodyClass) : ""; ?>">
     <header class="site-header">
-        <div class="brand" style="display: flex; align-items: center; cursor: pointer;" onclick="window.location.href='index.php';">
-            <span style="color: #ffce2e; margin-right: 0.6rem; font-size: 1.3rem; display: inline-flex; align-items: center;">🚙</span>
-            <span class="brand-mark">TEAM 4X4</span>
+        <div class="brand" onclick="window.location.href='index.php';">
+            <img src="assets/images/logo.jpg" alt="4X4 DEFENDER PARTS Logo" />
+            <span class="brand-wordmark">4X4 DEFENDER PARTS</span>
         </div>
         <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
             <span class="nav-toggle-bar"></span>
@@ -42,20 +47,20 @@ function isPageActive($pageName) {
                 <a href="contact.php" <?php echo isPageActive('contact.php'); ?>>Contact</a>
                 <a href="cart.php" <?php echo isPageActive('cart.php'); ?>>Cart</a>
             </nav>
-            <div class="header-actions" style="display: flex; align-items: center; gap: 1rem;">
-                <span class="search-icon" style="color: rgba(255, 255, 255, 0.7); cursor: pointer; font-size: 1.15rem; display: inline-flex; align-items: center; margin-right: 0.25rem;">🔍</span>
+            <div class="header-actions">
+                <span class="search-icon">🔍</span>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <a href="admin/dashboard.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Admin Portal</a>
+                        <a href="admin/dashboard.php" class="button-primary">Admin Portal</a>
                     <?php else: ?>
-                        <span style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em;">HI, <?php echo htmlspecialchars(strtoupper(explode(' ', $_SESSION['user_name'])[0])); ?></span>
+                        <span class="user-greeting">HI, <?php echo htmlspecialchars(strtoupper(explode(' ', $_SESSION['user_name'])[0])); ?></span>
                     <?php endif; ?>
-                    <a href="logout.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Log Out</a>
+                    <a href="logout.php" class="button-secondary">Log Out</a>
                 <?php else: ?>
-                    <a href="login.php" class="button-secondary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Login</a>
-                    <a href="signup.php" class="button-primary" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">Sign Up</a>
+                    <a href="login.php" class="button-secondary">Login</a>
+                    <a href="signup.php" class="button-primary">Sign Up</a>
                 <?php endif; ?>
-                <a href="contact.php" class="button-outline" style="font-size: 0.8rem; padding: 0.6rem 1.25rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px;">Inquire</a>
+                <a href="contact.php" class="button-outline">Inquire</a>
             </div>
         </div>
     </header>

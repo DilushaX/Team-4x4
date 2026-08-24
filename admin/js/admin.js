@@ -1,5 +1,5 @@
 /**
- * Team 4x4 Admin — core interactions
+ * 4x4 Defender Parts Admin — core interactions
  */
 const AdminUI = {
     formatLKR(value) {

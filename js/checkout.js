@@ -1,4 +1,4 @@
-const cartKey = 'team4x4Cart';
+const cartKey = '4x4defenderpartsCart';
 const checkoutCartKey = 'selectedCheckoutCart';
 
 const elements = {

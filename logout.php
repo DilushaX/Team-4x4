@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Logout Route
+ * 4x4 Defender Parts — Logout Route
  */
 
 require_once 'includes/db.php';

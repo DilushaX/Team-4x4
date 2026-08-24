@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Inventory Management API
+ * 4x4 Defender Parts — Inventory Management API
  */
 
 require_once __DIR__ . '/db.php';

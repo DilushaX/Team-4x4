@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Order Management
+ * 4x4 Defender Parts Admin — Order Management
  */
 $pageId = 'orders';
 $pageTitle = 'Order Management';
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (order.phone) {
-            const wa = `https://wa.me/${order.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + order.customer_name + ', regarding your Team 4x4 order ' + (order.whatsapp_reference || ('#' + order.id)) + '.')}`;
+            const wa = `https://wa.me/${order.phone.replace(/\D/g,'')}?text=${encodeURIComponent('Hi ' + order.customer_name + ', regarding your 4x4 Defender Parts order ' + (order.whatsapp_reference || ('#' + order.id)) + '.')}`;
             addModalBtn(actionsEl, '💬 WhatsApp Customer', 'ghost', () => window.open(wa, '_blank'));
         }
 

@@ -21,7 +21,7 @@ require_once 'includes/header.php';
                     <div class="fulfillment-card active" data-method="pickup">
                         <span class="card-icon">🏪</span>
                         <h4>Garage Pickup</h4>
-                        <p>Customer visits Team 4x4 workshop and collects items directly.</p>
+                        <p>Customer visits 4x4 Defender Parts workshop and collects items directly.</p>
                     </div>
                     <div class="fulfillment-card" data-method="delivery">
                         <span class="card-icon">🚚</span>
@@ -69,7 +69,7 @@ require_once 'includes/header.php';
                     <div class="form-row">
                         <label>
                             Email Address *
-                            <input type="email" id="email" name="email" placeholder="e.g. kasun@team4x4.lk" value="<?php echo htmlspecialchars($_SESSION['user_email'] ?? ''); ?>" />
+                            <input type="email" id="email" name="email" placeholder="e.g. kasun@4x4defenderparts.lk" value="<?php echo htmlspecialchars($_SESSION['user_email'] ?? ''); ?>" />
                         </label>
                         <label>
                             Postal Code *
@@ -193,7 +193,7 @@ require_once 'includes/header.php';
                     </div>
                 </div>
                 <div class="qr-block">
-                    <div class="qr-placeholder">TEAM 4X4</div>
+                    <div class="qr-placeholder">4X4 DEFENDER PARTS</div>
                     <p>Order verified and saved to database.</p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Settings Management API
+ * 4x4 Defender Parts — Settings Management API
  */
 
 require_once __DIR__ . '/db.php';

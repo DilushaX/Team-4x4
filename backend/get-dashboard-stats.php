@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 — Live Admin Dashboard Stats API
+ * 4x4 Defender Parts — Live Admin Dashboard Stats API
  */
 
 require_once __DIR__ . '/db.php';

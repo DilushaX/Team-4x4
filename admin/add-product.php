@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Add / Edit Product Page
+ * 4x4 Defender Parts Admin — Add / Edit Product Page
  */
 $pageId = 'products';
 $pageTitle = 'Add / Edit Product';
@@ -53,6 +53,10 @@ require_once __DIR__ . '/includes/layout-start.php';
             <div class="admin-field full" style="grid-column:1/-1;">
                 <label>Compatibility</label>
                 <input type="text" name="compatibility" id="compatibility" placeholder="e.g. Defender 90 / 110 / 130 / Universal" />
+            </div>
+            <div class="admin-field full" style="grid-column:1/-1;">
+                <label>Condition</label>
+                <input type="text" name="condition" id="condition" placeholder="New / Used / Refurbished" value="New" />
             </div>
             <div class="admin-field full" style="grid-column:1/-1;">
                 <label>Description</label>
@@ -115,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // If editing existing product
     if (productId) {
-        document.title = 'Team 4x4 Admin | Edit Product';
+        document.title = '4x4 Defender Parts Admin | Edit Product';
         document.getElementById('productId').value = productId;
 
         fetch(`../backend/get-products.php?id=${productId}`)
@@ -131,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('stock').value = p.stock || 0;
                     document.getElementById('featured').value = (p.is_featured || p.featured) ? '1' : '0';
                     document.getElementById('compatibility').value = p.compatibility || '';
+                    document.getElementById('condition').value = p.condition || 'New';
                     document.getElementById('description').value = p.description || '';
                     document.getElementById('features').value = p.features || '';
 

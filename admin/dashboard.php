@@ -1,6 +1,6 @@
 <?php
 /**
- * Team 4x4 Admin — Live Dashboard Command Center
+ * 4x4 Defender Parts Admin — Live Dashboard Command Center
  */
 $pageId = 'dashboard';
 $pageTitle = 'Dashboard Overview';

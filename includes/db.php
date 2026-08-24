@@ -1,6 +1,10 @@
 <?php
-// Team4x4 Production-Ready Database Connector
+// 4x4DefenderParts Production-Ready Database Connector
 if (session_status() === PHP_SESSION_NONE) {
+    $sessionPath = '/Applications/XAMPP/xamppfiles/temp';
+    if (is_dir($sessionPath) && is_writable($sessionPath)) {
+        session_save_path($sessionPath);
+    }
     session_start();
 }
 

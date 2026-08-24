@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stock = intval($_POST['stock'] ?? 0);
         $featured = isset($_POST['featured']) && ($_POST['featured'] === '1' || $_POST['featured'] === 'on') ? 1 : 0;
         $compatibility = trim($_POST['compatibility'] ?? '');
+        $condition = trim($_POST['condition'] ?? 'New');
 
         if ($title === '' || $price <= 0) {
             http_response_code(400);
@@ -55,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert product
-        $stmt = $pdo->prepare("INSERT INTO products (title, slug, sku, category, category_id, description, price, stock, is_featured, image_path, features, compatibility) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $slug, $sku, $category, $categoryId, $description, $price, $stock, $featured, $mainImagePath, $features, $compatibility]);
+        $stmt = $pdo->prepare("INSERT INTO products (title, slug, sku, category, category_id, description, price, stock, is_featured, image_path, features, compatibility, `condition`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $slug, $sku, $category, $categoryId, $description, $price, $stock, $featured, $mainImagePath, $features, $compatibility, $condition]);
         $productId = $pdo->lastInsertId();
 
         // Handle multiple additional images if provided

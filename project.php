@@ -38,7 +38,7 @@ if (!$project) {
     exit;
 }
 
-$pageTitle = $project['title'] . " | Team 4x4 Build";
+$pageTitle = $project['title'] . " | 4x4 Defender Parts Build";
 $heroImage = $project['featured_image'] ?: ($images[0] ?? 'assets/images/fabrication.jpg');
 $displayImages = $images;
 if ($heroImage && !in_array($heroImage, $displayImages, true)) {
@@ -74,7 +74,7 @@ if ($heroImage && !in_array($heroImage, $displayImages, true)) {
 
         <aside class="project-info glass-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
             <div class="project-stats" style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
-                <div><strong style="display:block; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">Category</strong><span style="color:#ffce2e; font-weight:700;"><?php echo htmlspecialchars($project['category']); ?></span></div>
+                <div><strong style="display:block; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">Category</strong><span style="color:#62c428; font-weight:700;"><?php echo htmlspecialchars($project['category']); ?></span></div>
                 <div><strong style="display:block; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">Completion</strong><span><?php echo htmlspecialchars($project['completion_date'] ?: 'Active'); ?></span></div>
                 <div><strong style="display:block; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">Photos</strong><span><?php echo count($displayImages); ?></span></div>
             </div>
@@ -86,14 +86,14 @@ if ($heroImage && !in_array($heroImage, $displayImages, true)) {
 
             <?php if (!empty($project['modifications'])): ?>
                 <div>
-                    <h3 style="font-size: 1.1rem; color: #ffce2e; margin-bottom: 0.5rem;">Key Modifications</h3>
+                    <h3 style="font-size: 1.1rem; color: #62c428; margin-bottom: 0.5rem;">Key Modifications</h3>
                     <p style="line-height: 1.5; color: rgba(255,255,255,0.8); font-size: 0.9rem;"><?php echo nl2br(htmlspecialchars($project['modifications'])); ?></p>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($project['installed_parts'])): ?>
                 <div>
-                    <h3 style="font-size: 1.1rem; color: #ffce2e; margin-bottom: 0.5rem;">Installed Components</h3>
+                    <h3 style="font-size: 1.1rem; color: #62c428; margin-bottom: 0.5rem;">Installed Components</h3>
                     <p style="line-height: 1.5; color: rgba(255,255,255,0.8); font-size: 0.9rem;"><?php echo nl2br(htmlspecialchars($project['installed_parts'])); ?></p>
                 </div>
             <?php endif; ?>
@@ -103,17 +103,17 @@ if ($heroImage && !in_array($heroImage, $displayImages, true)) {
     <!-- Before & After Comparison (if images present) -->
     <?php if (!empty($project['before_image']) || !empty($project['after_image'])): ?>
         <div style="margin-top: 3rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2rem;">
-            <h2 style="font-size: 1.4rem; text-align: center; margin-bottom: 1.5rem; color: #ffce2e;">Transformation Showcase</h2>
+            <h2 style="font-size: 1.4rem; text-align: center; margin-bottom: 1.5rem; color: #62c428;">Transformation Showcase</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <?php if (!empty($project['before_image'])): ?>
                     <div style="text-align: center;">
-                        <span style="display: inline-block; background: rgba(255,255,255,0.1); padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem;">BEFORE</span>
+                        <span style="display: inline-block; background: rgba(255,255,255,0.1); padding: 0.3rem 1rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem;">BEFORE</span>
                         <img src="<?php echo htmlspecialchars($project['before_image']); ?>" alt="Before restoration" style="width: 100%; height: 260px; object-fit: cover; border-radius: 1rem;" />
                     </div>
                 <?php endif; ?>
                 <?php if (!empty($project['after_image'])): ?>
                     <div style="text-align: center;">
-                        <span style="display: inline-block; background: #ffce2e; color: #000; padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem;">AFTER</span>
+                        <span style="display: inline-block; background: #62c428; color: #000; padding: 0.3rem 1rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem;">AFTER</span>
                         <img src="<?php echo htmlspecialchars($project['after_image']); ?>" alt="After restoration" style="width: 100%; height: 260px; object-fit: cover; border-radius: 1rem;" />
                     </div>
                 <?php endif; ?>
@@ -131,7 +131,7 @@ if ($heroImage && !in_array($heroImage, $displayImages, true)) {
             if (!src || !mainImage) return;
             mainImage.src = src;
             thumbs.forEach((btn) => btn.style.borderColor = 'rgba(255,255,255,0.2)');
-            thumb.style.borderColor = '#ffce2e';
+            thumb.style.borderColor = '#62c428';
         });
     });
 </script>

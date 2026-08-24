@@ -48,7 +48,7 @@ try {
 	$countStmt->execute($params);
 	$total = intval($countStmt->fetchColumn());
 
-	$sql = "SELECT id, title, sku, category, price, stock, is_featured AS featured, image_path, slug, description, compatibility FROM products $whereSql ORDER BY created_at DESC";
+	$sql = "SELECT id, title, sku, category, price, stock, is_featured AS featured, image_path, slug, description, compatibility, `condition` FROM products $whereSql ORDER BY created_at DESC";
 	if ($limit > 0) {
 		$offset = ($page - 1) * $limit;
 		$sql .= " LIMIT $limit OFFSET $offset";

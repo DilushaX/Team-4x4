@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   },
   description:
     "Premium Defender parts, restoration, fabrication, lighting and off-road upgrades designed for performance and adventure.",
+  icons: {
+    icon: "/assets/images/logo.jpg",
+    apple: "/assets/images/logo.jpg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

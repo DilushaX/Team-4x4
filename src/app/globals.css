@@ -69,7 +69,7 @@
 @media print {
   .admin-sidebar,
   .admin-header,
-  .print\\:hidden {
+  .print-hidden {
     display: none !important;
   }
 

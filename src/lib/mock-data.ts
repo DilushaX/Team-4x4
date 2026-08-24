@@ -547,20 +547,29 @@ export interface OrderData {
   items: OrderItemData[];
 }
 
-import fs from "fs";
-import path from "path";
-
-const LOCAL_STORE_PATH = path.join(process.cwd(), "data", "store.json");
-const VERCEL_STORE_PATH = path.join("/tmp", "team4x4_store.json");
-
-function getStorePath() {
-  if (process.env.VERCEL) return VERCEL_STORE_PATH;
-  return LOCAL_STORE_PATH;
+function getNodeFs(): { fs: any; path: any } | null {
+  try {
+    if (typeof process !== "undefined" && process.versions && process.versions.node) {
+      const req = typeof __non_webpack_require__ !== "undefined" ? __non_webpack_require__ : eval("require");
+      const fsMod = req("fs");
+      const pathMod = req("path");
+      return { fs: fsMod, path: pathMod };
+    }
+  } catch {
+    /* Edge runtime or browser */
+  }
+  return null;
 }
 
 function loadStoreFromDisk() {
   try {
-    const pathsToTry = [getStorePath(), LOCAL_STORE_PATH, VERCEL_STORE_PATH];
+    const node = getNodeFs();
+    if (!node) return null;
+    const { fs, path } = node;
+    const localPath = path.join(process.cwd(), "data", "store.json");
+    const vercelPath = path.join("/tmp", "team4x4_store.json");
+    const pathsToTry = [process.env.VERCEL ? vercelPath : localPath, localPath, vercelPath];
+
     for (const p of pathsToTry) {
       if (fs.existsSync(p)) {
         const raw = fs.readFileSync(p, "utf-8");
@@ -568,11 +577,13 @@ function loadStoreFromDisk() {
         if (parsed) return parsed;
       }
     }
-  } catch (e) {
-    console.error("Error reading persistent store:", e);
+  } catch {
+    /* Safe fallback */
   }
   return null;
 }
+
+declare const __non_webpack_require__: any;
 
 const diskStore = loadStoreFromDisk();
 
@@ -723,7 +734,13 @@ if (!globalCustomerStore.__MOCK_CUSTOMERS__) {
 
 function persistAll() {
   try {
-    const targetPath = getStorePath();
+    const node = getNodeFs();
+    if (!node) return;
+    const { fs, path } = node;
+    const targetPath = process.env.VERCEL
+      ? path.join("/tmp", "team4x4_store.json")
+      : path.join(process.cwd(), "data", "store.json");
+
     const dir = path.dirname(targetPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -737,8 +754,8 @@ function persistAll() {
       customers: globalCustomerStore.__MOCK_CUSTOMERS__,
     };
     fs.writeFileSync(targetPath, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    /* Silent fail on strict read-only lambdas */
+  } catch {
+    /* Silent fail on strict read-only lambdas or edge runtimes */
   }
 }
 

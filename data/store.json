@@ -391,6 +391,18 @@
   ],
   "customers": [
     {
+      "name": "gv8yg",
+      "email": "hgiiu@hbih.lk",
+      "password": "$2b$10$.mh/00S.RHcCKfZ2iyXR0efN24dJiQqvw0FXh8DtY3KWv7pboRxfq",
+      "role": "customer",
+      "phone": "+94 77 000 0000",
+      "address": "Colombo, Sri Lanka",
+      "vehicle_model": "Defender 110",
+      "id": 12,
+      "orderCount": 0,
+      "created_at": "2026-08-24T19:36:11.976Z"
+    },
+    {
       "name": "Saman Kumara",
       "email": "saman@gmail.com",
       "password": "$2b$10$5tNvKNsUtIWmEywcsKF7/O2fgxk1CPAOK16NQU1ujWCKU84dbfeR2",

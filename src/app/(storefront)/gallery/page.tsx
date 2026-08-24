@@ -66,7 +66,7 @@ export default async function GalleryPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/restoration.png"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Visual Portfolio"
         title="Photo Gallery"
         meta="High-resolution gallery of Defender restorations, custom upholstery, suspension engineering, and bespoke off-road builds."

@@ -39,7 +39,7 @@ export default async function ServicesIndexPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/restoration.png"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Specialized Engineering"
         title="Workshop Services"
         meta="From complete frame-off restorations to tactical suspension and armor fabrication — precision engineered for extreme terrain."

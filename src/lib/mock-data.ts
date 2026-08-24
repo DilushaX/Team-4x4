@@ -664,6 +664,53 @@ if (!globalGalleryStore.__MOCK_GALLERY__) {
   globalGalleryStore.__MOCK_GALLERY__ = diskStore?.gallery || [...MOCK_GALLERY];
 }
 
+export type CustomerUser = {
+  id: number;
+  name: string;
+  email: string;
+  password?: string;
+  role: string;
+  phone?: string;
+  address?: string;
+  vehicle_model?: string;
+  notes?: string;
+  created_at: string;
+  orderCount?: number;
+};
+
+export const MOCK_CUSTOMERS: CustomerUser[] = [
+  {
+    id: 2,
+    name: "Kasun Silva",
+    email: "kasun@email.lk",
+    role: "customer",
+    phone: "+94 77 123 4567",
+    address: "12/4 Temple Road, Colombo 03",
+    vehicle_model: "Defender 110 TD5",
+    orderCount: 1,
+    created_at: new Date(Date.now() - 3600000 * 48).toISOString(),
+  },
+  {
+    id: 3,
+    name: "Nimal Perera",
+    email: "nimal.p@gmail.com",
+    role: "customer",
+    phone: "+94 71 889 2345",
+    address: "Kandy Road, Kiribathgoda",
+    vehicle_model: "Defender 90 Puma",
+    orderCount: 0,
+    created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
+  },
+];
+
+const globalCustomerStore = globalThis as unknown as {
+  __MOCK_CUSTOMERS__?: CustomerUser[];
+};
+
+if (!globalCustomerStore.__MOCK_CUSTOMERS__) {
+  globalCustomerStore.__MOCK_CUSTOMERS__ = diskStore?.customers || [...MOCK_CUSTOMERS];
+}
+
 function persistAll() {
   try {
     const dir = path.dirname(STORE_PATH);
@@ -676,6 +723,7 @@ function persistAll() {
       services: globalDataStore.__MOCK_SERVICES__,
       orders: globalMockOrders.__MOCK_ORDERS__,
       gallery: globalGalleryStore.__MOCK_GALLERY__,
+      customers: globalCustomerStore.__MOCK_CUSTOMERS__,
     };
     fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
   } catch (e) {
@@ -822,6 +870,45 @@ export function deleteMockGalleryItem(id: number): boolean {
   persistAll();
   return true;
 }
+
+export function getActiveCustomers(): CustomerUser[] {
+  return globalCustomerStore.__MOCK_CUSTOMERS__ || MOCK_CUSTOMERS;
+}
+
+export function addMockCustomer(user: Omit<CustomerUser, "id" | "created_at">): CustomerUser {
+  const list = globalCustomerStore.__MOCK_CUSTOMERS__ || MOCK_CUSTOMERS;
+  const newId = Math.max(10, ...list.map((u) => u.id)) + 1;
+  const created: CustomerUser = {
+    ...user,
+    id: newId,
+    orderCount: 0,
+    created_at: new Date().toISOString(),
+  };
+  list.unshift(created);
+  globalCustomerStore.__MOCK_CUSTOMERS__ = list;
+  persistAll();
+  return created;
+}
+
+export function updateMockCustomer(id: number, data: Partial<CustomerUser>): CustomerUser | null {
+  const list = globalCustomerStore.__MOCK_CUSTOMERS__ || MOCK_CUSTOMERS;
+  const idx = list.findIndex((u) => u.id === id);
+  if (idx > -1) {
+    list[idx] = { ...list[idx], ...data };
+    persistAll();
+    return list[idx];
+  }
+  return null;
+}
+
+export function deleteMockCustomer(id: number): boolean {
+  const list = globalCustomerStore.__MOCK_CUSTOMERS__ || MOCK_CUSTOMERS;
+  const filtered = list.filter((u) => u.id !== id);
+  globalCustomerStore.__MOCK_CUSTOMERS__ = filtered;
+  persistAll();
+  return true;
+}
+
 
 
 

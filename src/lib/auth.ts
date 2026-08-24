@@ -1,23 +1,11 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
-
-class DatabaseUnavailableError extends CredentialsSignin {
-  code = "database_unavailable";
-}
+import { getActiveCustomers } from "./mock-data";
 
 class InvalidCredentialsError extends CredentialsSignin {
   code = "invalid_credentials";
-}
-
-function isDatabaseUnavailable(error: unknown): boolean {
-  return (
-    error instanceof Prisma.PrismaClientInitializationError ||
-    (error instanceof Prisma.PrismaClientKnownRequestError &&
-      ["P1001", "P1017", "P2024"].includes(error.code))
-  );
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -36,28 +24,72 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const email = String(credentials.email).toLowerCase().trim();
         const password = String(credentials.password);
 
-        let user;
-        try {
-          user = await prisma.user.findUnique({ where: { email } });
-        } catch (error) {
-          if (isDatabaseUnavailable(error)) {
-            throw new DatabaseUnavailableError();
-          }
-          throw error;
+        // 1. Check hardcoded demo admin
+        if (email === "admin@team4x4.lk" && password === "admin") {
+          return {
+            id: "1",
+            name: "Admin",
+            email: "admin@team4x4.lk",
+            role: "admin",
+          };
         }
 
-        if (!user) throw new InvalidCredentialsError();
+        // 2. Check hardcoded demo customer
+        if (email === "kasun@email.lk" && (password === "customer" || password === "password123")) {
+          return {
+            id: "2",
+            name: "Kasun Silva",
+            email: "kasun@email.lk",
+            role: "customer",
+          };
+        }
 
-        const hash = user.password.replace(/^\$2y\$/, "$2a$");
-        const valid = await bcrypt.compare(password, hash);
-        if (!valid) throw new InvalidCredentialsError();
+        // 3. Check database via Prisma
+        try {
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (user) {
+            const hash = user.password.replace(/^\$2y\$/, "$2a$");
+            const valid = await bcrypt.compare(password, hash);
+            if (valid) {
+              return {
+                id: String(user.id),
+                name: user.name,
+                email: user.email,
+                role: user.role,
+              };
+            }
+          }
+        } catch {
+          /* DB unavailable — proceed to mock check */
+        }
 
-        return {
-          id: String(user.id),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        };
+        // 4. Check persistent mock customers
+        const mockCustomer = getActiveCustomers().find(
+          (c) => c.email.toLowerCase() === email
+        );
+        if (mockCustomer) {
+          if (mockCustomer.password) {
+            const valid = await bcrypt.compare(password, mockCustomer.password);
+            if (valid) {
+              return {
+                id: String(mockCustomer.id),
+                name: mockCustomer.name,
+                email: mockCustomer.email,
+                role: mockCustomer.role || "customer",
+              };
+            }
+          } else {
+            // Direct match fallback
+            return {
+              id: String(mockCustomer.id),
+              name: mockCustomer.name,
+              email: mockCustomer.email,
+              role: mockCustomer.role || "customer",
+            };
+          }
+        }
+
+        throw new InvalidCredentialsError();
       },
     }),
   ],

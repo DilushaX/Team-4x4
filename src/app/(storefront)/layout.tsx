@@ -16,6 +16,16 @@ export default async function StorefrontLayout({ children }: { children: React.R
     /* DB unavailable */
   }
 
+  if (categories.length === 0) {
+    categories = [
+      { name: "Performance", slug: "performance" },
+      { name: "Exterior", slug: "exterior" },
+      { name: "Interior", slug: "interior" },
+      { name: "Lighting", slug: "lighting" },
+      { name: "Recovery", slug: "recovery" },
+    ];
+  }
+
   const settings = await getSettings();
 
   return (

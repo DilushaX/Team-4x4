@@ -74,6 +74,7 @@ export default function Footer({ categories = [], settings = {} }: FooterProps) 
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-300">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm text-zinc-400">
+            <li><Link href="/service" className="hover:text-green-400">Workshop Services</Link></li>
             <li><Link href="/shop" className="hover:text-green-400">Shop Parts</Link></li>
             <li><Link href="/gallery" className="hover:text-green-400">Build Gallery</Link></li>
             <li><Link href="/contact" className="hover:text-green-400">Contact Us</Link></li>

@@ -34,8 +34,7 @@ function LoginFormInner() {
         return;
       }
 
-      router.push(callbackUrl);
-      router.refresh();
+      window.location.href = callbackUrl;
     } catch {
       setError("An unexpected error occurred. Please try again.");
     } finally {

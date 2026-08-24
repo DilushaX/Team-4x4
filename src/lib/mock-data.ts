@@ -722,10 +722,6 @@ export function addMockOrder(order: Omit<OrderData, "id">): OrderData {
   return newOrder;
 }
 
-export function getActiveProducts(): ProductData[] {
-  return globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
-}
-
 export function addMockProduct(p: Omit<ProductData, "id">): ProductData {
   const products = globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
   const newId = Math.max(0, ...products.map((i) => i.id)) + 1;
@@ -755,7 +751,19 @@ export function deleteMockProduct(id: number): boolean {
   return true;
 }
 
+export function getActiveProducts(): ProductData[] {
+  const currentDisk = getDiskStore();
+  if (currentDisk?.products && Array.isArray(currentDisk.products)) {
+    globalDataStore.__MOCK_PRODUCTS__ = currentDisk.products;
+  }
+  return globalDataStore.__MOCK_PRODUCTS__ || MOCK_PRODUCTS;
+}
+
 export function getActiveCategories(): CategoryData[] {
+  const currentDisk = getDiskStore();
+  if (currentDisk?.categories && Array.isArray(currentDisk.categories)) {
+    globalDataStore.__MOCK_CATEGORIES__ = currentDisk.categories;
+  }
   return globalDataStore.__MOCK_CATEGORIES__ || MOCK_CATEGORIES;
 }
 
@@ -789,6 +797,10 @@ export function deleteMockCategory(id: number): boolean {
 }
 
 export function getActiveServices(): ServiceData[] {
+  const currentDisk = getDiskStore();
+  if (currentDisk?.services && Array.isArray(currentDisk.services)) {
+    globalDataStore.__MOCK_SERVICES__ = currentDisk.services;
+  }
   return globalDataStore.__MOCK_SERVICES__ || MOCK_SERVICES;
 }
 
@@ -822,6 +834,10 @@ export function deleteMockService(id: number): boolean {
 }
 
 export function getActiveGallery(): GalleryItem[] {
+  const currentDisk = getDiskStore();
+  if (currentDisk?.gallery && Array.isArray(currentDisk.gallery)) {
+    globalGalleryStore.__MOCK_GALLERY__ = currentDisk.gallery;
+  }
   return globalGalleryStore.__MOCK_GALLERY__ || MOCK_GALLERY;
 }
 
@@ -848,6 +864,10 @@ export function deleteMockGalleryItem(id: number): boolean {
 }
 
 export function getActiveCustomers(): CustomerUser[] {
+  const currentDisk = getDiskStore();
+  if (currentDisk?.customers && Array.isArray(currentDisk.customers)) {
+    globalCustomerStore.__MOCK_CUSTOMERS__ = currentDisk.customers;
+  }
   return globalCustomerStore.__MOCK_CUSTOMERS__ || MOCK_CUSTOMERS;
 }
 

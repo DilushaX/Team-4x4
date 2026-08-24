@@ -141,10 +141,14 @@ export default function Header() {
             <div className="mt-4 flex flex-col gap-2 border-t border-zinc-800 pt-4">
               {session ? (
                 <>
-                  {session.user.role === "admin" && (
+                  {session.user.role === "admin" ? (
                     <Link href="/admin/dashboard" className="btn-primary text-center text-xs" onClick={() => setMenuOpen(false)}>
                       Admin Portal
                     </Link>
+                  ) : (
+                    <div className="text-center text-xs font-bold text-green-400 py-1">
+                      HI, {firstName}
+                    </div>
                   )}
                   <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-secondary text-xs">
                     Log Out

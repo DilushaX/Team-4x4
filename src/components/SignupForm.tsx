@@ -41,10 +41,9 @@ export default function SignupForm() {
       });
 
       if (signinRes?.error) {
-        router.push("/login?registered=1");
+        window.location.href = "/login?registered=1";
       } else {
-        router.push("/");
-        router.refresh();
+        window.location.href = "/";
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed. Please try again.");

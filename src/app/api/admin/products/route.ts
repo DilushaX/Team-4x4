@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/api-auth";
 import { saveUploadedFile, getFormString, getFormNumber } from "@/lib/uploads";
 import { slugify } from "@/lib/utils";
 import { decimalToNumber } from "@/lib/money";
+import { revalidatePath } from "next/cache";
 import {
   getActiveProducts,
   addMockProduct,
@@ -41,7 +42,8 @@ export async function GET(request: NextRequest) {
       });
     }
     return NextResponse.json({ products: getActiveProducts() });
-  } catch {
+  } catch (e) {
+    console.error("Admin products GET error:", e);
     if (id) {
       const mock = getActiveProducts().find((p) => p.id === parseInt(id, 10));
       return NextResponse.json({ product: mock || null });
@@ -62,10 +64,12 @@ export async function POST(request: NextRequest) {
       const id = getFormNumber(formData, "id");
       try {
         await prisma.product.delete({ where: { id } });
-      } catch {
-        /* DB unavailable */
+      } catch (err) {
+        console.warn("DB delete skipped or failed:", err);
       }
       deleteMockProduct(id);
+      revalidatePath("/shop");
+      revalidatePath("/");
       return NextResponse.json({ status: "success" });
     }
 
@@ -76,31 +80,51 @@ export async function POST(request: NextRequest) {
         if (product) {
           await prisma.product.update({ where: { id }, data: { is_featured: product.is_featured ? 0 : 1 } });
         }
-      } catch {
-        /* DB unavailable */
+      } catch (err) {
+        console.warn("DB toggle_featured skipped or failed:", err);
       }
       const mock = getActiveProducts().find((p) => p.id === id);
       if (mock) {
         updateMockProduct(id, { is_featured: mock.is_featured ? 0 : 1 });
       }
+      revalidatePath("/shop");
+      revalidatePath("/");
       return NextResponse.json({ status: "success" });
     }
 
     const title = getFormString(formData, "title");
-    const slug = getFormString(formData, "slug") || slugify(title);
+    if (!title) {
+      return NextResponse.json({ error: "Product title is required" }, { status: 400 });
+    }
+
+    let slug = getFormString(formData, "slug") || slugify(title);
+    if (!slug) slug = `part-${Date.now()}`;
+
+    // Verify category_id if provided
+    let category_id: number | null = getFormNumber(formData, "category_id") || null;
+    if (category_id) {
+      try {
+        const cat = await prisma.category.findUnique({ where: { id: category_id } });
+        if (!cat) category_id = null;
+      } catch {
+        category_id = null;
+      }
+    }
+
+    const skuStr = getFormString(formData, "sku");
     const data = {
       title,
       slug,
-      sku: getFormString(formData, "sku"),
-      category: getFormString(formData, "category"),
-      category_id: getFormNumber(formData, "category_id") || null,
-      description: getFormString(formData, "description"),
+      sku: skuStr || null,
+      category: getFormString(formData, "category") || "General",
+      category_id,
+      description: getFormString(formData, "description") || "",
       price: getFormNumber(formData, "price"),
       stock: getFormNumber(formData, "stock"),
       is_featured: getFormNumber(formData, "is_featured"),
-      features: getFormString(formData, "features"),
-      compatibility: getFormString(formData, "compatibility"),
-      installation_notes: getFormString(formData, "installation_notes"),
+      features: getFormString(formData, "features") || "",
+      compatibility: getFormString(formData, "compatibility") || "",
+      installation_notes: getFormString(formData, "installation_notes") || "",
     };
 
     // Primary image (Photo 1)
@@ -136,8 +160,8 @@ export async function POST(request: NextRequest) {
         for (const p of extraPaths) {
           await prisma.productImage.create({ data: { product_id: id, image_path: p } });
         }
-      } catch {
-        /* DB unavailable */
+      } catch (err) {
+        console.error("DB update product error:", err);
       }
 
       const existingMock = getActiveProducts().find((p) => p.id === id);
@@ -148,30 +172,45 @@ export async function POST(request: NextRequest) {
 
       updateMockProduct(id, {
         ...data,
+        sku: skuStr || "",
         category_id: data.category_id || 1,
         ...(imagePath ? { image_path: imagePath } : {}),
         images: combinedImages,
       });
+
+      revalidatePath("/shop");
+      revalidatePath(`/product/${slug}`);
+      revalidatePath("/");
+
       return NextResponse.json({ status: "success", product_id: id });
     }
 
     let createdId: number | null = null;
     try {
+      // Ensure slug uniqueness
+      const existingProduct = await prisma.product.findFirst({ where: { slug } });
+      if (existingProduct) {
+        slug = `${slug}-${Date.now().toString().slice(-4)}`;
+        data.slug = slug;
+      }
+
       const product = await prisma.product.create({
-        data: { ...data, image_path: imagePath || null },
+        data: { ...data, image_path: imagePath || "/assets/images/suspension.png" },
       });
       createdId = product.id;
+
       for (const p of extraPaths) {
         await prisma.productImage.create({ data: { product_id: product.id, image_path: p } });
       }
-    } catch {
-      /* DB unavailable */
+    } catch (err) {
+      console.error("DB create product error:", err);
     }
 
     const created = addMockProduct({
       ...data,
+      sku: skuStr || "",
       category_id: data.category_id || 1,
-      image_path: imagePath || "assets/images/suspension.png",
+      image_path: imagePath || "/assets/images/suspension.png",
       images: extraPaths.map((p, idx) => ({
         id: idx + 1,
         product_id: createdId || 99,
@@ -179,9 +218,14 @@ export async function POST(request: NextRequest) {
       })),
     });
 
+    revalidatePath("/shop");
+    revalidatePath(`/product/${slug}`);
+    revalidatePath("/");
+
     return NextResponse.json({ status: "success", product_id: createdId || created.id });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: "Operation failed" }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Operation failed";
+    console.error("Failed to process admin product:", e);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

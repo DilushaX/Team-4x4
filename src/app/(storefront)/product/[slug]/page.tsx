@@ -9,11 +9,20 @@ import { getActiveProducts } from "@/lib/mock-data";
 
 type Params = Promise<{ slug: string }>;
 
+export const dynamicParams = true;
+export const revalidate = 60;
+
 export async function generateStaticParams() {
+  try {
+    const products = await prisma.product.findMany({ select: { slug: true }, take: 50 });
+    if (products.length > 0) {
+      return products.map((p) => ({ slug: p.slug }));
+    }
+  } catch {
+    /* fallback to mock */
+  }
   return getActiveProducts().map((p) => ({ slug: p.slug }));
 }
-
-export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
@@ -26,19 +35,26 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function ProductPage({ params }: { params: Params }) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
 
   let product = null;
   try {
     product = await prisma.product.findFirst({
-      where: { slug },
+      where: {
+        OR: [
+          { slug: decodedSlug },
+          { slug: slug },
+          { slug: decodedSlug.toLowerCase() },
+        ],
+      },
       include: { images: true },
     });
-  } catch {
-    /* DB error */
+  } catch (err) {
+    console.error("Product page find error:", err);
   }
 
   if (!product) {
-    const mock = getActiveProducts().find((p) => p.slug === slug);
+    const mock = getActiveProducts().find((p) => p.slug === decodedSlug || p.slug === slug);
     if (mock) {
       product = mock as unknown as NonNullable<typeof product>;
     }
@@ -52,7 +68,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   return (
     <>
       <PageHero
-        image={product.image_path || "assets/images/suspension.png"}
+        image="/assets/images/hero-bg.jpeg"
         eyebrow={product.category || "Defender Parts"}
         title={product.title}
         meta={price}

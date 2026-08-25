@@ -77,6 +77,7 @@ export default function ProductDetail({ product, whatsappNumber }: Props) {
               src={activeImage}
               alt={product.title}
               fill
+              unoptimized={activeImage.startsWith("data:")}
               className="object-cover transition duration-300"
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
@@ -96,7 +97,7 @@ export default function ProductDetail({ product, whatsappNumber }: Props) {
                   }`}
                   aria-label={`View photo ${idx + 1}`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" sizes="80px" />
+                  <Image src={img} alt="" fill unoptimized={img.startsWith("data:")} className="object-cover" sizes="80px" />
                 </button>
               ))}
             </div>

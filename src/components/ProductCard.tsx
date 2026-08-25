@@ -52,6 +52,7 @@ export default function ProductCard({
               src={image}
               alt={product.title}
               fill
+              unoptimized={image.startsWith("data:")}
               className="object-cover transition duration-300 group-hover:scale-110"
               sizes="112px"
             />
@@ -163,6 +164,7 @@ export default function ProductCard({
           src={image}
           alt={product.title}
           fill
+          unoptimized={image.startsWith("data:")}
           className="object-cover transition duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 25vw"
         />

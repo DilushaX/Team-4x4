@@ -44,9 +44,15 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/assets/images/logo.jpg" alt="4X4 Defender Parts" width={44} height={44} className="rounded-md object-cover" />
-            <span className="hidden font-display text-sm font-bold tracking-wide text-white sm:block">
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3">
+            <Image
+              src="/assets/images/logo.jpg"
+              alt="4X4 Defender Parts"
+              width={38}
+              height={38}
+              className="rounded-md object-cover sm:h-11 sm:w-11 shrink-0"
+            />
+            <span className="font-display text-xs sm:text-sm font-bold tracking-wide text-white">
               4X4 DEFENDER PARTS
             </span>
           </Link>

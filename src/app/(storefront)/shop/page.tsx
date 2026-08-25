@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import ProductCard from "@/components/ProductCard";
-import ShopFiltersWrapper from "@/components/ShopFiltersWrapper";
 import PageHero, { PageContent } from "@/components/PageHero";
-import Link from "next/link";
 import { getActiveCategories, getActiveProducts } from "@/lib/mock-data";
 import { unstable_cache } from "next/cache";
+import ShopCatalogClient from "@/components/ShopCatalogClient";
 
 const getCachedShopDefaults = unstable_cache(
   async () => {
@@ -33,7 +31,7 @@ const getCachedShopDefaults = unstable_cache(
       return null;
     }
   },
-  ["shop-defaults-cache-v1"],
+  ["shop-defaults-cache-v2"],
   { revalidate: 60, tags: ["products", "categories"] }
 );
 
@@ -67,14 +65,16 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
           />
 
           <PageContent wide className="pt-8">
-            <ShopFiltersWrapper categories={cached.categories} currentCat="" currentSort="newest" currentSearch="" />
-
-            <p className="mt-6 text-sm text-zinc-500">{cached.total} part{cached.total !== 1 ? "s" : ""} found</p>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {cached.products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <ShopCatalogClient
+              products={cached.products as Parameters<typeof ShopCatalogClient>[0]["products"]}
+              categories={cached.categories}
+              total={cached.total}
+              currentPage={page}
+              limit={limit}
+              currentCat=""
+              currentSort="newest"
+              currentSearch=""
+            />
           </PageContent>
         </>
       );
@@ -85,6 +85,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
   const activeProducts = getActiveProducts();
 
   let categories = activeCategories.map((c) => ({ id: c.id, name: c.name, slug: c.slug }));
+  let productsToDisplay: Parameters<typeof ShopCatalogClient>[0]["products"] = [];
   let total = activeProducts.length;
 
   try {
@@ -128,80 +129,41 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
     ]);
 
     if (dbProducts && dbProducts.length > 0) {
-      return (
-        <>
-          <PageHero
-            image="/assets/images/hero-bg.jpeg"
-            eyebrow="Parts Catalog"
-            title="Defender Parts Shop"
-            meta="Premium off-road parts engineered for Land Rover Defender platforms."
-          />
-
-          <PageContent wide className="pt-8">
-            <ShopFiltersWrapper categories={categories} currentCat={category} currentSort={sort} currentSearch={search} />
-
-            <p className="mt-6 text-sm text-zinc-500">{dbTotal} part{dbTotal !== 1 ? "s" : ""} found</p>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {dbProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            {Math.ceil(dbTotal / limit) > 1 && (
-              <div className="mt-10 flex items-center justify-center gap-2">
-                {page > 1 && (
-                  <Link
-                    href={`/shop?page=${page - 1}${search ? `&q=${search}` : ""}${category ? `&cat=${category}` : ""}${sort ? `&sort=${sort}` : ""}`}
-                    className="btn-secondary text-sm"
-                  >
-                    Previous
-                  </Link>
-                )}
-                <span className="px-4 text-sm text-zinc-400">Page {page} of {Math.ceil(dbTotal / limit)}</span>
-                {page < Math.ceil(dbTotal / limit) && (
-                  <Link
-                    href={`/shop?page=${page + 1}${search ? `&q=${search}` : ""}${category ? `&cat=${category}` : ""}${sort ? `&sort=${sort}` : ""}`}
-                    className="btn-secondary text-sm"
-                  >
-                    Next
-                  </Link>
-                )}
-              </div>
-            )}
-          </PageContent>
-        </>
-      );
+      productsToDisplay = dbProducts as Parameters<typeof ShopCatalogClient>[0]["products"];
+      total = dbTotal;
     }
   } catch {
     /* Fallback below */
   }
 
-  // Filter dynamic mock products
-  let filteredMock = [...activeProducts];
-  if (search) {
-    filteredMock = filteredMock.filter(
-      (p) =>
-        p.title.toLowerCase().includes(search) ||
-        p.description.toLowerCase().includes(search) ||
-        p.sku.toLowerCase().includes(search)
-    );
-  }
-  if (category) {
-    filteredMock = filteredMock.filter(
-      (p) =>
-        p.category.toLowerCase().includes(category) ||
-        p.slug.toLowerCase().includes(category)
-    );
-  }
-  if (sort === "price_asc") {
-    filteredMock.sort((a, b) => a.price - b.price);
-  } else if (sort === "price_desc") {
-    filteredMock.sort((a, b) => b.price - a.price);
-  } else if (sort === "name") {
-    filteredMock.sort((a, b) => a.title.localeCompare(b.title));
-  }
+  if (productsToDisplay.length === 0) {
+    let filteredMock = [...activeProducts];
+    if (search) {
+      filteredMock = filteredMock.filter(
+        (p) =>
+          p.title.toLowerCase().includes(search) ||
+          p.description.toLowerCase().includes(search) ||
+          p.sku.toLowerCase().includes(search)
+      );
+    }
+    if (category) {
+      filteredMock = filteredMock.filter(
+        (p) =>
+          p.category.toLowerCase().includes(category) ||
+          p.slug.toLowerCase().includes(category)
+      );
+    }
+    if (sort === "price_asc") {
+      filteredMock.sort((a, b) => a.price - b.price);
+    } else if (sort === "price_desc") {
+      filteredMock.sort((a, b) => b.price - a.price);
+    } else if (sort === "name") {
+      filteredMock.sort((a, b) => a.title.localeCompare(b.title));
+    }
 
-  total = filteredMock.length;
+    total = filteredMock.length;
+    productsToDisplay = filteredMock as unknown as Parameters<typeof ShopCatalogClient>[0]["products"];
+  }
 
   return (
     <>
@@ -213,23 +175,16 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
       />
 
       <PageContent wide className="pt-8">
-        <ShopFiltersWrapper categories={categories} currentCat={category} currentSort={sort} currentSearch={search} />
-
-        {filteredMock.length === 0 ? (
-          <div className="card mt-8 text-center py-12">
-            <p className="text-zinc-400">No products found matching your criteria.</p>
-            <Link href="/shop" className="btn-primary mt-4 inline-flex">View All Parts</Link>
-          </div>
-        ) : (
-          <>
-            <p className="mt-6 text-sm text-zinc-500">{total} part{total !== 1 ? "s" : ""} found</p>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredMock.map((product) => (
-                <ProductCard key={product.id} product={product as unknown as Parameters<typeof ProductCard>[0]["product"]} />
-              ))}
-            </div>
-          </>
-        )}
+        <ShopCatalogClient
+          products={productsToDisplay}
+          categories={categories}
+          total={total}
+          currentPage={page}
+          limit={limit}
+          currentCat={category}
+          currentSort={sort}
+          currentSearch={search}
+        />
       </PageContent>
     </>
   );

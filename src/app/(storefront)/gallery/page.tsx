@@ -11,7 +11,8 @@ export const metadata = {
 export const revalidate = 60;
 
 export default async function GalleryPage() {
-  let photos: GalleryItem[] = getActiveGallery();
+  const allPhotos: GalleryItem[] = [];
+  const seenPaths = new Set<string>();
 
   try {
     const dbProjects = await prisma.project.findMany({
@@ -20,38 +21,45 @@ export default async function GalleryPage() {
     });
 
     if (dbProjects && dbProjects.length > 0) {
-      const items: GalleryItem[] = [];
-
       for (const p of dbProjects) {
         if (p.featured_image) {
-          items.push({
+          allPhotos.push({
             id: p.id,
             title: p.title,
             category: p.category || "Builds",
             image_path: p.featured_image,
             created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
           });
+          seenPaths.add(p.featured_image);
         }
         if (p.images) {
           for (const img of p.images) {
-            items.push({
-              id: img.id + 1000,
+            allPhotos.push({
+              id: img.id + 100000,
               title: p.title,
               category: p.category || "Builds",
               image_path: img.image_path,
               created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
             });
+            seenPaths.add(img.image_path);
           }
         }
-      }
-
-      if (items.length > 0) {
-        photos = items;
       }
     }
   } catch {
     /* Fallback to getActiveGallery() */
   }
+
+  const mockItems = getActiveGallery();
+  for (const m of mockItems) {
+    if (!seenPaths.has(m.image_path)) {
+      allPhotos.push(m);
+      seenPaths.add(m.image_path);
+    }
+  }
+
+  // Sort latest first
+  allPhotos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   const categorySet = new Set<string>([
     "Builds",
@@ -61,7 +69,7 @@ export default async function GalleryPage() {
     "Recovery",
     "Lighting",
   ]);
-  photos.forEach((p) => {
+  allPhotos.forEach((p) => {
     if (p.category) categorySet.add(p.category);
   });
 
@@ -77,7 +85,7 @@ export default async function GalleryPage() {
 
       <PageContent wide className="pt-8">
         <GalleryClient
-          photos={photos}
+          photos={allPhotos}
           categories={Array.from(categorySet)}
         />
       </PageContent>

@@ -131,9 +131,9 @@ model Project {
   slug            String         @unique @db.VarChar(255)
   category        String         @db.VarChar(255)
   description     String?        @db.Text
-  featured_image  String?        @db.VarChar(255)
-  before_image    String?        @db.VarChar(255)
-  after_image     String?        @db.VarChar(255)
+  featured_image  String?        @db.Text
+  before_image    String?        @db.Text
+  after_image     String?        @db.Text
   modifications   String?        @db.Text
   installed_parts String?        @db.Text
   customer_notes  String?        @db.Text
@@ -150,7 +150,7 @@ model Project {
 model ProjectImage {
   id         Int     @id @default(autoincrement())
   project_id Int
-  image_path String  @db.VarChar(255)
+  image_path String  @db.Text
   project    Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
 
   @@map("project_images")

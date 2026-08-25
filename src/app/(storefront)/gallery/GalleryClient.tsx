@@ -9,6 +9,7 @@ type GalleryPhoto = {
   title: string;
   category: string;
   image_path: string;
+  created_at?: string;
 };
 
 type Props = {
@@ -16,9 +17,27 @@ type Props = {
   categories: string[];
 };
 
-export default function GalleryClient({ photos, categories }: Props) {
+export default function GalleryClient({ photos: initialPhotos, categories }: Props) {
+  const [photos, setPhotos] = useState<GalleryPhoto[]>(initialPhotos);
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+
+  // Sync state if initialPhotos changes
+  useEffect(() => {
+    setPhotos(initialPhotos);
+  }, [initialPhotos]);
+
+  // Fetch latest photos client-side to ensure instant updates
+  useEffect(() => {
+    fetch("/api/gallery")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.photos && Array.isArray(data.photos)) {
+          setPhotos(data.photos);
+        }
+      })
+      .catch((err) => console.warn("Live gallery refresh notice:", err));
+  }, []);
 
   const filteredPhotos =
     activeCategory === "all"
@@ -51,28 +70,38 @@ export default function GalleryClient({ photos, categories }: Props) {
       <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
-          onClick={() => { setActiveCategory("all"); setSelectedPhotoIndex(null); }}
-          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${activeCategory === "all"
-              ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20"
+          onClick={() => {
+            setActiveCategory("all");
+            setSelectedPhotoIndex(null);
+          }}
+          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+            activeCategory === "all"
+              ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20 font-bold"
               : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-            }`}
+          }`}
         >
           All Photos ({photos.length})
         </button>
 
         {categories.map((cat) => {
-          const count = photos.filter((p) => p.category.toLowerCase() === cat.toLowerCase()).length;
+          const count = photos.filter(
+            (p) => p.category.toLowerCase() === cat.toLowerCase()
+          ).length;
           if (count === 0) return null;
           const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
           return (
             <button
               key={cat}
               type="button"
-              onClick={() => { setActiveCategory(cat); setSelectedPhotoIndex(null); }}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${isActive
-                  ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20"
+              onClick={() => {
+                setActiveCategory(cat);
+                setSelectedPhotoIndex(null);
+              }}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                isActive
+                  ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20 font-bold"
                   : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-                }`}
+              }`}
             >
               {cat} ({count})
             </button>
@@ -93,18 +122,19 @@ export default function GalleryClient({ photos, categories }: Props) {
               onClick={() => setSelectedPhotoIndex(idx)}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 transition-all duration-300 hover:border-green-500/60 hover:shadow-xl hover:shadow-green-500/10"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
                 <Image
                   src={normalizeImagePath(photo.image_path)}
                   alt={photo.title}
                   fill
+                  unoptimized
                   className="object-cover transition duration-500 group-hover:scale-108"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                {/* Badge */}
-                <span className="absolute left-3 top-3 rounded-full bg-zinc-950/80 px-3 py-1 text-xs font-semibold text-green-400 backdrop-blur-md border border-zinc-800">
+                {/* Category Badge */}
+                <span className="absolute left-3 top-3 rounded-full bg-zinc-950/80 px-3 py-1 text-xs font-semibold text-green-400 backdrop-blur-md border border-zinc-800 shadow">
                   {photo.category}
                 </span>
 
@@ -149,6 +179,7 @@ export default function GalleryClient({ photos, categories }: Props) {
                 src={normalizeImagePath(filteredPhotos[selectedPhotoIndex].image_path)}
                 alt={filteredPhotos[selectedPhotoIndex].title}
                 fill
+                unoptimized
                 className="object-contain"
                 sizes="100vw"
                 priority

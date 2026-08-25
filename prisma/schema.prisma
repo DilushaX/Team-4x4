@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
@@ -15,8 +16,8 @@ model User {
   role           String    @default("customer") @db.VarChar(50)
   remember_token String?   @db.VarChar(255)
   reset_token    String?   @db.VarChar(255)
-  reset_expires  DateTime? @db.DateTime(0)
-  created_at     DateTime  @default(now()) @db.Timestamp(0)
+  reset_expires  DateTime?
+  created_at     DateTime  @default(now())
   customer       Customer?
   orders         Order[]
 
@@ -29,33 +30,33 @@ model Category {
   slug        String    @unique @db.VarChar(255)
   description String?   @db.Text
   image_path  String?   @db.VarChar(255)
-  status      Int       @default(1) @db.TinyInt
+  status      Int       @default(1)
   sort_order  Int       @default(0)
-  created_at  DateTime  @default(now()) @db.Timestamp(0)
+  created_at  DateTime  @default(now())
   products    Product[]
 
   @@map("categories")
 }
 
 model Product {
-  id                 Int                 @id @default(autoincrement())
-  title              String              @db.VarChar(255)
-  slug               String              @db.VarChar(255)
-  sku                String?             @db.VarChar(100)
-  category           String?             @db.VarChar(100)
-  category_id        Int?
-  description        String?             @db.Text
-  price              Decimal             @default(0.00) @db.Decimal(12, 2)
-  stock              Int                 @default(0)
-  is_featured        Int                 @default(0) @db.TinyInt
-  image_path         String?             @db.VarChar(255)
-  features           String?             @db.Text
-  compatibility      String?             @db.Text
-  installation_notes String?             @db.Text
-  created_at         DateTime            @default(now()) @db.Timestamp(0)
-  category_rel       Category?           @relation(fields: [category_id], references: [id], onDelete: SetNull)
-  images             ProductImage[]
-  order_items        OrderItem[]
+  id                  Int                 @id @default(autoincrement())
+  title               String              @db.VarChar(255)
+  slug                String              @db.VarChar(255)
+  sku                 String?             @db.VarChar(100)
+  category            String?             @db.VarChar(100)
+  category_id         Int?
+  description         String?             @db.Text
+  price               Decimal             @default(0.00) @db.Decimal(12, 2)
+  stock               Int                 @default(0)
+  is_featured         Int                 @default(0)
+  image_path          String?             @db.VarChar(255)
+  features            String?             @db.Text
+  compatibility       String?             @db.Text
+  installation_notes  String?             @db.Text
+  created_at          DateTime            @default(now())
+  category_rel        Category?           @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  images              ProductImage[]
+  order_items         OrderItem[]
   inventory_movements InventoryMovement[]
 
   @@map("products")
@@ -77,33 +78,33 @@ model Customer {
   address       String?  @db.Text
   vehicle_model String?  @db.VarChar(255)
   notes         String?  @db.Text
-  created_at    DateTime @default(now()) @db.Timestamp(0)
+  created_at    DateTime @default(now())
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("customers")
 }
 
 model Order {
-  id                  Int         @id @default(autoincrement())
-  user_id             Int?
-  customer_name       String      @db.VarChar(255)
-  phone               String      @db.VarChar(50)
-  email               String      @db.VarChar(255)
-  address             String?     @db.Text
-  district            String?     @db.VarChar(100)
-  postal_code         String?     @db.VarChar(50)
-  vehicle_model       String      @db.VarChar(255)
-  notes               String?     @db.Text
-  fulfillment_type    String      @default("pickup") @db.VarChar(50)
-  delivery_fee        Decimal     @default(0.00) @db.Decimal(12, 2)
-  total_amount        Decimal     @db.Decimal(12, 2)
-  payment_method      String      @default("Cash on Delivery") @db.VarChar(100)
-  payment_status      String      @default("unpaid") @db.VarChar(50)
-  whatsapp_reference  String?     @db.VarChar(255)
-  status              String      @default("pending") @db.VarChar(50)
-  created_at          DateTime    @default(now()) @db.Timestamp(0)
-  user                User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  items               OrderItem[]
+  id                 Int         @id @default(autoincrement())
+  user_id            Int?
+  customer_name      String      @db.VarChar(255)
+  phone              String      @db.VarChar(50)
+  email              String      @db.VarChar(255)
+  address            String?     @db.Text
+  district           String?     @db.VarChar(100)
+  postal_code        String?     @db.VarChar(50)
+  vehicle_model      String      @db.VarChar(255)
+  notes              String?     @db.Text
+  fulfillment_type   String      @default("pickup") @db.VarChar(50)
+  delivery_fee       Decimal     @default(0.00) @db.Decimal(12, 2)
+  total_amount       Decimal     @db.Decimal(12, 2)
+  payment_method     String      @default("Cash on Delivery") @db.VarChar(100)
+  payment_status     String      @default("unpaid") @db.VarChar(50)
+  whatsapp_reference String?     @db.VarChar(255)
+  status             String      @default("pending") @db.VarChar(50)
+  created_at         DateTime    @default(now())
+  user               User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  items              OrderItem[]
 
   @@index([status])
   @@index([user_id])
@@ -138,7 +139,7 @@ model Project {
   customer_notes  String?        @db.Text
   completion_date DateTime?      @db.Date
   project_order   Int            @default(0)
-  created_at      DateTime       @default(now()) @db.Timestamp(0)
+  created_at      DateTime       @default(now())
   images          ProjectImage[]
 
   @@index([slug])
@@ -169,7 +170,7 @@ model Service {
   faqs            String?  @db.Text
   seo_title       String?  @db.VarChar(255)
   seo_description String?  @db.Text
-  created_at      DateTime @default(now()) @db.Timestamp(0)
+  created_at      DateTime @default(now())
 
   @@index([slug])
   @@map("services")
@@ -179,7 +180,7 @@ model ServiceImage {
   id           Int      @id @default(autoincrement())
   service_name String   @db.VarChar(100)
   image_path   String   @db.VarChar(255)
-  created_at   DateTime @default(now()) @db.Timestamp(0)
+  created_at   DateTime @default(now())
 
   @@map("service_images")
 }
@@ -195,7 +196,7 @@ model Message {
   message       String   @db.Text
   status        String   @default("unread") @db.VarChar(50)
   reply_content String?  @db.Text
-  created_at    DateTime @default(now()) @db.Timestamp(0)
+  created_at    DateTime @default(now())
 
   @@map("messages")
 }
@@ -203,7 +204,7 @@ model Message {
 model Subscriber {
   id         Int      @id @default(autoincrement())
   email      String   @unique @db.VarChar(255)
-  created_at DateTime @default(now()) @db.Timestamp(0)
+  created_at DateTime @default(now())
 
   @@map("subscribers")
 }
@@ -213,8 +214,8 @@ model AdminNotification {
   type       String   @db.VarChar(50)
   title      String   @db.VarChar(255)
   message    String   @db.Text
-  is_read    Int      @default(0) @db.TinyInt
-  created_at DateTime @default(now()) @db.Timestamp(0)
+  is_read    Int      @default(0)
+  created_at DateTime @default(now())
 
   @@map("admin_notifications")
 }
@@ -225,20 +226,20 @@ model InventoryMovement {
   quantity_changed Int
   reason           String   @db.VarChar(255)
   user_id          Int?
-  created_at       DateTime @default(now()) @db.Timestamp(0)
+  created_at       DateTime @default(now())
   product          Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 
   @@map("inventory_movements")
 }
 
 model Supplier {
-  id               Int      @id @default(autoincrement())
-  name             String   @db.VarChar(255)
-  company          String?  @db.VarChar(255)
-  phone            String?  @db.VarChar(100)
-  email            String?  @db.VarChar(255)
-  products_supplied String? @db.Text
-  created_at       DateTime @default(now()) @db.Timestamp(0)
+  id                Int      @id @default(autoincrement())
+  name              String   @db.VarChar(255)
+  company           String?  @db.VarChar(255)
+  phone             String?  @db.VarChar(100)
+  email             String?  @db.VarChar(255)
+  products_supplied String?  @db.Text
+  created_at        DateTime @default(now())
 
   @@map("suppliers")
 }
@@ -251,15 +252,15 @@ model Setting {
 }
 
 model Quotation {
-  id               Int              @id @default(autoincrement())
-  quotation_number String           @unique @db.VarChar(100)
-  customer_name    String           @db.VarChar(255)
-  email            String           @db.VarChar(255)
-  phone            String?          @db.VarChar(100)
-  vehicle_model    String?          @db.VarChar(255)
-  total_amount     Decimal          @default(0.00) @db.Decimal(12, 2)
-  status           String           @default("sent") @db.VarChar(50)
-  created_at       DateTime         @default(now()) @db.Timestamp(0)
+  id               Int             @id @default(autoincrement())
+  quotation_number String          @unique @db.VarChar(100)
+  customer_name    String          @db.VarChar(255)
+  email            String          @db.VarChar(255)
+  phone            String?         @db.VarChar(100)
+  vehicle_model    String?         @db.VarChar(255)
+  total_amount     Decimal         @default(0.00) @db.Decimal(12, 2)
+  status           String          @default("sent") @db.VarChar(50)
+  created_at       DateTime        @default(now())
   items            QuotationItem[]
 
   @@map("quotations")

@@ -105,10 +105,10 @@ function LoginFormInner() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => fillCredentials("admin@team4x4.lk", "admin")}
+            onClick={() => fillCredentials("upulprajath@gmail.com", "upulprajath")}
             className="rounded bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-green-400 hover:bg-zinc-700 transition"
           >
-            Admin (admin@team4x4.lk)
+            Admin (Upul Prajath)
           </button>
           <button
             type="button"

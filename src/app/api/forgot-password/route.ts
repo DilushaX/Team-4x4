@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const email = parsed.data.email.toLowerCase().trim();
 
     // Check in demo users, mock customers, and database
-    const isDemoAdmin = email === "admin@team4x4.lk";
+    const isDemoAdmin = email === "upulprajath@gmail.com" || email === "upul@team4x4.lk" || email === "admin@team4x4.lk";
     const isDemoCustomer = email === "kasun@email.lk";
     const mockCustomer = getActiveCustomers().find((c) => c.email.toLowerCase() === email);
 

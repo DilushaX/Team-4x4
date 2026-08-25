@@ -50,9 +50,8 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000)
 
 ### Admin Login
-
-- **Email:** `admin@team4x4.lk`
-- **Password:** `admin`
+- **Email:** `upulprajath@gmail.com` *(හෝ `admin@team4x4.lk`)*
+- **Password:** `upulprajath` *(හෝ `upul123`)*
 
 ## Production
 

@@ -26,12 +26,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const email = String(credentials.email).toLowerCase().trim();
         const password = String(credentials.password);
 
-        // 1. Check hardcoded demo admin
-        if (email === "admin@team4x4.lk" && password === "admin") {
+        // 1. Check hardcoded admin (Upul Prajath)
+        if (
+          (email === "upulprajath@gmail.com" || email === "upul@team4x4.lk" || email === "admin@team4x4.lk") &&
+          (password === "upulprajath" || password === "upul123" || password === "admin" || password === "upul4x4")
+        ) {
           return {
             id: "1",
-            name: "Admin",
-            email: "admin@team4x4.lk",
+            name: "Upul Prajath",
+            email: email,
             role: "admin",
           };
         }

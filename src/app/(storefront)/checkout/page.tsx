@@ -7,7 +7,7 @@ export default function CheckoutPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/lighting.jpg"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Complete Order"
         title="Checkout"
         meta="Enter your details and confirm your Defender parts order."

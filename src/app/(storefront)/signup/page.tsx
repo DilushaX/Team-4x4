@@ -7,7 +7,7 @@ export default function SignupPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/intake.png"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Join Us"
         title="Create Account"
         meta="Track orders and save your details for faster checkout."

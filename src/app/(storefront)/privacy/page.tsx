@@ -6,7 +6,7 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/restoration.png"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Legal"
         title="Privacy Policy"
         meta="How we collect, use, and protect your information."

@@ -6,7 +6,7 @@ export default function TermsPage() {
   return (
     <>
       <PageHero
-        image="/assets/images/fabrication.jpg"
+        image="/assets/images/hero-bg.jpeg"
         eyebrow="Legal"
         title="Terms of Service"
         meta="Pricing, fitment, orders, and warranty terms."

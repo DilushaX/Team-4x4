@@ -4,6 +4,38 @@ import ShopFiltersWrapper from "@/components/ShopFiltersWrapper";
 import PageHero, { PageContent } from "@/components/PageHero";
 import Link from "next/link";
 import { getActiveCategories, getActiveProducts } from "@/lib/mock-data";
+import { unstable_cache } from "next/cache";
+
+const getCachedShopDefaults = unstable_cache(
+  async () => {
+    try {
+      const [categories, products, total] = await Promise.all([
+        prisma.category.findMany({
+          where: { status: 1 },
+          orderBy: { sort_order: "asc" },
+        }),
+        prisma.product.findMany({
+          orderBy: { created_at: "desc" },
+          take: 24,
+          include: { images: true },
+        }),
+        prisma.product.count(),
+      ]);
+      if (products.length > 0) {
+        return {
+          categories: categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
+          products,
+          total,
+        };
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  },
+  ["shop-defaults-cache-v1"],
+  { revalidate: 60, tags: ["products", "categories"] }
+);
 
 type SearchParams = Promise<{ page?: string; q?: string; cat?: string; sort?: string }>;
 
@@ -19,6 +51,35 @@ export default async function ShopPage({ searchParams }: { searchParams: SearchP
   const search = (params.q || "").toLowerCase().trim();
   const category = (params.cat || "").toLowerCase().trim();
   const sort = params.sort || "newest";
+
+  const isDefaultView = !search && !category && sort === "newest" && page === 1;
+
+  if (isDefaultView) {
+    const cached = await getCachedShopDefaults();
+    if (cached) {
+      return (
+        <>
+          <PageHero
+            image="/assets/images/hero-bg.jpeg"
+            eyebrow="Parts Catalog"
+            title="Defender Parts Shop"
+            meta="Premium off-road parts engineered for Land Rover Defender platforms."
+          />
+
+          <PageContent wide className="pt-8">
+            <ShopFiltersWrapper categories={cached.categories} currentCat="" currentSort="newest" currentSearch="" />
+
+            <p className="mt-6 text-sm text-zinc-500">{cached.total} part{cached.total !== 1 ? "s" : ""} found</p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {cached.products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </PageContent>
+        </>
+      );
+    }
+  }
 
   const activeCategories = getActiveCategories();
   const activeProducts = getActiveProducts();

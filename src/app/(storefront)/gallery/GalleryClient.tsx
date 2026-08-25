@@ -7,19 +7,17 @@ import { normalizeImagePath } from "@/lib/utils";
 type GalleryPhoto = {
   id: number;
   title: string;
-  category: string;
+  category?: string;
   image_path: string;
   created_at?: string;
 };
 
 type Props = {
   photos: GalleryPhoto[];
-  categories: string[];
 };
 
-export default function GalleryClient({ photos: initialPhotos, categories }: Props) {
+export default function GalleryClient({ photos: initialPhotos }: Props) {
   const [photos, setPhotos] = useState<GalleryPhoto[]>(initialPhotos);
-  const [activeCategory, setActiveCategory] = useState("all");
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
   // Sync state if initialPhotos changes
@@ -39,11 +37,6 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
       .catch((err) => console.warn("Live gallery refresh notice:", err));
   }, []);
 
-  const filteredPhotos =
-    activeCategory === "all"
-      ? photos
-      : photos.filter((p) => p.category.toLowerCase() === activeCategory.toLowerCase());
-
   // Keyboard navigation for lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,72 +44,30 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
       if (e.key === "Escape") setSelectedPhotoIndex(null);
       if (e.key === "ArrowRight") {
         setSelectedPhotoIndex((prev) =>
-          prev !== null ? (prev + 1) % filteredPhotos.length : null
+          prev !== null ? (prev + 1) % photos.length : null
         );
       }
       if (e.key === "ArrowLeft") {
         setSelectedPhotoIndex((prev) =>
-          prev !== null ? (prev - 1 + filteredPhotos.length) % filteredPhotos.length : null
+          prev !== null ? (prev - 1 + photos.length) % photos.length : null
         );
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedPhotoIndex, filteredPhotos.length]);
+  }, [selectedPhotoIndex, photos.length]);
 
   return (
     <div>
-      {/* Filter Tabs */}
-      <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
-        <button
-          type="button"
-          onClick={() => {
-            setActiveCategory("all");
-            setSelectedPhotoIndex(null);
-          }}
-          className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-            activeCategory === "all"
-              ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20 font-bold"
-              : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-          }`}
-        >
-          All Photos ({photos.length})
-        </button>
-
-        {categories.map((cat) => {
-          const count = photos.filter(
-            (p) => p.category.toLowerCase() === cat.toLowerCase()
-          ).length;
-          if (count === 0) return null;
-          const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => {
-                setActiveCategory(cat);
-                setSelectedPhotoIndex(null);
-              }}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                isActive
-                  ? "bg-green-500 text-zinc-950 shadow-lg shadow-green-500/20 font-bold"
-                  : "border border-zinc-700 bg-zinc-900/60 text-zinc-300 hover:border-zinc-500 hover:text-white"
-              }`}
-            >
-              {cat} ({count})
-            </button>
-          );
-        })}
-      </div>
-
       {/* Photo Grid */}
-      {filteredPhotos.length === 0 ? (
+      {photos.length === 0 ? (
         <div className="card text-center py-16 text-zinc-400">
-          <p className="text-base">No photos found in this category.</p>
+          <p className="text-base font-semibold text-white">No photos available yet.</p>
+          <p className="mt-1 text-xs text-zinc-500">Check back soon for new build updates!</p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
-          {filteredPhotos.map((photo, idx) => (
+        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+          {photos.map((photo, idx) => (
             <div
               key={photo.id}
               onClick={() => setSelectedPhotoIndex(idx)}
@@ -125,7 +76,7 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
                 <Image
                   src={normalizeImagePath(photo.image_path)}
-                  alt={photo.title}
+                  alt={photo.title || "Gallery photo"}
                   fill
                   unoptimized
                   className="object-cover transition duration-500 group-hover:scale-108"
@@ -133,16 +84,13 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                {/* Category Badge */}
-                <span className="absolute left-3 top-3 rounded-full bg-zinc-950/80 px-3 py-1 text-xs font-semibold text-green-400 backdrop-blur-md border border-zinc-800 shadow">
-                  {photo.category}
-                </span>
-
                 {/* Hover Caption */}
                 <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  <p className="font-display font-bold text-white text-base leading-snug drop-shadow-md">
-                    {photo.title}
-                  </p>
+                  {photo.title && (
+                    <p className="font-display font-bold text-white text-base leading-snug drop-shadow-md">
+                      {photo.title}
+                    </p>
+                  )}
                   <p className="mt-1 text-xs font-medium text-green-400 flex items-center gap-1">
                     🔍 Click to expand
                   </p>
@@ -154,7 +102,7 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
       )}
 
       {/* Lightbox Modal */}
-      {selectedPhotoIndex !== null && filteredPhotos[selectedPhotoIndex] && (
+      {selectedPhotoIndex !== null && photos[selectedPhotoIndex] && (
         <div
           onClick={() => setSelectedPhotoIndex(null)}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300"
@@ -176,8 +124,8 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
             {/* Main Image Container */}
             <div className="relative w-full h-[70vh] rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950">
               <Image
-                src={normalizeImagePath(filteredPhotos[selectedPhotoIndex].image_path)}
-                alt={filteredPhotos[selectedPhotoIndex].title}
+                src={normalizeImagePath(photos[selectedPhotoIndex].image_path)}
+                alt={photos[selectedPhotoIndex].title || "Gallery photo"}
                 fill
                 unoptimized
                 className="object-contain"
@@ -189,11 +137,8 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
             {/* Bottom Caption & Controls */}
             <div className="mt-4 flex w-full items-center justify-between px-2 text-white">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-green-400">
-                  {filteredPhotos[selectedPhotoIndex].category}
-                </span>
                 <h3 className="font-display text-lg font-bold text-white">
-                  {filteredPhotos[selectedPhotoIndex].title}
+                  {photos[selectedPhotoIndex].title || "Defender Custom Build"}
                 </h3>
               </div>
 
@@ -202,7 +147,7 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
                   type="button"
                   onClick={() =>
                     setSelectedPhotoIndex(
-                      (selectedPhotoIndex - 1 + filteredPhotos.length) % filteredPhotos.length
+                      (selectedPhotoIndex - 1 + photos.length) % photos.length
                     )
                   }
                   className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-green-500 hover:text-white transition"
@@ -210,12 +155,12 @@ export default function GalleryClient({ photos: initialPhotos, categories }: Pro
                   ← Prev
                 </button>
                 <span className="text-xs text-zinc-500">
-                  {selectedPhotoIndex + 1} / {filteredPhotos.length}
+                  {selectedPhotoIndex + 1} / {photos.length}
                 </span>
                 <button
                   type="button"
                   onClick={() =>
-                    setSelectedPhotoIndex((selectedPhotoIndex + 1) % filteredPhotos.length)
+                    setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length)
                   }
                   className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-green-500 hover:text-white transition"
                 >

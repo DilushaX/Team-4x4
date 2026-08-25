@@ -20,17 +20,6 @@ type FilePreview = {
   size: string;
 };
 
-const CATEGORIES = [
-  "Builds",
-  "Interior",
-  "Suspension",
-  "Fabrication",
-  "Recovery",
-  "Lighting",
-  "Restoration",
-  "Custom",
-];
-
 export default function AdminGalleryPage() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [showUpload, setShowUpload] = useState(false);
@@ -38,13 +27,11 @@ export default function AdminGalleryPage() {
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  // Filter & Search states
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  // Search query
+  const [searchQuery, setSearchQuery] = useState<string>("" );
 
   // Upload Form states
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Builds");
   const [selectedFiles, setSelectedFiles] = useState<FilePreview[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -122,7 +109,6 @@ export default function AdminGalleryPage() {
     selectedFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
     setSelectedFiles([]);
     setTitle("");
-    setCategory("Builds");
     setErrorMessage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -150,7 +136,7 @@ export default function AdminGalleryPage() {
       const formData = new FormData();
       formData.set("action", "add");
       formData.set("title", title);
-      formData.set("category", category);
+      formData.set("category", "Gallery");
 
       selectedFiles.forEach((item) => {
         formData.append("images", item.file);
@@ -231,16 +217,10 @@ export default function AdminGalleryPage() {
     }
   };
 
-  // Filtered photos
+  // Filtered photos based only on search
   const filteredPhotos = photos.filter((photo) => {
-    const matchesCategory =
-      selectedCategory === "All" ||
-      photo.category.toLowerCase() === selectedCategory.toLowerCase();
-    const matchesSearch =
-      !searchQuery ||
-      photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      photo.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    if (!searchQuery) return true;
+    return photo.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
@@ -286,11 +266,11 @@ export default function AdminGalleryPage() {
 
       {/* Control Bar */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative w-full sm:w-64">
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-72">
             <input
               type="text"
-              placeholder="Search photos..."
+              placeholder="Search photos by title..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="input pl-9 text-xs"
@@ -306,9 +286,9 @@ export default function AdminGalleryPage() {
               </button>
             )}
           </div>
-          <span className="text-xs text-zinc-500 hidden sm:inline">
-            Showing <strong className="text-white">{filteredPhotos.length}</strong> of {photos.length}
-          </span>
+          <p className="text-xs text-zinc-400 hidden sm:inline">
+            Total: <span className="font-bold text-white">{photos.length}</span> photos
+          </p>
         </div>
 
         <button
@@ -324,32 +304,6 @@ export default function AdminGalleryPage() {
         </button>
       </div>
 
-      {/* Category Tabs */}
-      <div className="mb-6 flex flex-wrap gap-2 border-b border-zinc-800 pb-4">
-        {["All", ...CATEGORIES].map((cat) => {
-          const count =
-            cat === "All"
-              ? photos.length
-              : photos.filter((p) => p.category.toLowerCase() === cat.toLowerCase()).length;
-          const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                isActive
-                  ? "bg-green-500 text-zinc-950 font-bold shadow-md shadow-green-500/20"
-                  : "border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:border-zinc-700 hover:text-white"
-              }`}
-            >
-              {cat} <span className="opacity-70">({count})</span>
-            </button>
-          );
-        })}
-      </div>
-
       {/* Upload Modal */}
       {showUpload && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/85 p-4 backdrop-blur-md">
@@ -360,7 +314,7 @@ export default function AdminGalleryPage() {
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
               <div>
                 <h2 className="font-display text-lg font-bold text-white">Upload Photos to Gallery</h2>
-                <p className="text-xs text-zinc-400">Add high-resolution build and workshop photos</p>
+                <p className="text-xs text-zinc-400">Add photos to show in the customer photo gallery</p>
               </div>
               <button
                 type="button"
@@ -379,33 +333,17 @@ export default function AdminGalleryPage() {
             )}
 
             <div>
-              <label className="label">Photo Title / Build Caption (Optional)</label>
+              <label className="label">Photo Title / Caption (Optional)</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Defender 110 Puma Custom Upholstery / Suspension Upgrade"
+                placeholder="e.g. Defender 110 Custom Build"
                 className="input text-sm"
                 disabled={uploading}
               />
               <p className="mt-1 text-[11px] text-zinc-500">
-                If left blank, a default title will be assigned automatically.
+                Optional. If blank, a default title is assigned automatically.
               </p>
-            </div>
-
-            <div>
-              <label className="label">Category Tag</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="input text-sm"
-                disabled={uploading}
-              >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
             </div>
 
             {/* Drag & Drop Upload Zone */}
@@ -553,12 +491,7 @@ export default function AdminGalleryPage() {
               />
             </div>
             <div className="mt-3 flex w-full items-center justify-between text-white">
-              <div>
-                <span className="rounded bg-green-500/20 px-2 py-0.5 text-xs font-bold text-green-400">
-                  {previewPhoto.category}
-                </span>
-                <p className="mt-1 font-semibold text-sm">{previewPhoto.title}</p>
-              </div>
+              <p className="font-semibold text-sm">{previewPhoto.title}</p>
               <span className="text-xs text-zinc-500">
                 {new Date(previewPhoto.created_at).toLocaleDateString()}
               </span>
@@ -576,9 +509,9 @@ export default function AdminGalleryPage() {
         <div className="card text-center py-16 text-zinc-400">
           <p className="text-base font-semibold text-white">No photos found</p>
           <p className="mt-1 text-xs text-zinc-500">
-            {searchQuery || selectedCategory !== "All"
-              ? "Try adjusting your search query or category filter."
-              : "No gallery photos uploaded yet. Upload your first workshop build photo!"}
+            {searchQuery
+              ? "Try adjusting your search query."
+              : "No gallery photos uploaded yet. Upload your first photo!"}
           </p>
           <button
             type="button"
@@ -613,12 +546,9 @@ export default function AdminGalleryPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
                   <span className="rounded-full bg-zinc-900/90 px-3 py-1 text-xs font-bold text-white border border-zinc-700 shadow">
-                    🔍 View Preview
+                    🔍 View Full
                   </span>
                 </div>
-                <span className="absolute left-2 top-2 rounded bg-zinc-950/85 px-2 py-0.5 text-[10px] font-bold text-green-400 backdrop-blur-sm border border-zinc-800 shadow">
-                  {photo.category}
-                </span>
               </div>
 
               {/* Photo Details */}

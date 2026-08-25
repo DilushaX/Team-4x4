@@ -28,7 +28,7 @@ export default async function GalleryPage() {
           allPhotos.push({
             id: p.id,
             title: p.title,
-            category: p.category || "Builds",
+            category: "Gallery",
             image_path: p.featured_image,
             created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
           });
@@ -39,7 +39,7 @@ export default async function GalleryPage() {
             allPhotos.push({
               id: img.id + 100000,
               title: p.title,
-              category: p.category || "Builds",
+              category: "Gallery",
               image_path: img.image_path,
               created_at: p.created_at ? p.created_at.toISOString() : new Date().toISOString(),
             });
@@ -63,18 +63,6 @@ export default async function GalleryPage() {
   // Sort latest first
   allPhotos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  const categorySet = new Set<string>([
-    "Builds",
-    "Interior",
-    "Suspension",
-    "Fabrication",
-    "Recovery",
-    "Lighting",
-  ]);
-  allPhotos.forEach((p) => {
-    if (p.category) categorySet.add(p.category);
-  });
-
   return (
     <>
       <PageHero
@@ -86,10 +74,7 @@ export default async function GalleryPage() {
       />
 
       <PageContent wide className="pt-8">
-        <GalleryClient
-          photos={allPhotos}
-          categories={Array.from(categorySet)}
-        />
+        <GalleryClient photos={allPhotos} />
       </PageContent>
     </>
   );

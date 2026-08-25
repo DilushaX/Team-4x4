@@ -36,6 +36,7 @@ export default function PageHero({
           muted
           loop
           playsInline
+          preload="metadata"
           poster={normalizeImagePath(image)}
           className="absolute inset-0 h-full w-full object-cover"
         >

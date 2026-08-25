@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import PageHero, { PageContent } from "@/components/PageHero";
 import { normalizeImagePath, parseFeatures } from "@/lib/utils";
 
+export const revalidate = 60; // Cache page on CDN for 60 seconds (Instant fast load)
+
 const fallbackServices: {
   title: string;
   subtitle: string;

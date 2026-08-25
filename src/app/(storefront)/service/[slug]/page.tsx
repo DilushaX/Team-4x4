@@ -13,6 +13,8 @@ export async function generateStaticParams() {
   return getActiveServices().map((s) => ({ slug: s.slug }));
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   let service = await prisma.service.findUnique({ where: { slug } }).catch(() => null);

@@ -11,6 +11,8 @@ export const metadata = {
     "Expert Defender restoration, tactical suspension, custom fabrication, winching systems, high-output lighting, and custom cushion & upholstery works.",
 };
 
+export const revalidate = 60;
+
 export default async function ServicesIndexPage() {
   let services = getActiveServices();
   try {

@@ -13,6 +13,8 @@ export async function generateStaticParams() {
   return getActiveProducts().map((p) => ({ slug: p.slug }));
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   let product = await prisma.product.findFirst({ where: { slug } }).catch(() => null);

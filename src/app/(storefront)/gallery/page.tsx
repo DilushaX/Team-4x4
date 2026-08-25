@@ -8,6 +8,8 @@ export const metadata = {
   description: "High-resolution photo gallery of Defender builds, custom upholstery, tactical suspension, and 4x4 engineering.",
 };
 
+export const revalidate = 60;
+
 export default async function GalleryPage() {
   let photos: GalleryItem[] = getActiveGallery();
 

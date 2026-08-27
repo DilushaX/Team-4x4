@@ -11,6 +11,7 @@ const SETTING_FIELDS = [
   { key: "address", label: "Address" },
   { key: "facebook", label: "Facebook URL" },
   { key: "instagram", label: "Instagram URL" },
+  { key: "tiktok", label: "TikTok URL" },
   { key: "youtube", label: "YouTube URL" },
   { key: "business_hours", label: "Business Hours" },
   { key: "delivery_charges", label: "Default Delivery Charge (LKR)" },

@@ -44,6 +44,7 @@ export default function Footer({ categories = [], settings = {} }: FooterProps) 
   const businessName = settings.business_name || "4x4 Defender Parts";
   const facebook = settings.facebook || "https://www.facebook.com/share/1G7uc474xT/?mibextid=wwXIfr";
   const instagram = settings.instagram || "https://www.instagram.com/upulprajath?igsi=MTQ1M2hweTQwYjJ2OQ==";
+  const tiktok = settings.tiktok || "https://www.tiktok.com/@upulprajath?_r=1&_t=ZS-99EsjkCNJkS";
 
   return (
     <footer className="mt-auto border-t border-zinc-800 bg-zinc-950">
@@ -109,7 +110,7 @@ export default function Footer({ categories = [], settings = {} }: FooterProps) 
               </a>
             </li>
           </ul>
-          <SocialLinks facebook={facebook} instagram={instagram} className="mt-5" />
+          <SocialLinks facebook={facebook} instagram={instagram} tiktok={tiktok} className="mt-5" />
         </div>
       </div>
 

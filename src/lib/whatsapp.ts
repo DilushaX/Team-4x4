@@ -50,6 +50,7 @@ export async function getSettings(): Promise<Record<string, string>> {
       address: "No. 42, Industrial Zone Road, Colombo 00200, Sri Lanka",
       facebook: "https://www.facebook.com/share/1G7uc474xT/?mibextid=wwXIfr",
       instagram: "https://www.instagram.com/upulprajath?igsi=MTQ1M2hweTQwYjJ2OQ==",
+      tiktok: "https://www.tiktok.com/@upulprajath?_r=1&_t=ZS-99EsjkCNJkS",
     };
   }
 }

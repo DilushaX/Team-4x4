@@ -5,6 +5,8 @@ import crypto from "crypto";
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg", "image/gif"];
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 
+import sharp from "sharp";
+
 export async function saveUploadedFile(
   file: File,
   subdir: "products" | "gallery" | "services" | "categories"
@@ -13,17 +15,32 @@ export async function saveUploadedFile(
     throw new Error("File too large. Maximum size is 8MB.");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const mimeType = file.type || "image/jpeg";
+  const rawBuffer = Buffer.from(await file.arrayBuffer());
+
+  // Optimize and compress with sharp to WebP (max 1600px, 80 quality)
+  let buffer = rawBuffer;
+  let mimeType = file.type || "image/jpeg";
+  let ext = ".jpg";
+
+  try {
+    buffer = await sharp(rawBuffer)
+      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 80, effort: 4 })
+      .toBuffer();
+    mimeType = "image/webp";
+    ext = ".webp";
+  } catch {
+    // If sharp fails on non-standard format, fallback to raw
+    ext = file.type === "image/png" ? ".png" : file.type === "image/webp" ? ".webp" : ".jpg";
+  }
 
   // In production / Vercel Serverless environment, file systems are read-only.
-  // Save as high-performance, self-contained Data URI.
+  // Save as high-performance, compressed self-contained Data URI.
   if (process.env.VERCEL || process.env.NODE_ENV === "production") {
     return `data:${mimeType};base64,${buffer.toString("base64")}`;
   }
 
   try {
-    const ext = file.type === "image/png" ? ".png" : file.type === "image/webp" ? ".webp" : ".jpg";
     const filename = `${crypto.randomBytes(16).toString("hex")}${ext}`;
     const uploadDir = path.join(process.cwd(), "public", "uploads", subdir);
     await mkdir(uploadDir, { recursive: true });

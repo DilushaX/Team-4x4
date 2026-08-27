@@ -58,91 +58,102 @@ export default function GalleryClient({ photos: initialPhotos }: Props) {
   }, [selectedPhotoIndex, photos.length]);
 
   return (
-    <div>
+    <div className="w-full">
       {/* Photo Grid */}
       {photos.length === 0 ? (
-        <div className="card text-center py-16 text-zinc-400">
-          <p className="text-base font-semibold text-white">No photos available yet.</p>
+        <div className="card text-center py-20 text-zinc-400">
+          <p className="text-lg font-semibold text-white">No photos available yet.</p>
           <p className="mt-1 text-xs text-zinc-500">Check back soon for new build updates!</p>
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {photos.map((photo, idx) => (
             <div
-              key={photo.id}
+              key={photo.id || idx}
               onClick={() => setSelectedPhotoIndex(idx)}
-              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 transition-all duration-300 hover:border-green-500/60 hover:shadow-xl hover:shadow-green-500/10"
+              className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800/80 shadow-md transition-all duration-300 hover:border-green-500/60 hover:shadow-xl hover:shadow-green-500/10 hover:ring-2 hover:ring-green-500/40"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900">
-                <Image
-                  src={normalizeImagePath(photo.image_path)}
-                  alt={photo.title || "Gallery photo"}
-                  fill
-                  unoptimized
-                  className="object-cover transition duration-500 group-hover:scale-108"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-                {/* Hover Caption */}
-                <div className="absolute inset-x-0 bottom-0 p-4 translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  {photo.title && (
-                    <p className="font-display font-bold text-white text-base leading-snug drop-shadow-md">
-                      {photo.title}
-                    </p>
-                  )}
-                  <p className="mt-1 text-xs font-medium text-green-400 flex items-center gap-1">
-                    🔍 Click to expand
-                  </p>
-                </div>
-              </div>
+              <Image
+                src={normalizeImagePath(photo.image_path)}
+                alt={photo.title || "Team 4x4 Build"}
+                fill
+                unoptimized
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-106"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              />
+              {/* Subtle hover overlay */}
+              <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
             </div>
           ))}
         </div>
       )}
 
-      {/* Lightbox Modal */}
+      {/* Fullscreen Lightbox Modal */}
       {selectedPhotoIndex !== null && photos[selectedPhotoIndex] && (
         <div
           onClick={() => setSelectedPhotoIndex(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-md transition-opacity duration-300"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-3 sm:p-6 backdrop-blur-md transition-opacity duration-300"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative flex flex-col items-center max-w-5xl w-full max-h-[90vh]"
+            className="relative flex flex-col items-center max-w-6xl w-full max-h-[95vh]"
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedPhotoIndex(null)}
-              className="absolute -top-12 right-0 rounded-full bg-zinc-900/80 p-2.5 text-white hover:bg-zinc-800 transition"
+              className="absolute -top-12 right-0 sm:top-2 sm:right-2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/90 text-zinc-300 hover:bg-zinc-800 hover:text-white transition border border-zinc-700/60"
               aria-label="Close"
             >
               ✕
             </button>
 
             {/* Main Image Container */}
-            <div className="relative w-full h-[70vh] rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950">
+            <div className="relative w-full h-[75vh] sm:h-[80vh] rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-950 flex items-center justify-center">
               <Image
                 src={normalizeImagePath(photos[selectedPhotoIndex].image_path)}
-                alt={photos[selectedPhotoIndex].title || "Gallery photo"}
+                alt={photos[selectedPhotoIndex].title || "Team 4x4 Build"}
                 fill
                 unoptimized
                 className="object-contain"
                 sizes="100vw"
                 priority
               />
+
+              {/* Prev Button Overlay */}
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedPhotoIndex(
+                    (selectedPhotoIndex - 1 + photos.length) % photos.length
+                  )
+                }
+                className="absolute left-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-zinc-950/70 text-white backdrop-blur-md border border-zinc-700/50 hover:bg-zinc-900 hover:border-green-500 transition"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+
+              {/* Next Button Overlay */}
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length)
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-zinc-950/70 text-white backdrop-blur-md border border-zinc-700/50 hover:bg-zinc-900 hover:border-green-500 transition"
+                aria-label="Next image"
+              >
+                ›
+              </button>
             </div>
 
-            {/* Bottom Caption & Controls */}
-            <div className="mt-4 flex w-full items-center justify-between px-2 text-white">
-              <div>
-                <h3 className="font-display text-lg font-bold text-white">
-                  {photos[selectedPhotoIndex].title || "Defender Custom Build"}
-                </h3>
-              </div>
+            {/* Bottom Controls & Count */}
+            <div className="mt-3 flex w-full items-center justify-between px-2 text-zinc-400 text-xs sm:text-sm">
+              <span className="font-semibold text-zinc-300">
+                Photo {selectedPhotoIndex + 1} of {photos.length}
+              </span>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() =>
@@ -150,19 +161,16 @@ export default function GalleryClient({ photos: initialPhotos }: Props) {
                       (selectedPhotoIndex - 1 + photos.length) % photos.length
                     )
                   }
-                  className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-green-500 hover:text-white transition"
+                  className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 font-medium hover:border-green-500 hover:text-white transition"
                 >
                   ← Prev
                 </button>
-                <span className="text-xs text-zinc-500">
-                  {selectedPhotoIndex + 1} / {photos.length}
-                </span>
                 <button
                   type="button"
                   onClick={() =>
                     setSelectedPhotoIndex((selectedPhotoIndex + 1) % photos.length)
                   }
-                  className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-semibold text-zinc-300 hover:border-green-500 hover:text-white transition"
+                  className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 font-medium hover:border-green-500 hover:text-white transition"
                 >
                   Next →
                 </button>

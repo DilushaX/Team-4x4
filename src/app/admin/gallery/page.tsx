@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import Image from "next/image";
 import { normalizeImagePath } from "@/lib/utils";
+import { compressImageClient } from "@/lib/image-compression";
 
 type GalleryPhoto = {
   id: number;
@@ -17,7 +18,10 @@ type FilePreview = {
   file: File;
   previewUrl: string;
   name: string;
-  size: string;
+  originalSize: string;
+  compressedSize: string;
+  ratio: number;
+  compressing: boolean;
 };
 
 export default function AdminGalleryPage() {
@@ -69,30 +73,75 @@ export default function AdminGalleryPage() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const handleFiles = (files: FileList | File[]) => {
-    const validFiles: FilePreview[] = [];
-    const maxSizeBytes = 8 * 1024 * 1024; // 8MB
+  const handleFiles = async (files: FileList | File[]) => {
+    const rawFiles = Array.from(files);
+    const validRawFiles: File[] = [];
+    const maxSizeBytes = 15 * 1024 * 1024; // 15MB limit before compression
 
-    Array.from(files).forEach((file) => {
+    rawFiles.forEach((file) => {
       if (!file.type.startsWith("image/")) {
         setErrorMessage(`"${file.name}" is not a supported image file.`);
         return;
       }
       if (file.size > maxSizeBytes) {
-        setErrorMessage(`"${file.name}" exceeds the 8MB limit.`);
+        setErrorMessage(`"${file.name}" exceeds the 15MB limit.`);
         return;
       }
-      validFiles.push({
-        file,
-        previewUrl: URL.createObjectURL(file),
-        name: file.name,
-        size: formatFileSize(file.size),
-      });
+      validRawFiles.push(file);
     });
 
-    if (validFiles.length > 0) {
-      setSelectedFiles((prev) => [...prev, ...validFiles]);
-      setErrorMessage(null);
+    if (validRawFiles.length === 0) return;
+
+    setErrorMessage(null);
+
+    // Create initial preview items with compressing status
+    const newPreviews: FilePreview[] = validRawFiles.map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+      name: file.name,
+      originalSize: formatFileSize(file.size),
+      compressedSize: formatFileSize(file.size),
+      ratio: 0,
+      compressing: true,
+    }));
+
+    const startIndex = selectedFiles.length;
+    setSelectedFiles((prev) => [...prev, ...newPreviews]);
+
+    // Asynchronously compress each file
+    for (let i = 0; i < validRawFiles.length; i++) {
+      const originalFile = validRawFiles[i];
+      const targetIndex = startIndex + i;
+
+      try {
+        const result = await compressImageClient(originalFile, 1600, 0.82);
+        
+        setSelectedFiles((prev) => {
+          const updated = [...prev];
+          if (updated[targetIndex]) {
+            updated[targetIndex] = {
+              ...updated[targetIndex],
+              file: result.file,
+              compressedSize: formatFileSize(result.compressedSize),
+              ratio: result.ratio,
+              compressing: false,
+            };
+          }
+          return updated;
+        });
+      } catch (err) {
+        console.warn("Compression fallback:", err);
+        setSelectedFiles((prev) => {
+          const updated = [...prev];
+          if (updated[targetIndex]) {
+            updated[targetIndex] = {
+              ...updated[targetIndex],
+              compressing: false,
+            };
+          }
+          return updated;
+        });
+      }
     }
   };
 
@@ -419,7 +468,22 @@ export default function AdminGalleryPage() {
                         </div>
                         <div className="truncate">
                           <p className="truncate font-medium text-white">{item.name}</p>
-                          <p className="text-[11px] text-zinc-500">{item.size}</p>
+                          {item.compressing ? (
+                            <p className="text-[11px] text-yellow-400 flex items-center gap-1">
+                              <span>⚡</span> Auto-compressing...
+                            </p>
+                          ) : (
+                            <p className="text-[11px] text-zinc-400 flex items-center gap-1.5 flex-wrap">
+                              <span className="line-through text-zinc-500">{item.originalSize}</span>
+                              <span>→</span>
+                              <span className="text-emerald-400 font-semibold">{item.compressedSize}</span>
+                              {item.ratio > 0 && (
+                                <span className="rounded bg-emerald-500/20 px-1 py-0.5 text-[10px] font-bold text-emerald-400">
+                                  -{item.ratio}%
+                                </span>
+                              )}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <button

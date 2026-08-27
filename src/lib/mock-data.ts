@@ -70,7 +70,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "Chassis reinforcement & corrosion control|Engine rebuild prep + performance calibration|High-strength suspension mounting points|Modern protection and finish coating",
     hero_banner: "assets/images/restoration.png",
-    pricing: "LKR 280,000 - 420,000",
+    pricing: "",
     duration: "4-8 weeks",
     compatibility:
       "Land Rover Defender 90/110/130\nToyota Land Cruiser 70/80 Series\nJeep Wrangler & Classic 4x4 platforms",
@@ -102,7 +102,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "Long-Travel Coilover Conversion|Adjustable Panhard Rods|Polyurethane Bushings Kit|Stabilizer Bar Quick Disconnects",
     hero_banner: "assets/images/green-suspension.jpg",
-    pricing: "LKR 180,000 - 320,000",
+    pricing: "",
     duration: "2-4 weeks",
     compatibility:
       "Toyota Land Cruiser\nLand Rover Defender\nHilux, D-Max & common 4x4 pickups",
@@ -130,7 +130,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "Bespoke bumper mounting|CNC cut mild-steel skid plates|High-tensile hardware configurations|Corrosion-resistant textured finishes",
     hero_banner: "assets/images/fabrication.jpg",
-    pricing: "LKR 80,000 - 150,000",
+    pricing: "",
     duration: "1-2 weeks",
     compatibility: "Defender 90/110, Wrangler, Land Cruiser, Hilux, D-Max",
     faqs: JSON.stringify([
@@ -157,7 +157,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "50-inch arc LED bars|KC HiLiTES FLEX ERA auxiliary pods|Custom dash switch controllers|Waterproof relay wiring harnesses",
     hero_banner: "assets/images/lighting.jpg",
-    pricing: "LKR 45,000 - 95,000",
+    pricing: "",
     duration: "1-3 days",
     compatibility: "All vehicles / Universal 12V-24V fitment",
     faqs: JSON.stringify([
@@ -184,7 +184,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "12,000lb winch integration|Recovery point reinforcement|Snatch block and rigging kit|Heavy-duty wireless control switches",
     hero_banner: "assets/images/recovery.jpg",
-    pricing: "LKR 170,000 - 300,000",
+    pricing: "",
     duration: "1-3 weeks",
     compatibility: "4x4 pickups, Defender, Land Cruiser, Patrol, SUVs",
     faqs: JSON.stringify([
@@ -211,7 +211,7 @@ export const MOCK_SERVICES: ServiceData[] = [
     features:
       "Marine-Grade Italian & Synthetic Leather|High-Density Ergonomic Cushion Foam|Custom Diamond & Ribbed Stitching|Complete Door Card & Roof Liner Upholstery",
     hero_banner: "assets/images/cushion.jpg",
-    pricing: "LKR 85,000 - 240,000",
+    pricing: "",
     duration: "1-2 weeks",
     compatibility:
       "Defender 90/110/130\nToyota Land Cruiser\nClassic & Modern 4x4 Cabins",

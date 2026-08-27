@@ -96,11 +96,10 @@ export default async function ServicesIndexPage() {
                     </ul>
                   )}
 
-                  <div className="mt-auto pt-6 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-zinc-400">{service.pricing}</span>
+                  <div className="mt-auto pt-6">
                     <Link
                       href={`/service/${service.slug}`}
-                      className="btn-primary text-xs px-4 py-2"
+                      className="btn-primary block text-center text-xs py-2.5"
                     >
                       View Details →
                     </Link>

@@ -66,7 +66,7 @@ export default async function ServicePage({ params }: { params: Params }) {
         image={service.hero_banner || "assets/images/restoration.png"}
         eyebrow={service.subtitle || "Workshop Service"}
         title={service.title}
-        meta={service.pricing || undefined}
+        meta={service.duration || undefined}
       />
 
       <PageContent wide>
@@ -146,9 +146,6 @@ export default async function ServicePage({ params }: { params: Params }) {
             <div className="card sticky top-24 border-green-500/30 bg-zinc-900/90 shadow-xl">
               <span className="text-xs font-bold uppercase tracking-wider text-green-400">Book Workshop Slot</span>
               <h3 className="mt-2 font-display text-2xl font-bold text-white">{service.title}</h3>
-              {service.pricing && (
-                <div className="mt-3 text-lg font-bold text-green-400">{service.pricing}</div>
-              )}
               <p className="mt-3 text-xs leading-relaxed text-zinc-400">
                 Direct booking via WhatsApp or phone consultation with our Master Tech. Custom quotes available for tailored specifications.
               </p>

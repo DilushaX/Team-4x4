@@ -35,7 +35,6 @@ export default function AdminGalleryPage() {
   const [searchQuery, setSearchQuery] = useState<string>("" );
 
   // Upload Form states
-  const [title, setTitle] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<FilePreview[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -157,7 +156,6 @@ export default function AdminGalleryPage() {
   const clearForm = () => {
     selectedFiles.forEach((f) => URL.revokeObjectURL(f.previewUrl));
     setSelectedFiles([]);
-    setTitle("");
     setErrorMessage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -184,7 +182,7 @@ export default function AdminGalleryPage() {
     try {
       const formData = new FormData();
       formData.set("action", "add");
-      formData.set("title", title);
+      formData.set("title", "Team 4x4 Build");
       formData.set("category", "Gallery");
 
       selectedFiles.forEach((item) => {
@@ -381,19 +379,6 @@ export default function AdminGalleryPage() {
               </div>
             )}
 
-            <div>
-              <label className="label">Photo Title / Caption (Optional)</label>
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Defender 110 Custom Build"
-                className="input text-sm"
-                disabled={uploading}
-              />
-              <p className="mt-1 text-[11px] text-zinc-500">
-                Optional. If blank, a default title is assigned automatically.
-              </p>
-            </div>
 
             {/* Drag & Drop Upload Zone */}
             <div
@@ -615,25 +600,17 @@ export default function AdminGalleryPage() {
                 </div>
               </div>
 
-              {/* Photo Details */}
-              <div className="p-3">
-                <p
-                  className="font-medium text-xs text-white truncate"
-                  title={photo.title}
+              {/* Photo Actions */}
+              <div className="p-2.5 flex items-center justify-between border-t border-zinc-800 bg-zinc-950/80 text-[11px] text-zinc-400">
+                <span>{new Date(photo.created_at).toLocaleDateString()}</span>
+                <button
+                  type="button"
+                  disabled={deletingId === photo.id}
+                  onClick={() => handleDelete(photo.id)}
+                  className="font-semibold text-red-400 transition hover:text-red-300 disabled:opacity-50"
                 >
-                  {photo.title}
-                </p>
-                <div className="mt-2.5 flex items-center justify-between border-t border-zinc-800/80 pt-2 text-[11px] text-zinc-500">
-                  <span>{new Date(photo.created_at).toLocaleDateString()}</span>
-                  <button
-                    type="button"
-                    disabled={deletingId === photo.id}
-                    onClick={() => handleDelete(photo.id)}
-                    className="font-semibold text-red-400 transition hover:text-red-300 disabled:opacity-50"
-                  >
-                    {deletingId === photo.id ? "Deleting..." : "Delete"}
-                  </button>
-                </div>
+                  {deletingId === photo.id ? "Deleting..." : "Delete"}
+                </button>
               </div>
             </div>
           ))}

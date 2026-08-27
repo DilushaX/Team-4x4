@@ -632,14 +632,7 @@ export type GalleryItem = {
   created_at: string;
 };
 
-export const MOCK_GALLERY: GalleryItem[] = [
-  { id: 1, title: "Defender Custom Cushion & Diamond Upholstery", category: "Interior", image_path: "assets/images/cushion.jpg", created_at: "2026-02-10" },
-  { id: 2, title: "Green Coil Spring & Brembo Caliper Setup", category: "Suspension", image_path: "assets/images/green-suspension.jpg", created_at: "2026-02-12" },
-  { id: 3, title: "Classic Heritage 110 Frame-off Rebuild", category: "Restoration", image_path: "assets/images/restoration.png", created_at: "2026-02-15" },
-  { id: 4, title: "Heavy Duty Front Bullbar & Armor Protection", category: "Fabrication", image_path: "assets/images/fabrication.jpg", created_at: "2026-02-18" },
-  { id: 5, title: "Self-Recovery Winch Rig & D-Ring Mounts", category: "Recovery", image_path: "assets/images/recovery.jpg", created_at: "2026-02-20" },
-  { id: 6, title: "Roof Mounted High-Output LED Arc Array", category: "Lighting", image_path: "assets/images/lighting.jpg", created_at: "2026-02-22" },
-];
+export const MOCK_GALLERY: GalleryItem[] = [];
 
 const globalGalleryStore = globalThis as unknown as {
   __MOCK_GALLERY__?: GalleryItem[];

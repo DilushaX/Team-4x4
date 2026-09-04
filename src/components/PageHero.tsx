@@ -48,6 +48,7 @@ export default function PageHero({
           alt={title}
           fill
           priority
+          unoptimized={normalizeImagePath(image).startsWith("data:")}
           className="object-cover"
           sizes="100vw"
         />

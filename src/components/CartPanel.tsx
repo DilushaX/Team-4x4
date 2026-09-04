@@ -78,7 +78,14 @@ export default function CartPanel({ variant = "page", onClose }: CartPanelProps)
             className={`flex gap-3 rounded-xl border border-zinc-800 bg-zinc-900/50 p-3 ${isDrawer ? "" : "gap-4 p-4"}`}
           >
             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-800">
-              <Image src={normalizeImagePath(item.image)} alt={item.title} fill className="object-cover" sizes="64px" />
+              <Image
+                src={normalizeImagePath(item.image)}
+                alt={item.title}
+                fill
+                unoptimized={normalizeImagePath(item.image).startsWith("data:")}
+                className="object-cover"
+                sizes="64px"
+              />
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-between">
               <div>

@@ -315,7 +315,14 @@ export default function AdminProductsPage() {
                   <td className="p-3.5">
                     <div className="flex items-center gap-3">
                       <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 shrink-0">
-                        <Image src={normalizeImagePath(p.image_path)} alt="" fill className="object-cover" sizes="48px" />
+                        <Image
+                          src={normalizeImagePath(p.image_path)}
+                          alt=""
+                          fill
+                          unoptimized={normalizeImagePath(p.image_path).startsWith("data:")}
+                          className="object-cover"
+                          sizes="48px"
+                        />
                       </div>
                       <div>
                         <p className="font-medium text-white">{p.title}</p>

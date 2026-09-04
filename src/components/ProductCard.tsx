@@ -68,6 +68,7 @@ export default function ProductCard({
               fill
               priority={priority}
               loading={priority ? undefined : "lazy"}
+              quality={82}
               unoptimized={image.startsWith("data:")}
               className="object-cover transition duration-300 group-hover:scale-110"
               sizes="112px"
@@ -182,9 +183,10 @@ export default function ProductCard({
           fill
           priority={priority}
           loading={priority ? undefined : "lazy"}
+          quality={82}
           unoptimized={image.startsWith("data:")}
           className="object-cover transition duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
         />
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ${stock.className}`}>
           {stock.label}

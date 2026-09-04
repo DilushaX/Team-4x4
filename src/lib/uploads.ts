@@ -17,15 +17,29 @@ export async function saveUploadedFile(
 
   const rawBuffer = Buffer.from(await file.arrayBuffer());
 
-  // Optimize and compress with sharp to WebP (max 1600px, 80 quality)
+  // Optimize and compress with sharp to modern WebP:
+  // - Auto-rotate based on EXIF metadata (fixes sideways/upside-down phone photos)
+  // - Resize to max 1200px for products (crisp 2x Retina clarity, lightweight file size)
+  // - Compress to WebP with visually-lossless quality: 82 and effort: 5
   let buffer = rawBuffer;
   let mimeType = file.type || "image/jpeg";
   let ext = ".jpg";
 
   try {
+    const maxDimension = subdir === "products" ? 1200 : 1600;
     buffer = await sharp(rawBuffer)
-      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 80, effort: 4 })
+      .rotate()
+      .resize({
+        width: maxDimension,
+        height: maxDimension,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .webp({
+        quality: 82,
+        alphaQuality: 85,
+        effort: 5,
+      })
       .toBuffer();
     mimeType = "image/webp";
     ext = ".webp";

@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import ProductCard from "@/components/ProductCard";
+import ProductCard, { type ProductCardData } from "@/components/ProductCard";
 import Link from "next/link";
-import type { Product, ProductImage } from "@prisma/client";
 
-type ProductWithImages = Product & { images?: ProductImage[] };
 type Category = { id: number; name: string; slug: string };
 
 type ShopCatalogClientProps = {
-  products: ProductWithImages[];
+  products: ProductCardData[];
   categories: Category[];
   total: number;
   currentPage: number;
@@ -34,6 +32,7 @@ export default function ShopCatalogClient({
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [search, setSearch] = useState(currentSearch);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const saved = localStorage.getItem("team4x4_shop_view_mode");
@@ -52,7 +51,9 @@ export default function ShopCatalogClient({
     if (value) params.set(key, value);
     else params.delete(key);
     params.delete("page");
-    router.push(`/shop?${params.toString()}`);
+    startTransition(() => {
+      router.push(`/shop?${params.toString()}`, { scroll: false });
+    });
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -197,31 +198,43 @@ export default function ShopCatalogClient({
         )}
       </div>
 
-      {/* Products Display */}
-      {products.length === 0 ? (
-        <div className="card text-center py-16 border border-zinc-800 bg-zinc-900/40">
-          <svg className="mx-auto h-12 w-12 text-zinc-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <p className="text-base font-semibold text-white">No products found matching your criteria</p>
-          <p className="text-sm text-zinc-400 mt-1">Try selecting another category or clear your search term.</p>
-          <Link href="/shop" className="btn-primary mt-6 inline-flex">
-            View All Parts
-          </Link>
-        </div>
-      ) : viewMode === "grid" ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} viewMode="grid" />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} viewMode="list" />
-          ))}
-        </div>
-      )}
+      {/* Products Display with transition indicator */}
+      <div className={`transition-opacity duration-200 ${isPending ? "opacity-60 pointer-events-none" : "opacity-100"}`}>
+        {products.length === 0 ? (
+          <div className="card text-center py-16 border border-zinc-800 bg-zinc-900/40">
+            <svg className="mx-auto h-12 w-12 text-zinc-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <p className="text-base font-semibold text-white">No products found matching your criteria</p>
+            <p className="text-sm text-zinc-400 mt-1">Try selecting another category or clear your search term.</p>
+            <Link href="/shop" className="btn-primary mt-6 inline-flex">
+              View All Parts
+            </Link>
+          </div>
+        ) : viewMode === "grid" ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {products.map((product, idx) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                viewMode="grid"
+                priority={idx < 4}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {products.map((product, idx) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                viewMode="list"
+                priority={idx < 4}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Pagination */}
       {totalPages > 1 && (

@@ -6,16 +6,30 @@ import { formatMoney, decimalToNumber } from "@/lib/money";
 import { normalizeImagePath, parseFeatures, stockLabel } from "@/lib/utils";
 import { addToCart } from "@/lib/cart";
 import { useState } from "react";
-import type { Product, ProductImage } from "@prisma/client";
-
-type ProductWithImages = Product & { images?: ProductImage[] };
+export type ProductCardData = {
+  id: number;
+  title: string;
+  slug: string;
+  sku?: string | null;
+  category?: string | null;
+  description?: string | null;
+  price: number | unknown;
+  stock: number;
+  is_featured?: number | null;
+  image_path?: string | null;
+  features?: string | null;
+  compatibility?: string | null;
+  images?: { image_path: string }[];
+};
 
 export default function ProductCard({
   product,
   viewMode = "grid",
+  priority = false,
 }: {
-  product: ProductWithImages;
+  product: ProductCardData;
   viewMode?: "grid" | "list";
+  priority?: boolean;
 }) {
   const [added, setAdded] = useState(false);
   const stock = stockLabel(product.stock);
@@ -52,6 +66,8 @@ export default function ProductCard({
               src={image}
               alt={product.title}
               fill
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
               unoptimized={image.startsWith("data:")}
               className="object-cover transition duration-300 group-hover:scale-110"
               sizes="112px"
@@ -164,9 +180,11 @@ export default function ProductCard({
           src={image}
           alt={product.title}
           fill
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
           unoptimized={image.startsWith("data:")}
           className="object-cover transition duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 25vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ${stock.className}`}>
           {stock.label}
